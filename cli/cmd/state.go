@@ -16,10 +16,10 @@ import (
 var stateCmd = &cobra.Command{
 	Use:   "state",
 	Short: "Get the latest state from the contract",
-	Run:   getState,
+	Run:   stateRun,
 }
 
-func getState(cmd *cobra.Command, args []string) {
+func stateRun(cmd *cobra.Command, args []string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -41,7 +41,7 @@ func getState(cmd *cobra.Command, args []string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(stateJson)
+		fmt.Println(string(stateJson))
 	}
 }
 
