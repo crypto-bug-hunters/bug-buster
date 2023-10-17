@@ -69,7 +69,6 @@ func init() {
 
 	bountyCmd.Flags().StringVarP(
 		&bountyImgLink, "image", "i", "", "App image")
-	bountyCmd.MarkFlagRequired("image")
 
 	bountyCmd.Flags().StringVarP(
 		&bountyDescription, "description", "d", "", "App description")

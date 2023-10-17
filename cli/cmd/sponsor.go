@@ -53,7 +53,6 @@ func init() {
 
 	sponsorCmd.Flags().StringVarP(
 		&sponsorImgLink, "image", "i", "", "Sponsor image")
-	sponsorCmd.MarkFlagRequired("image")
 
 	sponsorCmd.Flags().StringVarP(
 		&sponsorAppAddress, "app-address", "a", "", "Address of the app bounty")
