@@ -14,6 +14,7 @@ local base64 = require("base64")
 
 local DEVELOPER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"):lower()
 local HACKER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92267"):lower()
+local SPONSOR1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92268"):lower()
 
 local config = {
     ETHER_PORTAL_ADDRESS = "0xFfdbe43d4c855BF7e0f105c400A50857f53AB044",
@@ -127,11 +128,12 @@ describe("tests", function()
         })
     end)
 
-    it("should add sponsorship", function()
+    it("should add sponsorship from developer itself", function()
         local res = advance_ether_deposit(machine, {
             sender = DEVELOPER1_WALLET,
             amount = 1000,
             opcode = CodecOpcodes.AddSponsorship,
+            timestamp = started + 1,
             data = {
                 Name = "Developer1",
                 AppAddress = DEVELOPER1_WALLET,
@@ -159,6 +161,57 @@ describe("tests", function()
                                 Name = "Developer1",
                             },
                             Value = tohex(1000),
+                            Withdrawn = false,
+                        },
+                    },
+                    Started = started,
+                },
+            },
+        })
+    end)
+
+    it("should add sponsorship from a sponsor", function()
+        local res = advance_ether_deposit(machine, {
+            sender = SPONSOR1_WALLET,
+            amount = 2000,
+            opcode = CodecOpcodes.AddSponsorship,
+            timestamp = started + 2,
+            data = {
+                Name = "Sponsor1",
+                AppAddress = DEVELOPER1_WALLET,
+            },
+        })
+        expect.equal(res.status, "accepted")
+        expect.equal(res.state, {
+            Bounties = {
+                {
+                    App = {
+                        Address = DEVELOPER1_WALLET,
+                        ImgLink = "",
+                        Name = "Lua Bounty",
+                    },
+                    CodePath = "cHJpbnQgJ2hlbGxvIHdvcmxkJw==",
+                    Deadline = deadline,
+                    Description = "Find Lua Bug",
+                    Exploit = null,
+                    InputIndex = 1,
+                    Sponsorships = {
+                        {
+                            Sponsor = {
+                                Address = DEVELOPER1_WALLET,
+                                ImgLink = "",
+                                Name = "Developer1",
+                            },
+                            Value = tohex(1000),
+                            Withdrawn = false,
+                        },
+                        {
+                            Sponsor = {
+                                Address = SPONSOR1_WALLET,
+                                ImgLink = "",
+                                Name = "Sponsor1",
+                            },
+                            Value = tohex(2000),
                             Withdrawn = false,
                         },
                     },
@@ -204,6 +257,43 @@ describe("tests", function()
             },
         })
         expect.equal(res.status, "accepted")
+        expect.equal(res.state, {
+            Bounties = {
+                {
+                    App = {
+                        Address = DEVELOPER1_WALLET,
+                        ImgLink = "",
+                        Name = "Lua Bounty",
+                    },
+                    CodePath = "cHJpbnQgJ2hlbGxvIHdvcmxkJw==",
+                    Deadline = deadline,
+                    Description = "Find Lua Bug",
+                    Exploit = null,
+                    InputIndex = 1,
+                    Sponsorships = {
+                        {
+                            Sponsor = {
+                                Address = DEVELOPER1_WALLET,
+                                ImgLink = "",
+                                Name = "Developer1",
+                            },
+                            Value = tohex(1000),
+                            Withdrawn = true,
+                        },
+                        {
+                            Sponsor = {
+                                Address = SPONSOR1_WALLET,
+                                ImgLink = "",
+                                Name = "Sponsor1",
+                            },
+                            Value = tohex(2000),
+                            Withdrawn = false,
+                        },
+                    },
+                    Started = started,
+                },
+            },
+        })
     end)
 
     it("should reject sponsor double withdraw", function()
