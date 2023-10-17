@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -14,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// bountyCmd represents the bounty command
 var bountyCmd = &cobra.Command{
 	Use:   "bounty",
 	Short: "Create a new app bounty",
@@ -43,7 +39,7 @@ func bountyRun(cmd *cobra.Command, args []string) {
 		Deadline:      deadline,
 		CodeZipBinary: code,
 	}
-	sendInputAndPrintLogs(input)
+	sendInput(input)
 }
 
 func bountyLoadCode() (string, error) {
