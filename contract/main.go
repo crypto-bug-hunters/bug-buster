@@ -156,7 +156,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 
 		// check bounty deadline
 		currTime := env.Metadata().BlockTimestamp
-		if currTime < bounty.Deadline {
+		if currTime >= bounty.Deadline {
 			return nil, fmt.Errorf("can't run exploit after deadline")
 		}
 
@@ -231,7 +231,7 @@ func (c *BugLessContract) Codecs() []eggroll.Codec {
 // Decode the code from base64, unzip it, and save it to a directory.
 func DecodeUnzipStore(zipBinary string) string {
 	// TODO
-	return "/some/path"
+	return zipBinary
 }
 
 // Run the exploit for the given code.
