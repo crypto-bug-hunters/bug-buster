@@ -25,7 +25,7 @@ go run ./cli help
 
 ### Frontend
 
-## Running the frontend
+To run the frontend, execute the commands below
 
 ```shell
 cd frontend
