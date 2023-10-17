@@ -5,7 +5,10 @@ package cmd
 
 import (
 	"bugless/shared"
+	"encoding/base64"
+	"io"
 	"log"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -44,8 +47,21 @@ func bountyRun(cmd *cobra.Command, args []string) {
 }
 
 func bountyLoadCode() (string, error) {
-	// TODO
-	return bountyCodePath, nil
+	f, err := os.Open(bountyCodePath)
+	if err != nil {
+		log.Fatalf("failed to open code zip: %v", err)
+	}
+	defer f.Close()
+	bytes, err := io.ReadAll(f)
+	if err != nil {
+		log.Fatalf("failed read code zip: %v", err)
+	}
+	// Limit code zip to 500kb
+	if len(bytes) > 500<<10 {
+		log.Fatalf("zip too big: %v; max is 500kb", len(bytes))
+	}
+	encoded := base64.StdEncoding.EncodeToString(bytes)
+	return encoded, nil
 }
 
 func init() {
