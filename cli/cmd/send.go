@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/gligneul/eggroll"
 	"github.com/gligneul/eggroll/eggtypes"
 	"github.com/spf13/cobra"
@@ -43,6 +44,19 @@ func sendInput(input any) {
 	checkResult(ctx, client, inputIndex, err)
 }
 
+func sendDAppAddress() {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	client, signer, err := eggroll.NewDevClient(ctx, shared.Codecs())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	inputIndex, err := client.SendDAppAddress(ctx, signer)
+	checkResult(ctx, client, inputIndex, err)
+}
+
 func checkResult(ctx context.Context, client *eggroll.Client, inputIndex int, err error) {
 	if err != nil {
 		log.Fatal(err)
@@ -58,6 +72,12 @@ func checkResult(ctx context.Context, client *eggroll.Client, inputIndex int, er
 		log.Print("input accepted")
 	} else {
 		log.Print("input not accepted")
+	}
+
+	if len(result.Vouchers) > 0 {
+		voucher := result.Vouchers[0]
+		log.Printf("got voucher to %v with payload 0x%v",
+			voucher.Destination, common.Bytes2Hex(voucher.Payload))
 	}
 
 	for _, logMsg := range result.Logs() {
