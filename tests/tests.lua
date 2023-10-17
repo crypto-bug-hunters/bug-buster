@@ -247,7 +247,7 @@ describe("tests", function()
         expect.equal(res.error, "rejecting: can't withdraw before deadline")
     end)
 
-    it("should accept sponsor withdraw after deadline", function()
+    it("should accept withdraw after deadline", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
             opcode = CodecOpcodes.WithdrawSponsorship,
@@ -293,6 +293,15 @@ describe("tests", function()
                     Started = started,
                 },
             },
+        })
+        expect.equal(res.vouchers, {
+            {
+                address = fromhex(config.DAPP_ADDRESS),
+                payload = cartesix_encoder.encode_ether_transfer_voucher{
+                    destination_address = DEVELOPER1_WALLET,
+                    amount = int256.tobe('1000'),
+                },
+            }
         })
     end)
 
