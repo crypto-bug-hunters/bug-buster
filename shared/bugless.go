@@ -78,9 +78,6 @@ func (b *CreateAppBounty) Validate() error {
 	if b.Name == "" {
 		return fmt.Errorf("empty CreateAppBounty.Name")
 	}
-	if b.ImgLink == "" {
-		return fmt.Errorf("empty CreateAppBounty.ImgLink")
-	}
 	if b.Description == "" {
 		return fmt.Errorf("empty CreateAppBounty.Description")
 	}
@@ -104,9 +101,6 @@ func (s *AddSponsorship) Validate() error {
 	if s.Name == "" {
 		return fmt.Errorf("empty AddSponsorship.Name")
 	}
-	if s.ImgLink == "" {
-		return fmt.Errorf("empty AddSponsorship.ImgLink")
-	}
 	return nil
 }
 
@@ -124,9 +118,6 @@ type SendExploit struct {
 func (e *SendExploit) Validate() error {
 	if e.Name == "" {
 		return fmt.Errorf("empty SendExploit.Name")
-	}
-	if e.ImgLink == "" {
-		return fmt.Errorf("empty SendExploit.ImgLink")
 	}
 	if e.Exploit == "" {
 		return fmt.Errorf("empty SendExploit.Exploit")
