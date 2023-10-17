@@ -13,8 +13,8 @@ local base64 = require("base64")
 -- Configurations
 
 local DEVELOPER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"):lower()
-local HACKER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92267"):lower()
 local SPONSOR1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92268"):lower()
+local HACKER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92267"):lower()
 
 local config = {
     ETHER_PORTAL_ADDRESS = "0xFfdbe43d4c855BF7e0f105c400A50857f53AB044",
@@ -65,6 +65,12 @@ local function advance_input(machine, opts)
     }, true))
 end
 
+local function inspect_input(machine, opts)
+    return decode_response_jsons(machine:inspect_state({
+        payload = string.pack(">I4", opts.opcode) .. json_encode(opts.data),
+    }, true))
+end
+
 local function advance_ether_deposit(machine, opts)
     return decode_response_jsons(machine:advance_state({
         metadata = { msg_sender = fromhex(config.ETHER_PORTAL_ADDRESS), timestamp = opts.timestamp },
@@ -104,7 +110,7 @@ describe("tests", function()
                 Name = "Lua Bounty",
                 Description = "Find Lua Bug",
                 Deadline = deadline,
-                CodeZipBinary = base64.encode([[print 'hello world']]),
+                CodeZipBinary = base64.encode([[some data]]),
             },
         })
         expect.equal(res.status, "accepted")
@@ -116,7 +122,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "cHJpbnQgJ2hlbGxvIHdvcmxkJw==",
+                    CodePath = "c29tZSBkYXRh",
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -148,7 +154,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "cHJpbnQgJ2hlbGxvIHdvcmxkJw==",
+                    CodePath = "c29tZSBkYXRh",
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -190,7 +196,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "cHJpbnQgJ2hlbGxvIHdvcmxkJw==",
+                    CodePath = "c29tZSBkYXRh",
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -265,7 +271,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "cHJpbnQgJ2hlbGxvIHdvcmxkJw==",
+                    CodePath = "c29tZSBkYXRh",
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -297,11 +303,11 @@ describe("tests", function()
         expect.equal(res.vouchers, {
             {
                 address = fromhex(config.DAPP_ADDRESS),
-                payload = cartesix_encoder.encode_ether_transfer_voucher{
+                payload = cartesix_encoder.encode_ether_transfer_voucher({
                     destination_address = DEVELOPER1_WALLET,
-                    amount = int256.tobe('1000'),
-                },
-            }
+                    amount = int256.tobe("1000"),
+                }),
+            },
         })
     end)
 
@@ -316,5 +322,34 @@ describe("tests", function()
         })
         expect.equal(res.status, "rejected")
         expect.equal(res.error, "rejecting: sponsorship already withdrawn")
+    end)
+
+    it("should reject exploit after deadline", function()
+        local res = advance_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.SendExploit,
+            timestamp = deadline,
+            data = {
+                Name = "Hacker1",
+                AppAddress = DEVELOPER1_WALLET,
+                Exploit = [[print 'hello world']],
+            },
+        })
+        expect.equal(res.status, "rejected")
+        expect.equal(res.error, "rejecting: can't run exploit after deadline")
+    end)
+
+    it("should test exploit", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = deadline,
+            data = {
+                Name = "Hacker1",
+                AppAddress = DEVELOPER1_WALLET,
+                Exploit = [[print 'hello world']],
+            },
+        })
+        expect.equal(res.status, "accepted")
     end)
 end)
