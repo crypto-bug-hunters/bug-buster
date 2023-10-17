@@ -1,4 +1,4 @@
-module template
+module bugless
 
 go 1.21.1
 
