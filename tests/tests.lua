@@ -17,6 +17,8 @@ local HACKER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92267"):lower()
 
 local config = {
     ETHER_PORTAL_ADDRESS = "0xFfdbe43d4c855BF7e0f105c400A50857f53AB044",
+    DAPP_ADDRESS_RELAY_ADDRESS = "0xF5DE34d6BbC0446E2a45719E718efEbaaE179daE",
+    DAPP_ADDRESS = "0x7122cd1221C20892234186facfE8615e6743Ab02",
 }
 
 local machine_config = "../.sunodo/image"
@@ -82,6 +84,16 @@ describe("tests", function()
     local started = 1697567000
     local deadline = started + 3600
 
+    it("should relay dapp address", function()
+        local res = machine:advance_state({
+            metadata = {
+                msg_sender = fromhex(config.DAPP_ADDRESS_RELAY_ADDRESS),
+            },
+            payload = fromhex(config.DAPP_ADDRESS),
+        }, true)
+        expect.equal(res.status, "accepted")
+    end)
+
     it("should create a bounty", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
@@ -107,7 +119,7 @@ describe("tests", function()
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
-                    InputIndex = 0,
+                    InputIndex = 1,
                     Sponsorships = null,
                     Started = started,
                 },
@@ -138,7 +150,7 @@ describe("tests", function()
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
-                    InputIndex = 0,
+                    InputIndex = 1,
                     Sponsorships = {
                         {
                             Sponsor = {
@@ -150,7 +162,6 @@ describe("tests", function()
                             Withdrawn = false,
                         },
                     },
-
                     Started = started,
                 },
             },
@@ -205,5 +216,6 @@ describe("tests", function()
             },
         })
         expect.equal(res.status, "rejected")
+        expect.equal(res.error, "rejecting: sponsorship already withdrawn")
     end)
 end)
