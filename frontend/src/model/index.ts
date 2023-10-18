@@ -2,6 +2,17 @@ export interface BugLessState {
   Bounties: AppBounty[];
 }
 
+export interface AppBounty {
+  Developer: Profile;
+  Description: string;
+  Started: number;
+  Deadline: number;
+  InputIndex: number;
+  Sponsorships: Sponsorship[];
+  Exploit: Exploit;
+  Withdrawn: boolean;
+}
+
 export interface Profile {
   Address: string;
   Name: string;
@@ -10,20 +21,10 @@ export interface Profile {
 
 export interface Exploit {
   Hacker: Profile;
+  InputIndex: number;
 }
 
 export interface Sponsorship {
   Sponsor: Profile;
-  Value: number; //or big number?
-}
-
-export interface AppBounty {
-  App: Profile;
-  Description: string;
-  Started: number; // (unix timestamp)
-  Deadline: number; // (unix timestamp)
-  Sponsorships: Sponsorship[];
-  Exploit: Exploit;
-  CodePath: string;
-  InputIndex: number;
+  Value: string; // number encoded as hex string
 }

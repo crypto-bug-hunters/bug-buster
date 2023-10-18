@@ -49,7 +49,7 @@ function getLastAcceptedInputIndex(): ReaderResult<number | undefined> {
     return { state: "success", response: undefined };
   }
   let edge = data?.inputs?.edges.findLast(
-    (e) => e.node.status === CompletionStatus.Accepted,
+    (e) => e.node.status === CompletionStatus.Accepted
   );
   let index = edge?.node.index;
   return { state: "success", response: index };
@@ -104,12 +104,8 @@ function GetLatestState(): ReaderResult<BugLessState> {
   if (loading) return { state: "loading" };
   if (error) return { state: "error", message: error.message };
 
-  let state: BugLessState = {
-    Bounties: [],
-  };
-
   let reportEdge = data?.input.reports.edges.find((edge) =>
-    edge.node.payload.startsWith("0x01"),
+    edge.node.payload.startsWith("0x01")
   );
   if (reportEdge === undefined) {
     // This should never happen because the input was accepted.
@@ -118,17 +114,27 @@ function GetLatestState(): ReaderResult<BugLessState> {
 
   // Check codec encoding.
   if (!reportEdge.node.payload.startsWith("0x0157896b8c")) {
-    return {
-      state: "error",
-      message: `wrong codec in report ${reportEdge.node.payload}`,
-    };
+    return {state: "error", message: "wrong codec in report"};
   }
 
-  // let payloadBytes = ethers.utils.arrayify(reportEdge.node.payload);
-  // let bounty = {};
-  // state.Bounties.push(bounty);
+  let stateBytes = fromHexString(reportEdge.node.payload.substring(12));
+  if (stateBytes === null) {
+    return {state: "error", message: "failed to decode report hex"};
+  }
+  let stateText = new TextDecoder().decode(stateBytes)
+  let stateJson = JSON.parse(stateText) as BugLessState
 
-  return { state: "success", response: state };
+  return { state: "success", response: stateJson };
+}
+
+function fromHexString(hexString: string): Uint8Array|null {
+  let match = hexString.match(/.{1,2}/g)
+  if (match === null) {
+    return null
+  }
+  return Uint8Array.from(
+    match.map((byte) => parseInt(byte, 16))
+  );
 }
 
 export { GetLatestState };
