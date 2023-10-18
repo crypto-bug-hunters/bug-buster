@@ -562,7 +562,7 @@ describe("tests on SQLite bounty", function()
                     Deadline = bounty_deadline,
                     Description = "Try to crash SQLite 3.32.2 with a SQL query",
                     Exploit = {
-                        Exploit = base64_encode(bounty_valid_exploit),
+                        InputIndex = 8,
                         Hacker = {
                             Address = HACKER1_WALLET,
                             ImgLink = "",

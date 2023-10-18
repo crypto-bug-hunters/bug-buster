@@ -195,7 +195,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 				Name:    input.Name,
 				ImgLink: input.ImgLink,
 			},
-			Exploit: input.Exploit,
+			InputIndex: env.Metadata().InputIndex,
 		}
 
 		// set bounty as withdrawn

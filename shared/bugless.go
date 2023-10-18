@@ -49,8 +49,8 @@ type Sponsorship struct {
 }
 
 type Exploit struct {
-	Hacker  Profile
-	Exploit string
+	Hacker     Profile
+	InputIndex int
 }
 
 type Profile struct {
