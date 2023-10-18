@@ -7,7 +7,7 @@ import Head from "next/head";
 // import GraphQLProvider from "../providers/graphqlProvider";
 import StyleProvider from "../providers/styleProvider";
 // import WalletProvider from "../providers/walletProvider";
-// import { Shell } from "./shell";
+import { Shell } from "./shell";
 // import { SWRConfig } from "swr";
 
 // const fetcher = async <JSON = any,>(
@@ -19,19 +19,19 @@ import StyleProvider from "../providers/styleProvider";
 // };
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
-    return (
-        <html lang="en">
-            <Head>
-                <ColorSchemeScript />
-                <link rel="shortcut icon" href="/favicon.svg" />
-            </Head>
-            <body>
-                <StyleProvider>
-                    { children }
-                </StyleProvider>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <Head>
+        <ColorSchemeScript />
+        <link rel="shortcut icon" href="/favicon.svg" />
+      </Head>
+      <body>
+        <StyleProvider>
+          <Shell>{children}</Shell>
+        </StyleProvider>
+      </body>
+    </html>
+  );
 };
 
 export default Layout;

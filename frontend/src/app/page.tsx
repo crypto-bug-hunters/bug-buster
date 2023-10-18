@@ -1,12 +1,6 @@
 "use client";
 import { FC } from "react";
-import {
-    Button,
-    Center,
-    Stack,
-    Title,
-    List,
-} from "@mantine/core";
+import { Button, Center, Stack, Title, List } from "@mantine/core";
 import Link from "next/link";
 
 const Home: FC = () => {
@@ -17,11 +11,10 @@ const Home: FC = () => {
   return (
     <Stack>
       <Center>
-          <Title>BugLess 🚫🪳</Title>
+        <Link href={"/bounty/create"}>
+          <Button>Submit new Bounty</Button>
+        </Link>
       </Center>
-      <Link href={"/bounty/create"} >
-        <Button>Submit new Bounty</Button>
-      </Link>
     </Stack>
   );
 };
