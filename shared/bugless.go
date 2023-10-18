@@ -29,7 +29,6 @@ type AppBounty struct {
 	Started      int64 // (unix timestamp)
 	Deadline     int64 // (unix timestamp)
 	InputIndex   int
-	CodePath     string
 	Sponsorships []*Sponsorship
 	Exploit      *Exploit
 	Withdrawn    bool
