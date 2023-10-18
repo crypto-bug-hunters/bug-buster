@@ -87,6 +87,9 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 			// Add to existing sponsorship
 			newValue := new(uint256.Int).Add(sponsorship.Value, &deposit.Value)
 			sponsorship.Value = newValue
+			// Update profile
+			sponsorship.Sponsor.Name = input.Name
+			sponsorship.Sponsor.ImgLink = input.ImgLink
 		} else {
 			// Create new sponsorship
 			sponsorship := &shared.Sponsorship{
