@@ -25,7 +25,14 @@ go run ./cli help
 
 ### Frontend
 
-To run the frontend, execute the commands below
+Before running the frontend, you should have the `CartesiDApp` address stored in the `NEXT_PUBLIC_DAPP_ADDRESS` enviroment variable.
+In order to take hold of this address, you may run the command below and manually extract the address next to `CartesiDApp`.
+
+```
+sunodo address-book
+```
+
+To run the frontend, execute the commands below.
 
 ```shell
 cd frontend
