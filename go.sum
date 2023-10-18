@@ -65,8 +65,8 @@ github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4
 github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
 github.com/gballet/go-libpcsclite v0.0.0-20190607065134-2772fd86a8ff h1:tY80oXqGNY4FhTFhk+o9oFHGINQ/+vhlm8HFzi6znCI=
 github.com/gballet/go-libpcsclite v0.0.0-20190607065134-2772fd86a8ff/go.mod h1:x7DCsMOv1taUwEWCzT4cmDeAkigA5/QCwUodaVOe8Ww=
-github.com/gligneul/eggroll v0.0.0-20231015222414-217e18d67cbc h1:st9GpY8fM0mEWC+k5GOEEN+To8QRef63U7+vgMEilRk=
-github.com/gligneul/eggroll v0.0.0-20231015222414-217e18d67cbc/go.mod h1:Kt9hw1dY0915VjJgKOtKBO1dgsymrlJr/CRNBqi3DXY=
+github.com/gligneul/eggroll v0.0.0-20231018132728-e6adb93d93d8 h1:cThZVfTRA+doAV6ok7FEBpgtbXnLVgEyjgt990jpk7A=
+github.com/gligneul/eggroll v0.0.0-20231018132728-e6adb93d93d8/go.mod h1:Kt9hw1dY0915VjJgKOtKBO1dgsymrlJr/CRNBqi3DXY=
 github.com/go-ole/go-ole v1.2.5 h1:t4MGB5xEDZvXI+0rMjjsfBsD7yAgp/s9ZDkL1JndXwY=
 github.com/go-ole/go-ole v1.2.5/go.mod h1:pprOEPIfldk/42T2oK7lQ4v4JSDwmV0As9GaiUsvbm0=
 github.com/go-stack/stack v1.8.1 h1:ntEHSVwIt7PNXNpgPmVfMrNhLtgjlmnZha2kOpuRiDw=
