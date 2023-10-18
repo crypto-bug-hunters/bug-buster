@@ -74,9 +74,8 @@ func checkResult(ctx context.Context, client *eggroll.Client, inputIndex int, er
 		log.Print("input not accepted")
 	}
 
-	if len(result.Vouchers) > 0 {
-		voucher := result.Vouchers[0]
-		log.Printf("got voucher to %v with payload 0x%v",
+	for _, voucher := range result.Vouchers {
+		log.Printf("voucher to %v with payload 0x%v",
 			voucher.Destination, common.Bytes2Hex(voucher.Payload))
 	}
 
