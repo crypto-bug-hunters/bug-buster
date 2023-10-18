@@ -15,6 +15,11 @@ local env = {
     date = os.date,
     difftime = os.difftime,
     time = os.time,
+    -- allow using exit filtering code 139 (segmentation fault)
+    exit = function(code, close)
+      assert(code ~= 139, 'os.exit: segmentation fault status 139 is disallowed')
+      return os.exit(code, close)
+    end
     -- rest of 'os' functions are unsafe
   },
   -- arg: not useful
@@ -47,6 +52,5 @@ local env = {
   -- require: could require 'os' and other modules again
 }
 env._G = env
-local code = assert(io.stdin:read('a'))
-local main = assert(load(code, '@code', 't', env))
+local main = assert(loadfile(arg[1], 't', env))
 main()

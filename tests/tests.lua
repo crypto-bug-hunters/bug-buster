@@ -7,7 +7,8 @@ local describe, it, expect = lester.describe, lester.it, lester.expect
 local null = require("cjson").null
 local json_encode = require("cjson").encode
 local json_decode = require("cjson").decode
-local base64 = require("base64")
+local base64_encode = require("luazen").b64encode
+local md5 = require("luazen").md5
 
 --------------------------------------------------------------------------------
 -- Configurations
@@ -82,10 +83,21 @@ local function advance_ether_deposit(machine, opts)
     }, true))
 end
 
+local function readfile(file)
+    local f = assert(io.open(file, 'rb'))
+    local contents = assert(f:read('a'))
+    f:close()
+    return contents
+end
+
 --------------------------------------------------------------------------------
 -- Tests
 
-describe("tests", function()
+local lua_bounty_zip = 'bounties/lua-5.4.3-bounty/lua-5.4.3-bounty_riscv64.tar.xz'
+local lua_bounty_codepath = '/bounties/'..tohex(md5(readfile(lua_bounty_zip))):sub(3)..'.tar.xz'
+local lua_bounty_exploit = readfile('bounties/lua-5.4.3-bounty/exploit.lua')
+
+describe("basic tests", function()
     local machine <close> = cartesix_rolling_machine(machine_config, machine_runtime_config, machine_remote_protocol)
     machine:run_until_yield_or_halt()
     local started = 1697567000
@@ -110,7 +122,7 @@ describe("tests", function()
                 Name = "Lua Bounty",
                 Description = "Find Lua Bug",
                 Deadline = deadline,
-                CodeZipBinary = base64.encode([[some data]]),
+                CodeZipBinary = base64_encode(readfile(lua_bounty_zip)),
             },
         })
         expect.equal(res.status, "accepted")
@@ -122,7 +134,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "c29tZSBkYXRh",
+                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -154,7 +166,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "c29tZSBkYXRh",
+                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -196,7 +208,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "c29tZSBkYXRh",
+                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -253,6 +265,33 @@ describe("tests", function()
         expect.equal(res.error, "rejecting: can't withdraw before deadline")
     end)
 
+    it("should accept a exploit that succeeded", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = deadline - 1,
+            data = {
+                AppAddress = DEVELOPER1_WALLET,
+                Exploit = base64_encode(lua_bounty_exploit),
+            },
+        })
+        expect.equal(res.status, "accepted")
+    end)
+
+    it("should reject inspect of a exploit that failed", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = deadline - 1,
+            data = {
+                Name = "Hacker1",
+                AppAddress = DEVELOPER1_WALLET,
+                Exploit = base64_encode([[print 'hello world']]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
     it("should accept withdraw after deadline", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
@@ -271,7 +310,7 @@ describe("tests", function()
                         ImgLink = "",
                         Name = "Lua Bounty",
                     },
-                    CodePath = "c29tZSBkYXRh",
+                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
                     Description = "Find Lua Bug",
                     Exploit = null,
@@ -332,24 +371,10 @@ describe("tests", function()
             data = {
                 Name = "Hacker1",
                 AppAddress = DEVELOPER1_WALLET,
-                Exploit = [[print 'hello world']],
+                Exploit = base64_encode([[print 'hello world']]),
             },
         })
         expect.equal(res.status, "rejected")
         expect.equal(res.error, "rejecting: can't run exploit after deadline")
-    end)
-
-    it("should test exploit", function()
-        local res = inspect_input(machine, {
-            sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
-            timestamp = deadline,
-            data = {
-                Name = "Hacker1",
-                AppAddress = DEVELOPER1_WALLET,
-                Exploit = [[print 'hello world']],
-            },
-        })
-        expect.equal(res.status, "accepted")
     end)
 end)

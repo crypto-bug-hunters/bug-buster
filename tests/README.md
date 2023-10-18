@@ -13,7 +13,7 @@ and `libcartesi.so` must be visible in `LD_LIBRARY_PATH`,
 unless you made a system wide cartesi machine installation.
 
 ```sh
-# Lua library for with cartesi machine extensions
+# Lua library with cartesi machine extensions
 sudo luarocks install --lua-version=5.4 cartesix
 
 # Lua library for unit testing
@@ -22,11 +22,19 @@ sudo luarocks install --lua-version=5.4 lester
 # Lua library for encoding JSON
 sudo luarocks install --lua-version=5.4 cjson
 
-# Lua library for encoding base64
-sudo luarocks install --lua-version=5.4 base64
+# Lua library for encoding base64/sha256
+sudo luarocks install --lua-version=5.4 luazen
 
 # Lua library for handling 256-bit integers
 sudo luarocks install --lua-version=5.4 bint
+```
+
+## Compile bounties
+
+Before testing, you need to compile bounties binaries.
+
+```sh
+make -C bounties
 ```
 
 ## Test

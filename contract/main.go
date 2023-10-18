@@ -3,6 +3,10 @@ package main
 import (
 	"bugless/shared"
 	"fmt"
+	"os"
+	"os/exec"
+	"crypto/md5"
+    "encoding/base64"
 
 	"github.com/gligneul/eggroll"
 	"github.com/gligneul/eggroll/wallets"
@@ -34,7 +38,10 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// create new bounty
-		codePath := DecodeUnzipStore(input.CodeZipBinary)
+		codePath, err := DecodeUnzipStore(input.CodeZipBinary)
+		if err != nil {
+			return nil, err
+		}
 		bounty := &shared.AppBounty{
 			App: shared.Profile{
 				Address: env.Sender(),
@@ -229,15 +236,45 @@ func (c *BugLessContract) Codecs() []eggroll.Codec {
 }
 
 // Decode the code from base64, unzip it, and save it to a directory.
-func DecodeUnzipStore(zipBinary string) string {
-	// TODO
-	return zipBinary
+func DecodeUnzipStore(zipBinary string) (string, error) {
+	bytes, err := base64.StdEncoding.DecodeString(zipBinary)
+	if err != nil {
+		return "", err
+	}
+	sum := md5.Sum(bytes)
+	path := fmt.Sprintf("/bounties/%x.tar.xz", sum)
+    err = os.WriteFile(path, bytes, 0644)
+	if err != nil {
+		return "", err
+	}
+	return path, nil
 }
 
 // Run the exploit for the given code.
 // Return true if succeeds.
 func RunExploit(codePath string, exploit string) bool {
-	// TODO
+	fmt.Printf("[contract] testing an exploit for %s\n", codePath)
+	bytes, err := base64.StdEncoding.DecodeString(exploit)
+	if err != nil {
+  		fmt.Printf("exploit failed: %s\n", err)
+		return false
+	}
+	os.Remove("/var/tmp/exploit") // intentionally ignore errors
+	err = os.WriteFile("/var/tmp/exploit", bytes, 0644)
+	if err != nil {
+  		fmt.Printf("[contract] exploit failed: %s\n", err)
+		return false
+	}
+	defer os.Remove("/var/tmp/exploit")
+  	cmd := exec.Command("bounty-run", codePath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+  	err = cmd.Run()
+  	if err != nil {
+  		fmt.Printf("[contract] exploit failed: %s\n", err)
+  		return false
+  	}
+	fmt.Printf("[contract] exploit succeeded!\n")
 	return true
 }
 

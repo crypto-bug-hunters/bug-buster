@@ -1,11 +1,11 @@
 #!/bin/sh
-./lua program.lua
+./lua bounty.lua $1
 status=$?
 # Status is always 139 when program crashes with "Segmentation fault" (SIGSEGV)
-if [ $status == 139 ]; then
+if [ $status -eq 139 ]; then
     >&2 echo application crashed, exploit succeeded!
-    exit 1
+    exit 0
 else
     >&2 echo application exited with status $status, exploit failed!
-    exit 0
+    exit 1
 fi
