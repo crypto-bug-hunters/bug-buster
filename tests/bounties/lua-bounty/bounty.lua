@@ -15,12 +15,22 @@ local env = {
     date = os.date,
     difftime = os.difftime,
     time = os.time,
+    getenv = os.getenv,
     -- allow using exit filtering code 139 (segmentation fault)
     exit = function(code, close)
       assert(code >= 0 and code <= 127, 'os.exit: attempt to exit with a disallowed code')
       return os.exit(code, close)
     end
     -- rest of 'os' functions are unsafe
+  },
+  io = {
+    close = io.close,
+    flush = io.flush,
+    write = io.write,
+    type = io.type,
+    stdout = io.stdout,
+    stderr = io.stderr,
+    -- rest of 'io' functions could access system files
   },
   -- arg: not useful
   -- debug: has functions that could potentially crash the interpreter

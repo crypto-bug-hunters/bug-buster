@@ -13,6 +13,9 @@ local md5 = require("luazen").md5
 --------------------------------------------------------------------------------
 -- Configurations
 
+-- Uncomment to stop when first test fail
+-- lester.stop_on_fail = true
+
 local DEVELOPER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"):lower()
 local SPONSOR1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92268"):lower()
 local HACKER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92267"):lower()
@@ -93,9 +96,9 @@ end
 --------------------------------------------------------------------------------
 -- Tests
 
-local lua_bounty_zip = 'bounties/lua-5.4.3-bounty/lua-5.4.3-bounty_riscv64.tar.xz'
+local lua_bounty_zip = 'bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz'
 local lua_bounty_codepath = '/bounties/'..tohex(md5(readfile(lua_bounty_zip))):sub(3)..'.tar.xz'
-local lua_bounty_exploit = readfile('bounties/lua-5.4.3-bounty/exploit.lua')
+local lua_bounty_exploit = readfile('bounties/lua-bounty/exploit-lua-5.4.3.lua')
 
 describe("basic tests", function()
     local machine <close> = cartesix_rolling_machine(machine_config, machine_runtime_config, machine_remote_protocol)
@@ -378,3 +381,6 @@ describe("basic tests", function()
         expect.equal(res.error, "rejecting: can't run exploit after deadline")
     end)
 end)
+
+lester.report() -- Print overall statistic of the tests run.
+lester.exit() -- Exit with success if all tests passed.

@@ -1,9 +1,9 @@
+ARCH=$(shell uname -m)
 LUA_VER=5.4.3
 LUA_TAR=lua-$(LUA_VER).tar.gz
 LUA_DIR=lua-$(LUA_VER)
-ARCH=$(shell uname -m)
-BOUNTY_TAR=$(LUA_DIR)-bounty_$(ARCH).tar.xz
-BOUNTY_RISCV64_TAR=$(LUA_DIR)-bounty_riscv64.tar.xz
+BOUNTY_TAR=lua-$(LUA_VER)-bounty_$(ARCH).tar.xz
+BOUNTY_RISCV64_TAR=lua-$(LUA_VER)-bounty_riscv64.tar.xz
 
 HARDENCFLAGS=-fexceptions -fPIE -pie -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fstack-protector-strong
 HARDENLDFLAGS=-pie -Wl,-z,now,-z,relro
@@ -17,8 +17,10 @@ download: $(LUA_DIR)
 $(BOUNTY_TAR): lua start.sh bounty.lua
 	tar cfJ $@ $^
 
-lua: $(LUA_DIR)
+$(LUA_DIR)/src/lua: $(LUA_DIR)
 	$(MAKE) -C $(LUA_DIR)/src MYCFLAGS="$(HARDENCFLAGS) $(MYCFLAGS)" MYLDFLAGS="$(HARDENLDFLAGS) $(HARDENLDFLAGS)" linux
+
+lua: $(LUA_DIR)/src/lua
 	cp $(LUA_DIR)/src/lua lua
 	strip lua
 
@@ -30,19 +32,19 @@ $(LUA_TAR):
 
 ifneq ($(ARCH), riscv64)
 $(BOUNTY_RISCV64_TAR): Dockerfile start.sh bounty.lua
-	docker build --tag lua-bounty-cp --file Dockerfile --progress plain .
+	docker build --tag lua-bounty-cp --file Dockerfile --progress plain --build-arg LUA_VER=$(LUA_VER) .
 	docker create --platform=linux/riscv64 --name lua-bounty-cp lua-bounty-cp
 	docker cp lua-bounty-cp:/root/$@ $@
 	docker rm lua-bounty-cp
 	touch $@
 endif
 
-clean: $(LUA_DIR)
+clean:
 	rm -f lua $(LUA_DIR)-bounty_*.tar.xz
-	$(MAKE) -C $(LUA_DIR) clean
+	if [ -d "$(LUA_DIR)" ]; then $(MAKE) -C $(LUA_DIR) clean; fi
 
 distclean: clean
 	rm -rf lua-*
 
 test-exploit:
-	./start.sh exploit.lua
+	./start.sh exploit-lua-$(LUA_VER).lua

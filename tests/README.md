@@ -7,10 +7,11 @@ First make sure you have installed:
 - LuaRocks 3.x
 - Cartesi Machine Emulator 0.15.2
 
-Note that in case you compiled Cartesi Machine locally,
-`cartesi.so` must be visible in `LUA_CPATH_5_4`
-and `libcartesi.so` must be visible in `LD_LIBRARY_PATH`,
-unless you made a system wide cartesi machine installation.
+Note that in case you compiled Cartesi Machine locally, make sure:
+- `cartesi.so` is visible in `LUA_CPATH_5_4`
+- `libcartesi.so` is visible in `LD_LIBRARY_PATH`
+- `jsonrpc-remote-cartesi-machine` is visible in `PATH`
+This is not needed in cause you made a system wide Cartesi Machine installation (e.g in `/usr`)
 
 ```sh
 # Lua library with cartesi machine extensions
