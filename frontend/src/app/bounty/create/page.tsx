@@ -6,14 +6,24 @@ import {
   Button,
   Center,
   Group,
-  JsonInput,
-  NumberInput,
   Stack,
   TextInput,
+  Textarea,
   useMantineTheme,
 } from "@mantine/core";
+import {
+    DateInput
+} from "@mantine/dates";
+
+import {
+    useInputBoxAddInput, usePrepareInputBoxAddInput
+} from "../../../hooks/contracts";
+import { Address, toHex } from "viem";
+import { useAccount, useWaitForTransaction } from "wagmi";
 
 const CreateBounty: FC = () => {
+  const token = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as Address;
+  const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
   const theme = useMantineTheme();
 
   // App name
@@ -21,6 +31,33 @@ const CreateBounty: FC = () => {
 
   // Description
   const [description, setDescription] = useState("");
+
+  // ImgLink
+  const [imgLink, setImgLink] = useState("");
+
+  //Deadline
+  const [deadline,setDeadline] = useState<Date | null>(null);
+
+   // connected account
+   const { address } = useAccount();
+
+   const jsonContent = {
+    Name : name,
+    Description: description,
+    ImgLink : imgLink,
+    Deadline: deadline?.getTime(),
+};
+
+   const inputPayload =  toHex(JSON.stringify(jsonContent));
+
+   const {config} = usePrepareInputBoxAddInput({
+    args:[
+        token,
+        dapp
+    ]});
+
+  const { data, write } = useInputBoxAddInput(config);
+  const wait = useWaitForTransaction(data);
 
   return (
     <Center
@@ -41,7 +78,7 @@ const CreateBounty: FC = () => {
             onChange={(e) => setName(e.target.value)}
             description="Name of the App"
           />
-          <TextInput
+          <Textarea
             withAsterisk
             size="lg"
             label="Description"
@@ -49,7 +86,22 @@ const CreateBounty: FC = () => {
             onChange={(e) => setDescription(e.target.value)}
             description="Description"
           />
+          <TextInput
+            withAsterisk
+            size="lg"
+            label="Image Link"
+            value={imgLink}
+            onChange={(e) => setImgLink(e.target.value)}
+            description="App Image Link"
+          />
 
+         <DateInput
+          withAsterisk
+          label="Deadline"
+          value={deadline}
+          onChange={(e) => setDeadline(e)}
+          description="Deadline"
+          />
           <Group justify="center" mt="md">
             {/* <ApproveButton
                             allowance={allowance}
@@ -61,14 +113,14 @@ const CreateBounty: FC = () => {
                             }
                             token={token}
                         /> */}
-            {/* <Button
+            <Button
                             size="lg"
                             type="submit"
                             disabled={!write}
                             onClick={write}
                         >
                             Create Bounty
-                        </Button> */}
+                        </Button>
           </Group>
         </Stack>
       </Box>
