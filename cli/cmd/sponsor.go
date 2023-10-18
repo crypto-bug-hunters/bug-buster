@@ -4,8 +4,6 @@ import (
 	"bugless/shared"
 	"log"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/holiman/uint256"
 	"github.com/spf13/cobra"
 )
@@ -17,10 +15,10 @@ var sponsorCmd = &cobra.Command{
 }
 
 var (
-	sponsorName       string
-	sponsorImgLink    string
-	sponsorAppAddress string
-	sponsorValue      string
+	sponsorBountyIndex int
+	sponsorName        string
+	sponsorImgLink     string
+	sponsorValue       string
 )
 
 func sponsorRun(cmd *cobra.Command, args []string) {
@@ -29,23 +27,20 @@ func sponsorRun(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("failed to parse value: %v", err)
 	}
-
-	appAddress, err := hexutil.Decode(sponsorAppAddress)
-	if err != nil {
-		log.Fatalf("failed to decode address: %v", err)
-	}
-
 	input := &shared.AddSponsorship{
-		Name:       sponsorName,
-		ImgLink:    sponsorImgLink,
-		AppAddress: common.Address(appAddress),
+		BountyIndex: sponsorBountyIndex,
+		Name:        sponsorName,
+		ImgLink:     sponsorImgLink,
 	}
-
 	sendEther(value.ToBig(), input)
 }
 
 func init() {
 	sendCmd.AddCommand(sponsorCmd)
+
+	sponsorCmd.Flags().IntVarP(
+		&sponsorBountyIndex, "bounty-index", "b", 0, "Index of the app bounty")
+	sponsorCmd.MarkFlagRequired("bounty-index")
 
 	sponsorCmd.Flags().StringVarP(
 		&sponsorName, "name", "n", "", "Sponsor name")
@@ -53,10 +48,6 @@ func init() {
 
 	sponsorCmd.Flags().StringVarP(
 		&sponsorImgLink, "image", "i", "", "Sponsor image")
-
-	sponsorCmd.Flags().StringVarP(
-		&sponsorAppAddress, "app-address", "a", "", "Address of the app bounty")
-	sponsorCmd.MarkFlagRequired("app-address")
 
 	sponsorCmd.Flags().StringVarP(
 		&sponsorValue, "value", "v", "", "Value to sponsor in Wei")

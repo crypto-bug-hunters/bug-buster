@@ -2,11 +2,10 @@ package main
 
 import (
 	"bugless/shared"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"os/exec"
-	"crypto/md5"
-    "encoding/base64"
 
 	"github.com/gligneul/eggroll"
 	"github.com/gligneul/eggroll/wallets"
@@ -25,11 +24,6 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 			return nil, err
 		}
 
-		// check if bounty exist
-		if c.state.GetBounty(env.Sender()) != nil {
-			return nil, fmt.Errorf("bounty already exists")
-		}
-
 		// Check deadline
 		metadata := env.Metadata()
 		currTime := metadata.BlockTimestamp
@@ -38,12 +32,13 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// create new bounty
-		codePath, err := DecodeUnzipStore(input.CodeZipBinary)
+		bountyIndex := len(c.state.Bounties)
+		err := DecodeUnzipStore(bountyIndex, input.CodeZipBinary)
 		if err != nil {
 			return nil, err
 		}
 		bounty := &shared.AppBounty{
-			App: shared.Profile{
+			Developer: shared.Profile{
 				Address: env.Sender(),
 				Name:    input.Name,
 				ImgLink: input.ImgLink,
@@ -52,9 +47,9 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 			Started:      currTime,
 			Deadline:     input.Deadline,
 			InputIndex:   metadata.InputIndex,
-			CodePath:     codePath,
 			Sponsorships: nil,
 			Exploit:      nil,
+			Withdrawn:    false,
 		}
 		c.state.Bounties = append(c.state.Bounties, bounty)
 
@@ -71,7 +66,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// check if bounty exist
-		bounty := c.state.GetBounty(input.AppAddress)
+		bounty := c.state.GetBounty(input.BountyIndex)
 		if bounty == nil {
 			return nil, fmt.Errorf("bounty not found")
 		}
@@ -100,15 +95,14 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 					Name:    input.Name,
 					ImgLink: input.ImgLink,
 				},
-				Value:     &deposit.Value,
-				Withdrawn: false,
+				Value: &deposit.Value,
 			}
 			bounty.Sponsorships = append(bounty.Sponsorships, sponsorship)
 		}
 
 	case *shared.WithdrawSponsorship:
 		// check if bounty exist
-		bounty := c.state.GetBounty(input.AppAddress)
+		bounty := c.state.GetBounty(input.BountyIndex)
 		if bounty == nil {
 			return nil, fmt.Errorf("bounty not found")
 		}
@@ -124,25 +118,21 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 			return nil, fmt.Errorf("can't withdraw before deadline")
 		}
 
-		// check sponsorship
-		sponsorship := bounty.GetSponsorship(env.Sender())
-		if sponsorship == nil {
-			return nil, fmt.Errorf("sponsorship not found")
-		}
-
 		// check if already withdrawn
-		if sponsorship.Withdrawn {
-			return nil, fmt.Errorf("sponsorship already withdrawn")
+		if bounty.Withdrawn {
+			return nil, fmt.Errorf("sponsorships already withdrawn")
 		}
 
-		// generate voucher
-		_, err := env.EtherWithdraw(env.Sender(), sponsorship.Value)
-		if err != nil {
-			return nil, fmt.Errorf("failed to withdraw: %v", err)
+		// generate voucher for each sponsor
+		for _, sponsorship := range bounty.Sponsorships {
+			_, err := env.EtherWithdraw(sponsorship.Sponsor.Address, sponsorship.Value)
+			if err != nil {
+				return nil, fmt.Errorf("failed to withdraw: %v", err)
+			}
 		}
 
-		// set sponsorship as withdrawn
-		sponsorship.Withdrawn = true
+		// set bounty as withdrawn
+		bounty.Withdrawn = true
 
 	case *shared.SendExploit:
 		// validate input
@@ -151,7 +141,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// check if bounty exist
-		bounty := c.state.GetBounty(input.AppAddress)
+		bounty := c.state.GetBounty(input.BountyIndex)
 		if bounty == nil {
 			return nil, fmt.Errorf("bounty not found")
 		}
@@ -168,7 +158,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// try to run exploit
-		if !RunExploit(bounty.CodePath, input.Exploit) {
+		if !RunExploit(input.BountyIndex, input.Exploit) {
 			return nil, fmt.Errorf("exploit failed")
 		}
 
@@ -176,20 +166,21 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		hacker := env.Sender()
 		accBounty := new(uint256.Int)
 		for _, sponsorship := range bounty.Sponsorships {
+			accBounty = new(uint256.Int).Add(accBounty, sponsorship.Value)
 			sponsor := sponsorship.Sponsor.Address
 			// the hacker might be one of the sponsors
-			if sponsor != hacker {
-				err := env.EtherTransfer(sponsor, env.Sender(), sponsorship.Value)
-				if err != nil {
-					// this should be impossible
-					return nil, fmt.Errorf("failed to transfer asset: %v", err)
-				}
+			if sponsor == hacker {
+				continue
 			}
-			accBounty = new(uint256.Int).Add(accBounty, sponsorship.Value)
+			err := env.EtherTransfer(sponsor, hacker, sponsorship.Value)
+			if err != nil {
+				// this should be impossible
+				return nil, fmt.Errorf("failed to transfer asset: %v", err)
+			}
 		}
 
 		// generate voucher
-		_, err := env.EtherWithdraw(env.Sender(), accBounty)
+		_, err := env.EtherWithdraw(hacker, accBounty)
 		if err != nil {
 			return nil, fmt.Errorf("failed to generate voucher")
 		}
@@ -203,6 +194,9 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 			},
 			Exploit: input.Exploit,
 		}
+
+		// set bounty as withdrawn
+		bounty.Withdrawn = true
 
 	default:
 		return nil, fmt.Errorf("invalid input: %v", input)
@@ -218,13 +212,13 @@ func (c *BugLessContract) Inspect(env eggroll.EnvReader) (any, error) {
 	}
 
 	// check if bounty exist
-	bounty := c.state.GetBounty(input.AppAddress)
+	bounty := c.state.GetBounty(input.BountyIndex)
 	if bounty == nil {
 		return nil, fmt.Errorf("bounty not found")
 	}
 
 	// try to run exploit
-	if !RunExploit(bounty.CodePath, input.Exploit) {
+	if !RunExploit(input.BountyIndex, input.Exploit) {
 		return nil, fmt.Errorf("exploit failed")
 	}
 
@@ -235,45 +229,49 @@ func (c *BugLessContract) Codecs() []eggroll.Codec {
 	return shared.Codecs()
 }
 
+func CodePath(bountyIndex int) string {
+	return fmt.Sprintf("/bounties/%v.tar.xz", bountyIndex)
+}
+
 // Decode the code from base64, unzip it, and save it to a directory.
-func DecodeUnzipStore(zipBinary string) (string, error) {
+func DecodeUnzipStore(bountyIndex int, zipBinary string) error {
 	bytes, err := base64.StdEncoding.DecodeString(zipBinary)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("failed to decode base64: %v", err)
 	}
-	sum := md5.Sum(bytes)
-	path := fmt.Sprintf("/bounties/%x.tar.xz", sum)
-    err = os.WriteFile(path, bytes, 0644)
+	path := CodePath(bountyIndex)
+	err = os.WriteFile(path, bytes, 0644)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("failed to write file: %v", err)
 	}
-	return path, nil
+	return nil
 }
 
 // Run the exploit for the given code.
 // Return true if succeeds.
-func RunExploit(codePath string, exploit string) bool {
+func RunExploit(bountyIndex int, exploit string) bool {
+	codePath := CodePath(bountyIndex)
 	fmt.Printf("[contract] testing an exploit for %s\n", codePath)
 	bytes, err := base64.StdEncoding.DecodeString(exploit)
 	if err != nil {
-  		fmt.Printf("exploit failed: %s\n", err)
+		fmt.Printf("exploit failed: %s\n", err)
 		return false
 	}
 	os.Remove("/var/tmp/exploit") // intentionally ignore errors
 	err = os.WriteFile("/var/tmp/exploit", bytes, 0644)
 	if err != nil {
-  		fmt.Printf("[contract] exploit failed: %s\n", err)
+		fmt.Printf("[contract] exploit failed: %s\n", err)
 		return false
 	}
 	defer os.Remove("/var/tmp/exploit")
-  	cmd := exec.Command("bounty-run", codePath)
+	cmd := exec.Command("bounty-run", codePath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-  	err = cmd.Run()
-  	if err != nil {
-  		fmt.Printf("[contract] exploit failed: %s\n", err)
-  		return false
-  	}
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("[contract] exploit failed: %s\n", err)
+		return false
+	}
 	fmt.Printf("[contract] exploit succeeded!\n")
 	return true
 }

@@ -16,17 +16,15 @@ type BugLessState struct {
 	Bounties []*AppBounty
 }
 
-func (s *BugLessState) GetBounty(address common.Address) *AppBounty {
-	for _, bounty := range s.Bounties {
-		if bounty.App.Address == address {
-			return bounty
-		}
+func (s *BugLessState) GetBounty(bountyIndex int) *AppBounty {
+	if bountyIndex >= len(s.Bounties) {
+		return nil
 	}
-	return nil
+	return s.Bounties[bountyIndex]
 }
 
 type AppBounty struct {
-	App          Profile
+	Developer    Profile
 	Description  string
 	Started      int64 // (unix timestamp)
 	Deadline     int64 // (unix timestamp)
@@ -34,6 +32,7 @@ type AppBounty struct {
 	CodePath     string
 	Sponsorships []*Sponsorship
 	Exploit      *Exploit
+	Withdrawn    bool
 }
 
 func (b *AppBounty) GetSponsorship(sponsorAddress common.Address) *Sponsorship {
@@ -46,9 +45,8 @@ func (b *AppBounty) GetSponsorship(sponsorAddress common.Address) *Sponsorship {
 }
 
 type Sponsorship struct {
-	Sponsor   Profile
-	Value     *uint256.Int
-	Withdrawn bool
+	Sponsor Profile
+	Value   *uint256.Int
 }
 
 type Exploit struct {
@@ -92,9 +90,9 @@ func (b *CreateAppBounty) Validate() error {
 
 // From portal (Ether)
 type AddSponsorship struct {
-	Name       string
-	ImgLink    string
-	AppAddress common.Address
+	BountyIndex int
+	Name        string
+	ImgLink     string
 }
 
 func (s *AddSponsorship) Validate() error {
@@ -105,14 +103,14 @@ func (s *AddSponsorship) Validate() error {
 }
 
 type WithdrawSponsorship struct {
-	AppAddress common.Address
+	BountyIndex int
 }
 
 type SendExploit struct {
-	Name       string
-	ImgLink    string
-	AppAddress common.Address
-	Exploit    string
+	BountyIndex int
+	Name        string
+	ImgLink     string
+	Exploit     string
 }
 
 func (e *SendExploit) Validate() error {
@@ -131,8 +129,8 @@ func (e *SendExploit) Validate() error {
 
 // To check whether the exploit worked, check the CompletionStatus of the result
 type TestExploit struct {
-	AppAddress common.Address
-	Exploit    string
+	BountyIndex int
+	Exploit     string
 }
 
 //
