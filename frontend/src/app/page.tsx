@@ -12,8 +12,10 @@ const Home: FC = () => {
   return (
     <Stack>
       <Center>
+        <div><pre>{JSON.stringify(GetLatestState(), null, "\t")}</pre></div>
+      </Center>
+      <Center>
         <Link href={"/bounty/create"}>
-          <p>{JSON.stringify(GetLatestState())}</p>
           <Button>Submit bounty</Button>
         </Link>
       </Center>
