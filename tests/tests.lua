@@ -265,7 +265,7 @@ describe("basic tests", function()
         expect.equal(res.error, "rejecting: can't withdraw before deadline")
     end)
 
-    it("should accept a exploit that succeeded", function()
+    it("should accept inspect of a exploit that succeeded", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
             opcode = CodecOpcodes.TestExploit,

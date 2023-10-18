@@ -17,7 +17,7 @@ local env = {
     time = os.time,
     -- allow using exit filtering code 139 (segmentation fault)
     exit = function(code, close)
-      assert(code ~= 139, 'os.exit: segmentation fault status 139 is disallowed')
+      assert(code >= 0 and code <= 127, 'os.exit: attempt to exit with a disallowed code')
       return os.exit(code, close)
     end
     -- rest of 'os' functions are unsafe
