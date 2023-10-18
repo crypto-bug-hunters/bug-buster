@@ -9,6 +9,6 @@ WORKDIR /root
 COPY Makefile .
 COPY bounty.lua .
 COPY --chmod=755 start.sh .
-ARG LUA_VER=5.4.3
-RUN make download LUA_VER=${LUA_VER}
-RUN make -j4 LUA_VER=${LUA_VER}
+ARG VERSION
+RUN make download VERSION=${VERSION}
+RUN make -j4 VERSION=${VERSION}

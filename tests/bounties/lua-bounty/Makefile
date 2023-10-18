@@ -1,38 +1,37 @@
 ARCH=$(shell uname -m)
-LUA_VER=5.4.3
-LUA_TAR=lua-$(LUA_VER).tar.gz
-LUA_DIR=lua-$(LUA_VER)
-BOUNTY_TAR=lua-$(LUA_VER)-bounty_$(ARCH).tar.xz
-BOUNTY_RISCV64_TAR=lua-$(LUA_VER)-bounty_riscv64.tar.xz
+VERSION=5.4.3
+SOURCE_TAR=lua-$(VERSION).tar.gz
+SOURCE_DIR=lua-$(VERSION)
+BOUNTY_TAR=lua-$(VERSION)-bounty_$(ARCH).tar.xz
+BOUNTY_RISCV64_TAR=lua-$(VERSION)-bounty_riscv64.tar.xz
 
-HARDEN_CFLAGS=-fexceptions -fPIE -pie -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fstack-protector-strong
-HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro
+HARDEN_CFLAGS=-Os -fexceptions -fPIE -pie -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fstack-protector-strong
+HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro -s
 
 all: $(BOUNTY_TAR)
 
 riscv64: $(BOUNTY_RISCV64_TAR)
 
-download: $(LUA_DIR)
+download: | $(SOURCE_DIR)
 
 $(BOUNTY_TAR): lua start.sh bounty.lua
 	tar cfJ $@ $^
 
-$(LUA_DIR)/src/lua: $(LUA_DIR)
-	$(MAKE) -C $(LUA_DIR)/src MYCFLAGS="$(HARDEN_CFLAGS) $(MYCFLAGS)" MYLDFLAGS="$(HARDEN_LDFLAGS) $(HARDEN_LDFLAGS)" linux
+$(SOURCE_DIR)/src/lua: | $(SOURCE_DIR)
+	$(MAKE) -C $(SOURCE_DIR)/src MYCFLAGS="$(HARDEN_CFLAGS)" MYLDFLAGS="$(HARDEN_LDFLAGS)" linux
 
-lua: $(LUA_DIR)/src/lua
-	cp $(LUA_DIR)/src/lua lua
-	strip lua
+lua: $(SOURCE_DIR)/src/lua
+	cp $(SOURCE_DIR)/src/lua lua
 
-$(LUA_DIR): $(LUA_TAR)
-	tar xzf $(LUA_TAR)
+$(SOURCE_DIR): $(SOURCE_TAR)
+	tar xzf $(SOURCE_TAR)
 
-$(LUA_TAR):
-	wget -O $(LUA_TAR) https://www.lua.org/ftp/$(LUA_TAR)
+$(SOURCE_TAR):
+	wget -O $(SOURCE_TAR) https://www.lua.org/ftp/$(SOURCE_TAR)
 
 ifneq ($(ARCH), riscv64)
 $(BOUNTY_RISCV64_TAR): Dockerfile start.sh bounty.lua
-	docker build --tag lua-bounty-cp --file Dockerfile --progress plain --build-arg LUA_VER=$(LUA_VER) .
+	docker build --tag lua-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) .
 	docker create --platform=linux/riscv64 --name lua-bounty-cp lua-bounty-cp
 	docker cp lua-bounty-cp:/root/$@ $@
 	docker rm lua-bounty-cp
@@ -40,11 +39,11 @@ $(BOUNTY_RISCV64_TAR): Dockerfile start.sh bounty.lua
 endif
 
 clean:
-	rm -f lua $(LUA_DIR)-bounty_*.tar.xz
-	if [ -d "$(LUA_DIR)" ]; then $(MAKE) -C $(LUA_DIR) clean; fi
+	rm -f lua $(SOURCE_DIR)-bounty_*.tar.xz
+	if [ -d "$(SOURCE_DIR)" ]; then $(MAKE) -C $(SOURCE_DIR) clean; fi
 
 distclean: clean
 	rm -rf lua-*
 
 test-exploit:
-	./start.sh exploit-lua-$(LUA_VER).lua
+	./start.sh exploit-lua-$(VERSION).lua
