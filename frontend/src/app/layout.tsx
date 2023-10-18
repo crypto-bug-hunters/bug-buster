@@ -6,7 +6,7 @@ import Head from "next/head";
 
 // import GraphQLProvider from "../providers/graphqlProvider";
 import StyleProvider from "../providers/styleProvider";
-// import WalletProvider from "../providers/walletProvider";
+import WalletProvider from "../providers/walletProvider";
 import { Shell } from "./shell";
 // import { SWRConfig } from "swr";
 
@@ -27,7 +27,9 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
       </Head>
       <body>
         <StyleProvider>
-          <Shell>{children}</Shell>
+          <WalletProvider>
+            <Shell>{children}</Shell>
+          </WalletProvider>
         </StyleProvider>
       </body>
     </html>
