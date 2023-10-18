@@ -1,3 +1,4 @@
 .sunodo
 frontend/node_modules/**
 frontend/.next/**
+frontend/src/hooks/contracts.tsx
