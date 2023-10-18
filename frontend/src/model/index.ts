@@ -1,29 +1,29 @@
 export interface BugLessState {
-  bounties: AppBounty[];
+  Bounties: AppBounty[];
 }
 
 export interface Profile {
-  address: string;
-  name: string;
-  imgLink: string;
+  Address: string;
+  Name: string;
+  ImgLink: string;
 }
 
 export interface Exploit {
-  hacker: Profile;
+  Hacker: Profile;
 }
 
 export interface Sponsorship {
-  sponsor: Profile;
-  value: number; //or big number?
+  Sponsor: Profile;
+  Value: number; //or big number?
 }
 
 export interface AppBounty {
-  app: Profile;
-  description: string;
-  started: number; // (unix timestamp)
-  deadline: number; // (unix timestamp)
-  sponsorships: Sponsorship[];
-  exploit: Exploit;
-  codePath: string;
-  inputIndex: number;
+  App: Profile;
+  Description: string;
+  Started: number; // (unix timestamp)
+  Deadline: number; // (unix timestamp)
+  Sponsorships: Sponsorship[];
+  Exploit: Exploit;
+  CodePath: string;
+  InputIndex: number;
 }
