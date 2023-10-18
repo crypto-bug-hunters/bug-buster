@@ -1,5 +1,4 @@
 import { useQuery } from "@apollo/client";
-import { ethers } from "ethers";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
 import { BugLessState } from "./index";
