@@ -14,7 +14,7 @@ const Home: FC = () => {
       <Center>
         <Link href={"/bounty/create"}>
           <p>{JSON.stringify(GetLatestState())}</p>
-          <Button>Submit new Bounty</Button>
+          <Button>Submit bounty</Button>
         </Link>
       </Center>
     </Stack>
