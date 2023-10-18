@@ -4,7 +4,7 @@ import React, { FC } from "react";
 import { ColorSchemeScript } from "@mantine/core";
 import Head from "next/head";
 
-// import GraphQLProvider from "../providers/graphqlProvider";
+import GraphQLProvider from "../providers/graphqlProvider";
 import StyleProvider from "../providers/styleProvider";
 import WalletProvider from "../providers/walletProvider";
 import { Shell } from "./shell";
@@ -26,11 +26,13 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         <link rel="shortcut icon" href="/favicon.svg" />
       </Head>
       <body>
-        <StyleProvider>
-          <WalletProvider>
-            <Shell>{children}</Shell>
-          </WalletProvider>
-        </StyleProvider>
+        <GraphQLProvider>
+          <StyleProvider>
+            <WalletProvider>
+              <Shell>{children}</Shell>
+            </WalletProvider>
+          </StyleProvider>
+        </GraphQLProvider>
       </body>
     </html>
   );
