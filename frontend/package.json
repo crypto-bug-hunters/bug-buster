@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "codegen": "wagmi generate",
     "build": "next build",
     "dev": "next dev",
+    "prebuild": "npm run codegen",
+    "predev": "npm run codegen",
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write --check ."
