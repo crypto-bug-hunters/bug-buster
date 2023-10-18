@@ -19,7 +19,11 @@ const projectId = "bd3725877ae8cde37b7c439efe33857d";
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  appName: "BugLess",
+  metadata: {
+      name: "BugLess",
+      description: "Trustless bug bounties",
+      url: "https://github.com/crypto-bug-hunters/bug-less",
+  },
 });
 
 createWeb3Modal({
