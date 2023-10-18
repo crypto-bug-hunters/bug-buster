@@ -247,17 +247,6 @@ func DecodeUnzipStore(bountyIndex int, zipBinary string) error {
 	return nil
 }
 
-type EnvLogger struct {
-	prefix string
-	env    eggroll.EnvReader
-}
-
-func (l *EnvLogger) Write(p []byte) (int, error) {
-	l.env.Logf("%v %v", l.prefix, string(p))
-	return len(p), nil
-
-}
-
 // Run the exploit for the given code.
 // Return true if succeeds.
 func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
@@ -274,8 +263,8 @@ func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
 	}
 	defer os.Remove("/var/tmp/exploit")
 	cmd := exec.Command("bounty-run", codePath)
-	cmd.Stdout = &EnvLogger{"APP OUT", env}
-	cmd.Stderr = &EnvLogger{"APP ERR", env}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("exploit failed: %v", err)
