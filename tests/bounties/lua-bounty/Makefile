@@ -5,8 +5,8 @@ LUA_DIR=lua-$(LUA_VER)
 BOUNTY_TAR=lua-$(LUA_VER)-bounty_$(ARCH).tar.xz
 BOUNTY_RISCV64_TAR=lua-$(LUA_VER)-bounty_riscv64.tar.xz
 
-HARDENCFLAGS=-fexceptions -fPIE -pie -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fstack-protector-strong
-HARDENLDFLAGS=-pie -Wl,-z,now,-z,relro
+HARDEN_CFLAGS=-fexceptions -fPIE -pie -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fstack-protector-strong
+HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro
 
 all: $(BOUNTY_TAR)
 
@@ -18,7 +18,7 @@ $(BOUNTY_TAR): lua start.sh bounty.lua
 	tar cfJ $@ $^
 
 $(LUA_DIR)/src/lua: $(LUA_DIR)
-	$(MAKE) -C $(LUA_DIR)/src MYCFLAGS="$(HARDENCFLAGS) $(MYCFLAGS)" MYLDFLAGS="$(HARDENLDFLAGS) $(HARDENLDFLAGS)" linux
+	$(MAKE) -C $(LUA_DIR)/src MYCFLAGS="$(HARDEN_CFLAGS) $(MYCFLAGS)" MYLDFLAGS="$(HARDEN_LDFLAGS) $(HARDEN_LDFLAGS)" linux
 
 lua: $(LUA_DIR)/src/lua
 	cp $(LUA_DIR)/src/lua lua

@@ -8,13 +8,12 @@ local null = require("cjson").null
 local json_encode = require("cjson").encode
 local json_decode = require("cjson").decode
 local base64_encode = require("luazen").b64encode
-local md5 = require("luazen").md5
 
 --------------------------------------------------------------------------------
 -- Configurations
 
 -- Uncomment to stop when first test fail
--- lester.stop_on_fail = true
+lester.stop_on_fail = true
 
 local DEVELOPER1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"):lower()
 local SPONSOR1_WALLET = ("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92268"):lower()
@@ -96,9 +95,11 @@ end
 --------------------------------------------------------------------------------
 -- Tests
 
-local lua_bounty_zip = 'bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz'
-local lua_bounty_codepath = '/bounties/'..tohex(md5(readfile(lua_bounty_zip))):sub(3)..'.tar.xz'
-local lua_bounty_exploit = readfile('bounties/lua-bounty/exploit-lua-5.4.3.lua')
+local lua543_bounty_code = 'bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz'
+local lua543_bounty_exploit = readfile('bounties/lua-bounty/exploit-lua-5.4.3.lua')
+local lua543_bounty_index = 0
+
+local lua546_bounty_code = 'bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz'
 
 describe("basic tests", function()
     local machine <close> = cartesix_rolling_machine(machine_config, machine_runtime_config, machine_remote_protocol)
@@ -122,28 +123,28 @@ describe("basic tests", function()
             opcode = CodecOpcodes.CreateAppBounty,
             timestamp = started,
             data = {
-                Name = "Lua Bounty",
-                Description = "Find Lua Bug",
+                Name = "Lua 5.4.3 Bounty",
+                Description = "Try to crash a sandboxed Lua 5.4.3 script",
                 Deadline = deadline,
-                CodeZipBinary = base64_encode(readfile(lua_bounty_zip)),
+                CodeZipBinary = base64_encode(readfile(lua543_bounty_code)),
             },
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
             Bounties = {
                 {
-                    App = {
+                    Developer = {
                         Address = DEVELOPER1_WALLET,
                         ImgLink = "",
-                        Name = "Lua Bounty",
+                        Name = "Lua 5.4.3 Bounty",
                     },
-                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
-                    Description = "Find Lua Bug",
+                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
                     Exploit = null,
                     InputIndex = 1,
                     Sponsorships = null,
                     Started = started,
+                    Withdrawn = false,
                 },
             },
         })
@@ -157,21 +158,20 @@ describe("basic tests", function()
             timestamp = started + 1,
             data = {
                 Name = "Developer1",
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
             Bounties = {
                 {
-                    App = {
+                    Developer = {
                         Address = DEVELOPER1_WALLET,
                         ImgLink = "",
-                        Name = "Lua Bounty",
+                        Name = "Lua 5.4.3 Bounty",
                     },
-                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
-                    Description = "Find Lua Bug",
+                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
                     Exploit = null,
                     InputIndex = 1,
                     Sponsorships = {
@@ -182,16 +182,16 @@ describe("basic tests", function()
                                 Name = "Developer1",
                             },
                             Value = tohex(1000),
-                            Withdrawn = false,
                         },
                     },
                     Started = started,
+                    Withdrawn = false,
                 },
             },
         })
     end)
 
-    it("should add sponsorship from a sponsor", function()
+    it("should add sponsorship from an external sponsor", function()
         local res = advance_ether_deposit(machine, {
             sender = SPONSOR1_WALLET,
             amount = 2000,
@@ -199,21 +199,20 @@ describe("basic tests", function()
             timestamp = started + 2,
             data = {
                 Name = "Sponsor1",
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
             Bounties = {
                 {
-                    App = {
+                    Developer = {
                         Address = DEVELOPER1_WALLET,
                         ImgLink = "",
-                        Name = "Lua Bounty",
+                        Name = "Lua 5.4.3 Bounty",
                     },
-                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
-                    Description = "Find Lua Bug",
+                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
                     Exploit = null,
                     InputIndex = 1,
                     Sponsorships = {
@@ -224,7 +223,6 @@ describe("basic tests", function()
                                 Name = "Developer1",
                             },
                             Value = tohex(1000),
-                            Withdrawn = false,
                         },
                         {
                             Sponsor = {
@@ -233,10 +231,10 @@ describe("basic tests", function()
                                 Name = "Sponsor1",
                             },
                             Value = tohex(2000),
-                            Withdrawn = false,
                         },
                     },
                     Started = started,
+                    Withdrawn = false,
                 },
             },
         })
@@ -248,7 +246,7 @@ describe("basic tests", function()
             opcode = CodecOpcodes.WithdrawSponsorship,
             timestamp = deadline - 1,
             data = {
-                AppAddress = HACKER1_WALLET,
+                BountyIndex = 9999,
             },
         })
         expect.equal(res.status, "rejected")
@@ -261,7 +259,7 @@ describe("basic tests", function()
             opcode = CodecOpcodes.WithdrawSponsorship,
             timestamp = deadline - 1,
             data = {
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
@@ -274,8 +272,8 @@ describe("basic tests", function()
             opcode = CodecOpcodes.TestExploit,
             timestamp = deadline - 1,
             data = {
-                AppAddress = DEVELOPER1_WALLET,
-                Exploit = base64_encode(lua_bounty_exploit),
+                BountyIndex = lua543_bounty_index,
+                Exploit = base64_encode(lua543_bounty_exploit),
             },
         })
         expect.equal(res.status, "accepted")
@@ -288,7 +286,7 @@ describe("basic tests", function()
             timestamp = deadline - 1,
             data = {
                 Name = "Hacker1",
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
                 Exploit = base64_encode([[print 'hello world']]),
             },
         })
@@ -301,21 +299,20 @@ describe("basic tests", function()
             opcode = CodecOpcodes.WithdrawSponsorship,
             timestamp = deadline,
             data = {
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
             Bounties = {
                 {
-                    App = {
+                    Developer = {
                         Address = DEVELOPER1_WALLET,
                         ImgLink = "",
-                        Name = "Lua Bounty",
+                        Name = "Lua 5.4.3 Bounty",
                     },
-                    CodePath = lua_bounty_codepath,
                     Deadline = deadline,
-                    Description = "Find Lua Bug",
+                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
                     Exploit = null,
                     InputIndex = 1,
                     Sponsorships = {
@@ -326,7 +323,6 @@ describe("basic tests", function()
                                 Name = "Developer1",
                             },
                             Value = tohex(1000),
-                            Withdrawn = true,
                         },
                         {
                             Sponsor = {
@@ -335,10 +331,10 @@ describe("basic tests", function()
                                 Name = "Sponsor1",
                             },
                             Value = tohex(2000),
-                            Withdrawn = false,
                         },
                     },
                     Started = started,
+                    Withdrawn = true,
                 },
             },
         })
@@ -350,6 +346,13 @@ describe("basic tests", function()
                     amount = int256.tobe("1000"),
                 }),
             },
+            {
+                address = fromhex(config.DAPP_ADDRESS),
+                payload = cartesix_encoder.encode_ether_transfer_voucher({
+                    destination_address = SPONSOR1_WALLET,
+                    amount = int256.tobe("2000"),
+                }),
+            },
         })
     end)
 
@@ -359,11 +362,11 @@ describe("basic tests", function()
             opcode = CodecOpcodes.WithdrawSponsorship,
             timestamp = deadline,
             data = {
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: sponsorship already withdrawn")
+        expect.equal(res.error, "rejecting: sponsorships already withdrawn")
     end)
 
     it("should reject exploit after deadline", function()
@@ -373,7 +376,7 @@ describe("basic tests", function()
             timestamp = deadline,
             data = {
                 Name = "Hacker1",
-                AppAddress = DEVELOPER1_WALLET,
+                BountyIndex = lua543_bounty_index,
                 Exploit = base64_encode([[print 'hello world']]),
             },
         })
