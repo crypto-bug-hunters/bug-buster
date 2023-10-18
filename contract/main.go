@@ -158,8 +158,8 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// try to run exploit
-		if !RunExploit(input.BountyIndex, input.Exploit) {
-			return nil, fmt.Errorf("exploit failed")
+		if err := RunExploit(env, input.BountyIndex, input.Exploit); err != nil {
+			return nil, err
 		}
 
 		// Move assets to hacker
@@ -218,8 +218,8 @@ func (c *BugLessContract) Inspect(env eggroll.EnvReader) (any, error) {
 	}
 
 	// try to run exploit
-	if !RunExploit(input.BountyIndex, input.Exploit) {
-		return nil, fmt.Errorf("exploit failed")
+	if err := RunExploit(env, input.BountyIndex, input.Exploit); err != nil {
+		return nil, err
 	}
 
 	return &c.state, nil
@@ -247,33 +247,41 @@ func DecodeUnzipStore(bountyIndex int, zipBinary string) error {
 	return nil
 }
 
+type EnvLogger struct {
+	prefix string
+	env    eggroll.EnvReader
+}
+
+func (l *EnvLogger) Write(p []byte) (int, error) {
+	l.env.Logf("%v %v", l.prefix, string(p))
+	return len(p), nil
+
+}
+
 // Run the exploit for the given code.
 // Return true if succeeds.
-func RunExploit(bountyIndex int, exploit string) bool {
+func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
 	codePath := CodePath(bountyIndex)
-	fmt.Printf("[contract] testing an exploit for %s\n", codePath)
+	env.Logf("testing an exploit for %v", codePath)
 	bytes, err := base64.StdEncoding.DecodeString(exploit)
 	if err != nil {
-		fmt.Printf("exploit failed: %s\n", err)
-		return false
+		return fmt.Errorf("base64 decode failed: %v", err)
 	}
 	os.Remove("/var/tmp/exploit") // intentionally ignore errors
 	err = os.WriteFile("/var/tmp/exploit", bytes, 0644)
 	if err != nil {
-		fmt.Printf("[contract] exploit failed: %s\n", err)
-		return false
+		return fmt.Errorf("writing exploit to file failed: %s", err)
 	}
 	defer os.Remove("/var/tmp/exploit")
 	cmd := exec.Command("bounty-run", codePath)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = &EnvLogger{"APP OUT", env}
+	cmd.Stderr = &EnvLogger{"APP ERR", env}
 	err = cmd.Run()
 	if err != nil {
-		fmt.Printf("[contract] exploit failed: %s\n", err)
-		return false
+		return fmt.Errorf("exploit failed: %v", err)
 	}
-	fmt.Printf("[contract] exploit succeeded!\n")
-	return true
+	env.Log("exploit succeeded!")
+	return nil
 }
 
 func main() {
