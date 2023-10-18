@@ -2,7 +2,7 @@
 import { FC } from "react";
 import { Button, Center, Stack, Title, List } from "@mantine/core";
 import Link from "next/link";
-import { GetLatestState } from "../model/reader"
+import { GetLatestState } from "../model/reader";
 
 const Home: FC = () => {
   function handleClick() {
