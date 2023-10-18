@@ -1,15 +1,14 @@
-
-import { useState } from 'react';
+import { useState } from "react";
 
 function Header({ title }) {
-  return <h1>{title ? title : 'Default title'}</h1>;
+  return <h1>{title ? title : "Default title"}</h1>;
 }
 
 export default function HomePage() {
-  const names = ['Lua', 'Auction Dapp', 'Dummy'];
+  const names = ["Lua", "Auction Dapp", "Dummy"];
 
   function handleClick() {
-    console.log("Submit a new Bounty!!!")
+    console.log("Submit a new Bounty!!!");
   }
 
   return (
