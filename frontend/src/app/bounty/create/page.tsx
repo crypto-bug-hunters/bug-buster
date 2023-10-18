@@ -22,7 +22,6 @@ import { Address, toHex } from "viem";
 import { useAccount, useWaitForTransaction } from "wagmi";
 
 const CreateBounty: FC = () => {
-  const token = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as Address;
   const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
   const theme = useMantineTheme();
 
@@ -52,9 +51,10 @@ const CreateBounty: FC = () => {
 
    const {config} = usePrepareInputBoxAddInput({
     args:[
-        token,
-        dapp
-    ]});
+        dapp,
+        inputPayload
+    ],
+    enabled:true});
 
   const { data, write } = useInputBoxAddInput(config);
   const wait = useWaitForTransaction(data);
