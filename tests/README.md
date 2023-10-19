@@ -13,7 +13,8 @@ Note that in case you compiled Cartesi Machine locally, make sure:
 - `jsonrpc-remote-cartesi-machine` is visible in `PATH`
 This is not needed in cause you made a system wide Cartesi Machine installation (e.g in `/usr`)
 
-You can quickly install Cartesi Machine with:
+You can quickly install Cartesi Machine v0.15.2 with:
+
 ```sh
 apt-get install -y build-essential git pkg-config lua5.4 liblua5.4-dev wget libboost-dev libboost-context-dev libboost-coroutine-dev libboost-filesystem-dev libcrypto++-dev libb64-dev nlohmann-json3-dev libprotobuf-dev protobuf-compiler-grpc libgrpc++-dev libb64-dev libabsl-dev patchelf
 git clone --recursive --branch v0.15.2 https://github.com/cartesi/machine-emulator.git
@@ -37,9 +38,6 @@ sudo luarocks install --lua-version=5.4 cjson
 
 # Lua library for encoding base64
 sudo luarocks install --lua-version=5.4 luazen
-
-# Lua library for handling 256-bit integers
-sudo luarocks install --lua-version=5.4 bint
 ```
 
 ## Compile bounties

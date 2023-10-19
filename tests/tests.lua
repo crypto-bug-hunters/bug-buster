@@ -1,13 +1,13 @@
 local cartesix_rolling_machine = require("cartesix.rollingmachine")
 local cartesix_encoder = require("cartesix.encoder")
-local lester = require("lester")
-local fromhex, tohex = cartesix_encoder.fromhex, cartesix_encoder.tohex
-local int256 = require("bint")(256)
+local cjson = require("cjson") -- json
+local luazen = require("luazen") -- base64
+local lester = require("lester") -- unit testing
+
+local fromhex, tohex, tobe256 = cartesix_encoder.fromhex, cartesix_encoder.tohex, cartesix_encoder.encode_be256
+local tojson, fromjson, null = cjson.encode, cjson.decode, cjson.null
+local tobase64 = luazen.b64encode
 local describe, it, expect = lester.describe, lester.it, lester.expect
-local null = require("cjson").null
-local json_encode = require("cjson").encode
-local json_decode = require("cjson").decode
-local base64_encode = require("luazen").b64encode
 
 --------------------------------------------------------------------------------
 -- Configurations
@@ -52,7 +52,7 @@ local function decode_response_jsons(res)
             local opcode = string.unpack(">I4", v.payload:sub(2, 5))
             assert(opcode == CodecOpcodes.BugLessState, "unexpected bugless state")
             local body = v.payload:sub(6)
-            res.state = json_decode(body)
+            res.state = fromjson(body)
         else
             error("unknown response status " .. status)
         end
@@ -65,13 +65,13 @@ end
 local function advance_input(machine, opts)
     return decode_response_jsons(machine:advance_state({
         metadata = { msg_sender = fromhex(opts.sender), timestamp = opts.timestamp },
-        payload = string.pack(">I4", opts.opcode) .. json_encode(opts.data),
+        payload = string.pack(">I4", opts.opcode) .. tojson(opts.data),
     }, true))
 end
 
 local function inspect_input(machine, opts)
     return decode_response_jsons(machine:inspect_state({
-        payload = string.pack(">I4", opts.opcode) .. json_encode(opts.data),
+        payload = string.pack(">I4", opts.opcode) .. tojson(opts.data),
     }, true))
 end
 
@@ -80,8 +80,8 @@ local function advance_ether_deposit(machine, opts)
         metadata = { msg_sender = fromhex(config.ETHER_PORTAL_ADDRESS), timestamp = opts.timestamp },
         payload = cartesix_encoder.encode_ether_deposit({
             sender_address = fromhex(opts.sender),
-            amount = int256.tobe(opts.amount),
-            extra_data = string.pack(">I4", opts.opcode) .. json_encode(opts.data),
+            amount = tobe256(opts.amount),
+            extra_data = string.pack(">I4", opts.opcode) .. tojson(opts.data),
         }),
     }, true))
 end
@@ -130,7 +130,7 @@ describe("tests on Lua bounty", function()
                 Name = "Lua 5.4.3 Bounty",
                 Description = "Try to crash a sandboxed Lua 5.4.3 script",
                 Deadline = bounty_deadline,
-                CodeZipBinary = base64_encode(readfile(bounty_code)),
+                CodeZipBinary = tobase64(readfile(bounty_code)),
             },
         })
         expect.equal(res.status, "accepted")
@@ -280,7 +280,7 @@ describe("tests on Lua bounty", function()
             timestamp = timestamp,
             data = {
                 BountyIndex = bounty_index,
-                Exploit = base64_encode(bounty_valid_exploit),
+                Exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "accepted")
@@ -294,7 +294,7 @@ describe("tests on Lua bounty", function()
             data = {
                 Name = "Hacker1",
                 BountyIndex = bounty_index,
-                Exploit = base64_encode(bounty_invalid_exploit),
+                Exploit = tobase64(bounty_invalid_exploit),
             },
         })
         expect.equal(res.status, "rejected")
@@ -353,14 +353,14 @@ describe("tests on Lua bounty", function()
                 address = fromhex(config.DAPP_ADDRESS),
                 payload = cartesix_encoder.encode_ether_transfer_voucher({
                     destination_address = DEVELOPER1_WALLET,
-                    amount = int256.tobe("1000"),
+                    amount = tobe256(1000),
                 }),
             },
             {
                 address = fromhex(config.DAPP_ADDRESS),
                 payload = cartesix_encoder.encode_ether_transfer_voucher({
                     destination_address = SPONSOR1_WALLET,
-                    amount = int256.tobe("2000"),
+                    amount = tobe256(2000),
                 }),
             },
         })
@@ -388,7 +388,7 @@ describe("tests on Lua bounty", function()
             data = {
                 Name = "Hacker1",
                 BountyIndex = bounty_index,
-                Exploit = base64_encode(bounty_valid_exploit),
+                Exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "rejected")
@@ -427,7 +427,7 @@ describe("tests on SQLite bounty", function()
                 Name = "SQLite3 3.32.2 Bounty",
                 Description = "Try to crash SQLite 3.32.2 with a SQL query",
                 Deadline = bounty_deadline,
-                CodeZipBinary = base64_encode(readfile(sqlite33202_bounty_code)),
+                CodeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
             },
         })
         expect.equal(res.status, "accepted")
@@ -546,7 +546,7 @@ describe("tests on SQLite bounty", function()
             data = {
                 Name = "Hacker1",
                 BountyIndex = bounty_index,
-                Exploit = base64_encode(bounty_valid_exploit),
+                Exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "accepted")
@@ -590,7 +590,7 @@ describe("tests on SQLite bounty", function()
                 address = fromhex(config.DAPP_ADDRESS),
                 payload = cartesix_encoder.encode_ether_transfer_voucher({
                     destination_address = HACKER1_WALLET,
-                    amount = int256.tobe("9000"),
+                    amount = tobe256(9000),
                 }),
             },
         })
@@ -604,7 +604,7 @@ describe("tests on SQLite bounty", function()
             data = {
                 Name = "Hacker2",
                 BountyIndex = bounty_index,
-                Exploit = base64_encode(bounty_valid_exploit),
+                Exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "rejected")
