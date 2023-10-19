@@ -54,6 +54,14 @@ go run ./cli send exploit \
     -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
 ```
 
+### Testing exploit
+
+```
+go run ./cli test \
+    -b 0 \
+    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+```
+
 ## Frontend
 
 Before running the frontend, you should have the `CartesiDApp` address stored in the `NEXT_PUBLIC_DAPP_ADDRESS` enviroment variable.
