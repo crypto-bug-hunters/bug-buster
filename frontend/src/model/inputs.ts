@@ -6,8 +6,8 @@ export interface CreateBounty {
     CodeZipBinary: string;
 }
 
-export interface AddSponsorship{
+export interface AddSponsorship {
     Name: string;
     ImgLink?: string;
-    BountyIndex:number;
+    BountyIndex: number;
 }
