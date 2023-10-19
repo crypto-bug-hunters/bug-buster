@@ -15,12 +15,12 @@ import { AppBounty } from "../model/state";
 
 const Bounty: FC<{ index: number, bounty: AppBounty }> = ({ index, bounty }) => {
     return (
-        <Group>
+        <Stack>
             <Link href={"/bounty/info/" + index}>
+                <Image h={300} src={bounty.Developer.ImgLink} />
                 <Title order={2}>{bounty.Developer.Name}</Title>
             </Link>
-            <Image src={bounty.Developer.ImgLink} />
-        </Group>
+        </Stack>
     );
 };
 
