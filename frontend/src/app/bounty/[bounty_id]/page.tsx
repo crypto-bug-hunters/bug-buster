@@ -9,24 +9,16 @@ import {
     Stack,
     Image,
     Title,
-    TextInput,
-    Textarea,
-    useMantineTheme,
-    Text,
+    useMantineTheme
 } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
-import { Dropzone, FileWithPath } from "@mantine/dropzone";
-import { TbExclamationCircle, TbUpload } from "react-icons/tb";
 
-import {
-    useInputBoxAddInput,
-    usePrepareInputBoxAddInput,
-} from "../../../hooks/contracts";
+
 import { Address, bytesToHex, toHex, Hex } from "viem";
-import { useWaitForTransaction } from "wagmi";
-import { CreateBounty } from "../../../model/inputs";
+
+
 import { GetBounty } from "../../../model/reader";
-import usePrepareCreateBounty from "../../../hooks/bugless";
+import Link from "next/link";
+
 
 const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
     params: { bounty_id },
@@ -44,13 +36,26 @@ const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
         case "success":
             const bounty = result.response;
             const profile = bounty.Developer;
+            let totalPrize = 0;
+            // const sponsors = bounty.Sponsorships?.forEach((sponsorship)=>{
+            //     totalPrize += sponsorship.Value
+            // });
             return (
                 <Center>
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
-                        <Stack w={600}>
+                        <Stack w={600} align="center" justify="center">
                             <Title order={2}>{profile.Name}</Title>
                             <Image w={300} src={bounty.Developer.ImgLink} />
                             {bounty.Description}
+                            <Title order={3}>Total Prize: {totalPrize} eth</Title>
+                            <Group justify="left" >
+                                <Link href={"/bounty/" + bounty_id+"/sponsor"}>
+                                    <Button>Add Sponsorship</Button>
+                                </Link>
+                                <Link href={"/bounty/" + bounty_id+"/exploit"}>
+                                    <Button>Send Exploit</Button>
+                                </Link>
+                            </Group>
                         </Stack>
                     </Box>
                 </Center>
