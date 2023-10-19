@@ -81,6 +81,16 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
       inputIndex: inputIndex as number, // this cast is fine because of skip above
     },
   });
+  let reportEdge = inputQuery.data?.input.reports.edges.find((edge) =>
+    edge.node.payload.startsWith("0x01")
+  );
+  let payload = reportEdge?.node.payload;
+  let stateBytes = fromHexString(payload?.substring(12));
+  let stateJson = undefined
+  if (stateBytes !== undefined) {
+    let stateText = new TextDecoder().decode(stateBytes);
+    stateJson = JSON.parse(stateText) as BugLessState;
+  }
   if (lastInputsQuery.loading) return { state: "loading" };
   if (lastInputsQuery.error) {
     return { state: "error", message: lastInputsQuery.error.message };
@@ -94,33 +104,26 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
     return { state: "success", response: null };
   }
 
-  let reportEdge = inputQuery.data?.input.reports.edges.find((edge) =>
-    edge.node.payload.startsWith("0x01")
-  );
-
-  if (reportEdge === undefined) {
+  if (stateJson === undefined) {
     // This should never happen because the input was accepted.
     return { state: "error", message: "missing return from accepted input" };
   }
 
-  // Check codec encoding.
-  if (!reportEdge.node.payload.startsWith("0x0157896b8c")) {
+  if (!payload?.startsWith("0x0157896b8c")) {
+    // Check codec encoding.
     return { state: "error", message: "wrong codec in report" };
   }
 
-  let stateBytes = fromHexString(reportEdge.node.payload.substring(12));
-  if (stateBytes === null) {
-    return { state: "error", message: "failed to decode report hex" };
-  }
-  let stateText = new TextDecoder().decode(stateBytes);
-  let stateJson = JSON.parse(stateText) as BugLessState;
   return { state: "success", response: stateJson };
 }
 
-function fromHexString(hexString: string): Uint8Array | null {
+function fromHexString(hexString: string | undefined): Uint8Array | undefined {
+  if (hexString === undefined) {
+    return undefined;
+  }
   let match = hexString.match(/.{1,2}/g);
   if (match === null) {
-    return null;
+    return undefined;
   }
   return Uint8Array.from(match.map((byte) => parseInt(byte, 16)));
 }
