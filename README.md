@@ -29,7 +29,7 @@ go run ./cli help
 go run ./cli send dapp-address
 ```
 
-### Sending bounty
+#### Sending bounty
 
 ```
 go run ./cli send bounty \
@@ -38,10 +38,19 @@ go run ./cli send bounty \
     -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz                  
 ```
 
-### Sending sponsor
+#### Sending sponsor
 
 ```
 go run ./cli send sponsor -b 0 -n "Sponsor Name" -v 1000
+```
+
+#### Sending exploit
+
+```
+go run ./cli send exploit \
+    -b 0 \
+    -n "Hacker Name" \
+    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
 ```
 
 ### Frontend
