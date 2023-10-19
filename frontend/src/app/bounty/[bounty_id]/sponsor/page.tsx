@@ -17,7 +17,7 @@ import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 
 type AddSponsorhipParams = {
-    params: { bounty_id: number };
+    params: { bounty_id : string };
 };
 
 const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
@@ -37,7 +37,7 @@ const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
     const addSponsorship = {
         Name: name,
         ImgLink: imgLink,
-        BountyIndex: bounty_id,
+        BountyIndex: parseInt(bounty_id),
     } as AddSponsorship;
 
     const config = usePrepareAddSponsorship(addSponsorship, BigInt(value));
