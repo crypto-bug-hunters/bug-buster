@@ -9,16 +9,13 @@ import {
     Stack,
     Image,
     Title,
-    useMantineTheme
+    useMantineTheme,
 } from "@mantine/core";
-
 
 import { Address, bytesToHex, toHex, Hex } from "viem";
 
-
 import { GetBounty } from "../../../model/reader";
 import Link from "next/link";
-
 
 const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
     params: { bounty_id },
@@ -47,12 +44,18 @@ const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
                             <Title order={2}>{profile.Name}</Title>
                             <Image w={300} src={bounty.Developer.ImgLink} />
                             {bounty.Description}
-                            <Title order={3}>Total Prize: {totalPrize} eth</Title>
-                            <Group justify="left" >
-                                <Link href={"/bounty/" + bounty_id+"/sponsor"}>
+                            <Title order={3}>
+                                Total Prize: {totalPrize} eth
+                            </Title>
+                            <Group justify="left">
+                                <Link
+                                    href={"/bounty/" + bounty_id + "/sponsor"}
+                                >
                                     <Button>Add Sponsorship</Button>
                                 </Link>
-                                <Link href={"/bounty/" + bounty_id+"/exploit"}>
+                                <Link
+                                    href={"/bounty/" + bounty_id + "/exploit"}
+                                >
                                     <Button>Send Exploit</Button>
                                 </Link>
                             </Group>

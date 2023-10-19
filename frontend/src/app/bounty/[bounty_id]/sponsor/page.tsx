@@ -1,3 +1,4 @@
+"use client";
 import {
     Box,
     Button,
@@ -39,10 +40,7 @@ const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
         BountyIndex: bounty_id,
     } as AddSponsorship;
 
-    const config = usePrepareAddSponsorship(
-        addSponsorship,
-        BigInt(value) * 10n ** 18n,
-    );
+    const config = usePrepareAddSponsorship(addSponsorship, BigInt(value));
 
     const { data, isLoading, isSuccess, write } =
         useEtherPortalDepositEther(config);
@@ -57,7 +55,7 @@ const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
             if (typeof s === "number") {
                 setter(s);
             } else {
-                setter(parseFloat(s));
+                setter(parseInt(s));
             }
         };
     };
@@ -85,8 +83,8 @@ const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
                         withAsterisk
                         size="lg"
                         label="Value"
-                        suffix=" eth"
-                        description="Sponsorship value in eth"
+                        suffix=" wei"
+                        description="Sponsorship value in wei"
                         value={value}
                         onChange={parseIfNeeded(setValue)}
                     />
