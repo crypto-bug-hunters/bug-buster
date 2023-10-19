@@ -27,7 +27,7 @@ import { CreateBounty } from "../../../../model/inputs";
 import { GetBounty } from "../../../../model/reader";
 import usePrepareCreateBounty from "../../../../hooks/bugless";
 
-const BountyInfoPage: FC<{ bounty_id : number }> = ({ bounty_id }) => {
+const BountyInfoPage: FC<{ params: {bounty_id : number} }> = ({ params: { bounty_id } }) => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
 
@@ -54,7 +54,7 @@ const BountyInfoPage: FC<{ bounty_id : number }> = ({ bounty_id }) => {
                     <Box p={20} mt={180} bg={theme.colors.dark[7]}>
                         <Stack w={600}>
                             <Title order={2}>{profile.Name}</Title>
-                            {profile.Description}
+                            {bounty.Description}
                         </Stack>
                     </Box>
                 </Center>
