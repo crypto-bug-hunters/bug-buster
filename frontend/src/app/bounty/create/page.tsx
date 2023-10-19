@@ -10,8 +10,7 @@ import {
   TextInput,
   Textarea,
   useMantineTheme,
-  Text
-  
+  Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
@@ -23,6 +22,8 @@ import {
 } from "../../../hooks/contracts";
 import { Address, bytesToHex, toHex, Hex } from "viem";
 import { useWaitForTransaction } from "wagmi";
+import { CreateBounty } from "../../../model/inputs";
+import usePrepareCreateBounty from "../../../hooks/bugless";
 
 const CreateBounty: FC = () => {
   const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
@@ -40,39 +41,32 @@ const CreateBounty: FC = () => {
   //Deadline
   const [deadline, setDeadline] = useState<Date | null>(null);
 
-
-  const [appFile,setAppFile] =  useState<string|null>(null);
-
- 
+  const [appFile, setAppFile] = useState<string | null>(null);
 
   const readFile = (f: FileWithPath | null) => {
-    if(f){
-        f.arrayBuffer().then((buf) => {
-            //setAppFile(bytesToHex(new Uint8Array(buf)));
-            setAppFile(btoa(Array.from(new Uint8Array(buf)).map(b => String.fromCharCode(b)).join('')))
-        });
-    }    
-    
-};
+    if (f) {
+      f.arrayBuffer().then((buf) => {
+        //setAppFile(bytesToHex(new Uint8Array(buf)));
+        setAppFile(
+          btoa(
+            Array.from(new Uint8Array(buf))
+              .map((b) => String.fromCharCode(b))
+              .join(""),
+          ),
+        );
+      });
+    }
+  };
 
-  const jsonContent = {
+  const bounty = {
     Name: name,
     Description: description,
     ImgLink: imgLink,
-    Deadline: deadline? deadline.getTime()/1000:null,
-    CodeZipBinary: appFile
-  };
+    Deadline: deadline ? deadline.getTime() / 1000 : null,
+    CodeZipBinary: appFile,
+  } as CreateBounty;
 
-  //createBountOpCode = [0x57,0x92,0x99,0x3c]
-  const encondeJson : Uint8Array = new TextEncoder().encode(JSON.stringify(jsonContent));
-  const inputPayload: Uint8Array = new Uint8Array(encondeJson.length+4);
-  inputPayload.set([0x57,0x92,0x99,0x3c]);
-  inputPayload.set(encondeJson,4);
-
-  const { config } = usePrepareInputBoxAddInput({
-    args: [dapp,toHex(inputPayload)],
-    enabled: !!appFile,
-  });
+  const config = usePrepareCreateBounty(bounty);
 
   const { data, isLoading, isSuccess, write } = useInputBoxAddInput(config);
   const wait = useWaitForTransaction(data);
@@ -125,48 +119,51 @@ const CreateBounty: FC = () => {
             description="Deadline"
           />
 
-        <Group justify="space-between" w="100%">
-                <Dropzone
-                    onDrop={(files) => readFile(files[0])}
-                    onReject={(files) =>
-                        console.log("rejected files", files)
-                    }
-                    //maxSize={3 * 1024 ** 2}
-                >
-                    <Group
-                        justify="center"
-                        gap="xl"
-                        mih={220}
-                        style={{ pointerEvents: "none" }}
-                    >
-                        <Dropzone.Accept>
-                            <TbUpload size={60} />
-                        </Dropzone.Accept>
-                        <Dropzone.Reject>
-                            <TbExclamationCircle size={60} />
-                        </Dropzone.Reject>
-                        <Dropzone.Idle>
-                            <TbUpload size={60} />
-                        </Dropzone.Idle>
+          <Group justify="space-between" w="100%">
+            <Dropzone
+              onDrop={(files) => readFile(files[0])}
+              onReject={(files) => console.log("rejected files", files)}
+              //maxSize={3 * 1024 ** 2}
+            >
+              <Group
+                justify="center"
+                gap="xl"
+                mih={220}
+                style={{ pointerEvents: "none" }}
+              >
+                <Dropzone.Accept>
+                  <TbUpload size={60} />
+                </Dropzone.Accept>
+                <Dropzone.Reject>
+                  <TbExclamationCircle size={60} />
+                </Dropzone.Reject>
+                <Dropzone.Idle>
+                  <TbUpload size={60} />
+                </Dropzone.Idle>
 
-                        <div>
-                            <Text size="xl" inline>
-                                Drag App compressed bundle here or click to select
-                                file
-                            </Text>
-                            <Text size="sm" c="dimmed" inline mt={7}>
-                                Attach a single .zip or tar.xz of the App
-                            </Text>
-                        </div>
-                    </Group>
-                </Dropzone>
-            </Group>
+                <div>
+                  <Text size="xl" inline>
+                    Drag App compressed bundle here or click to select file
+                  </Text>
+                  <Text size="sm" c="dimmed" inline mt={7}>
+                    Attach a single .zip or tar.xz of the App
+                  </Text>
+                </div>
+              </Group>
+            </Dropzone>
+          </Group>
 
           <Group justify="center" mt="md">
             <Button
               size="lg"
               type="submit"
-              disabled={!write || !appFile || !deadline || name.trim().length === 0 || description.trim().length === 0}
+              disabled={
+                !write ||
+                !appFile ||
+                !deadline ||
+                name.trim().length === 0 ||
+                description.trim().length === 0
+              }
               onClick={submit}
             >
               {"Create Bounty"}

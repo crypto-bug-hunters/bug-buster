@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
-import { BugLessState, AppBounty, SendExploit } from "./index";
+import { BugLessState, AppBounty, SendExploit } from "./state";
 
 type ReaderLoadingResult = {
   state: "loading";
@@ -58,7 +58,7 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
   if (loading) return { state: "loading" };
   if (error) return { state: "error", message: error.message };
   let reportEdge = data?.reports.edges.findLast((edge) =>
-    edge.node.payload.startsWith("0x0157896b8c")
+    edge.node.payload.startsWith("0x0157896b8c"),
   );
   let payload = reportEdge?.node.payload;
   let stateBytes = fromHexString(payload?.substring(12));
@@ -76,7 +76,7 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
     pollInterval: 500, // ms
   });
   let reportEdge = reportsQuery.data?.reports.edges.findLast((edge) =>
-    edge.node.payload.startsWith("0x0157896b8c")
+    edge.node.payload.startsWith("0x0157896b8c"),
   );
   let payload = reportEdge?.node.payload;
   let stateBytes = fromHexString(payload?.substring(12));
@@ -94,7 +94,7 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
     },
   });
   let sendExploitBytes = fromHexString(
-    exploitQuery.data?.input.payload?.substring(10)
+    exploitQuery.data?.input.payload?.substring(10),
   );
   if (exploit && sendExploitBytes) {
     let sendExploitText = new TextDecoder().decode(sendExploitBytes);
