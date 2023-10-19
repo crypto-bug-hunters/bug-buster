@@ -51,7 +51,7 @@ const GET_INPUT_PAYLOAD = gql(/* GraphQL */ `
 `);
 
 // Get the latest bug less state from the GraphQL API polling the API every 500 ms.
-function GetLatestState(): ReaderResult<BugLessState | null> {
+function GetLatestState(): ReaderResult<BugLessState> {
   const { data, loading, error } = useQuery(GET_LAST_REPORTS, {
     pollInterval: 500, // ms
   });
@@ -66,6 +66,8 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
   if (stateBytes !== undefined) {
     let stateText = new TextDecoder().decode(stateBytes);
     stateJson = JSON.parse(stateText) as BugLessState;
+  } else {
+    stateJson = { Bounties: [] }
   }
   return { state: "success", response: stateJson };
 }
