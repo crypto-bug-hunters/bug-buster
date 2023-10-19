@@ -13,7 +13,10 @@ import Link from "next/link";
 import { GetLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
 
-const Bounty: FC<{ index: number, bounty: AppBounty }> = ({ index, bounty }) => {
+const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
+    index,
+    bounty,
+}) => {
     return (
         <Stack>
             <Link href={"/bounty/" + index}>
