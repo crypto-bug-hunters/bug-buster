@@ -13,10 +13,12 @@ import Link from "next/link";
 import { GetLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
 
-const Bounty: FC<{ bounty: AppBounty }> = ({ bounty }) => {
+const Bounty: FC<{ index: number, bounty: AppBounty }> = ({ index, bounty }) => {
     return (
         <Group>
-            <Title order={2}>{bounty.Developer.Name}</Title>
+            <Link href={"/bounty/info/" + index}>
+                <Title order={2}>{bounty.Developer.Name}</Title>
+            </Link>
             <Image src={bounty.Developer.ImgLink} />
         </Group>
     );
@@ -32,8 +34,8 @@ const BountyList: FC = () => {
         case "success":
             return (
                 <Stack>
-                    {result.response.Bounties.map((bounty) => {
-                        return <Bounty bounty={bounty} />;
+                    {result.response.Bounties.map((bounty, index) => {
+                        return <Bounty index={index} bounty={bounty} />;
                     })}
                 </Stack>
             );
