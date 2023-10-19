@@ -25,7 +25,7 @@ import { useWaitForTransaction } from "wagmi";
 import { CreateBounty } from "../../../model/inputs";
 import usePrepareCreateBounty from "../../../hooks/bugless";
 
-const CreateBounty: FC = () => {
+const CreateBountyPage: FC = () => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
 
@@ -179,4 +179,4 @@ const CreateBounty: FC = () => {
     );
 };
 
-export default CreateBounty;
+export default CreateBountyPage;
