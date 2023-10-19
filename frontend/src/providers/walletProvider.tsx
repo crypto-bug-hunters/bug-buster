@@ -8,7 +8,7 @@ import { publicProvider } from "wagmi/providers/public";
 // select chain based on env var
 const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || "31337");
 const chain =
-  [foundry, mainnet, sepolia].find((c) => c.id == chainId) || foundry;
+    [foundry, mainnet, sepolia].find((c) => c.id == chainId) || foundry;
 
 // only 1 chain is enabled, based on env var
 const { chains } = configureChains([chain], [publicProvider()]);
@@ -17,24 +17,24 @@ const { chains } = configureChains([chain], [publicProvider()]);
 const projectId = "bd3725877ae8cde37b7c439efe33857d";
 
 const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata: {
-    name: "BugLess",
-    description: "Trustless bug bounties",
-    url: "https://github.com/crypto-bug-hunters/bug-less",
-  },
+    chains,
+    projectId,
+    metadata: {
+        name: "BugLess",
+        description: "Trustless bug bounties",
+        url: "https://github.com/crypto-bug-hunters/bug-less",
+    },
 });
 
 createWeb3Modal({
-  wagmiConfig,
-  projectId,
-  chains,
-  themeMode: "dark",
+    wagmiConfig,
+    projectId,
+    chains,
+    themeMode: "dark",
 });
 
 const WalletProvider = ({ children }: { children: React.ReactNode }) => {
-  return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;
+    return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;
 };
 
 export default WalletProvider;

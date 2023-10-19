@@ -19,23 +19,23 @@ import { Shell } from "./shell";
 // };
 
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <html lang="en">
-      <Head>
-        <ColorSchemeScript />
-        <link rel="shortcut icon" href="/favicon.svg" />
-      </Head>
-      <body>
-        <GraphQLProvider>
-          <StyleProvider>
-            <WalletProvider>
-              <Shell>{children}</Shell>
-            </WalletProvider>
-          </StyleProvider>
-        </GraphQLProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <Head>
+                <ColorSchemeScript />
+                <link rel="shortcut icon" href="/favicon.svg" />
+            </Head>
+            <body>
+                <GraphQLProvider>
+                    <StyleProvider>
+                        <WalletProvider>
+                            <Shell>{children}</Shell>
+                        </WalletProvider>
+                    </StyleProvider>
+                </GraphQLProvider>
+            </body>
+        </html>
+    );
 };
 
 export default Layout;
