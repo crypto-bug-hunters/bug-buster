@@ -8,13 +8,13 @@ BugLess is a decentralized bug bounty platform.
 sunodo build
 ```
 
-### Running the Cartesi Node
+## Running the Cartesi Node
 
 ```
 sunodo run
 ```
 
-### CLI
+## CLI
 
 To interact with the contract, you may use the BugLess CLI.
 For all the options, run the command below.
@@ -23,13 +23,13 @@ For all the options, run the command below.
 go run ./cli help
 ```
 
-#### Sending dapp address
+### Sending dapp address
 
 ```
 go run ./cli send dapp-address
 ```
 
-#### Sending bounty
+### Sending bounty
 
 ```
 go run ./cli send bounty \
@@ -38,13 +38,13 @@ go run ./cli send bounty \
     -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz                  
 ```
 
-#### Sending sponsor
+### Sending sponsor
 
 ```
 go run ./cli send sponsor -b 0 -n "Sponsor Name" -v 1000
 ```
 
-#### Sending exploit
+### Sending exploit
 
 ```
 go run ./cli send exploit \
@@ -53,7 +53,7 @@ go run ./cli send exploit \
     -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
 ```
 
-### Frontend
+## Frontend
 
 Before running the frontend, you should have the `CartesiDApp` address stored in the `NEXT_PUBLIC_DAPP_ADDRESS` enviroment variable.
 In order to take hold of this address, you may run the command below and manually extract the address next to `CartesiDApp`.
