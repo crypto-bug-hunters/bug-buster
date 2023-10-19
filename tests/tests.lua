@@ -409,6 +409,34 @@ describe("tests on Lua bounty", function()
         expect.equal(res.status, "rejected")
         expect.equal(res.error, "rejecting: can't add sponsorship after deadline")
     end)
+
+    it("should reject inspect of a bounty that consumes too much RAM", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = timestamp,
+            data = {
+                Name = "Hacker1",
+                BountyIndex = bounty_index,
+                Exploit = tobase64([[s=string.rep('x',4096) while true do s=s..s end]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject inspect of a bounty that consumes too much CPU", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = timestamp,
+            data = {
+                Name = "Hacker1",
+                BountyIndex = bounty_index,
+                Exploit = tobase64([[while true do end]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
 end)
 
 describe("tests on SQLite bounty", function()

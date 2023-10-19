@@ -5,6 +5,7 @@ BugLess is a decentralized bug bounty platform.
 ## Building
 
 ```
+make sunodo-sdk
 sunodo build
 ```
 
