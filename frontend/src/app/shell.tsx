@@ -1,9 +1,6 @@
 "use client";
-import { AppShell, Group } from "@mantine/core";
+import { AppShell, Group, Anchor, Center, Title } from "@mantine/core";
 import { FC } from "react";
-import { Center, Title } from "@mantine/core";
-import Link from "next/link";
-import Image from "next/image";
 
 export default function ConnectButton() {
     return <w3m-button />;
@@ -15,7 +12,9 @@ export const Shell: FC<{ children: React.ReactNode }> = ({ children }) => {
             <AppShell.Header>
                 <Group h="100%" px={20}>
                     <Center>
-                        <Title>BugLess 🚫🪳</Title>
+                        <Anchor href="/" underline="never">
+                            <Title>BugLess 🚫🪳</Title>
+                        </Anchor>
                     </Center>
                     <Group justify="flex-end" style={{ flex: 1 }}>
                         <ConnectButton />
