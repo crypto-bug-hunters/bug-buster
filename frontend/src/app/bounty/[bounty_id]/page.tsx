@@ -34,9 +34,9 @@ const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
             const bounty = result.response;
             const profile = bounty.Developer;
             let totalPrize = 0;
-            // const sponsors = bounty.Sponsorships?.forEach((sponsorship)=>{
-            //     totalPrize += sponsorship.Value
-            // });
+            const sponsors = bounty.Sponsorships?.forEach((sponsorship)=>{
+                totalPrize += parseInt(sponsorship.Value)
+            });
             return (
                 <Center>
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
@@ -45,7 +45,7 @@ const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
                             <Image w={300} src={bounty.Developer.ImgLink} />
                             {bounty.Description}
                             <Title order={3}>
-                                Total Prize: {totalPrize} eth
+                                Total Prize: {totalPrize} wei
                             </Title>
                             <Group justify="left">
                                 <Link
