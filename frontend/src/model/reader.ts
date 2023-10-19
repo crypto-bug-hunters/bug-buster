@@ -86,7 +86,7 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
   );
   let payload = reportEdge?.node.payload;
   let stateBytes = fromHexString(payload?.substring(12));
-  let stateJson = undefined
+  let stateJson = undefined;
   if (stateBytes !== undefined) {
     let stateText = new TextDecoder().decode(stateBytes);
     stateJson = JSON.parse(stateText) as BugLessState;
@@ -100,7 +100,7 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
     return { state: "error", message: inputQuery.error.message };
   }
 
-  if (inputIndex === null) {
+  if (inputIndex === undefined) {
     return { state: "success", response: null };
   }
 
@@ -117,6 +117,23 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
   return { state: "success", response: stateJson };
 }
 
+function IsInputReady(inputIndex: number): ReaderResult<boolean> {
+  const { data, loading, error } = useQuery(GET_INPUT, {
+    pollInterval: 500, // ms
+    variables: {
+      inputIndex,
+    },
+  });
+  if (loading) return { state: "loading" };
+  if (error) {
+    if (error.message === "input not found")
+      return { state: "success", response: false };
+    return { state: "error", message: error.message };
+  }
+  const ready = data?.input.status == CompletionStatus.Accepted;
+  return { state: "success", response: ready };
+}
+
 function fromHexString(hexString: string | undefined): Uint8Array | undefined {
   if (hexString === undefined) {
     return undefined;
@@ -128,4 +145,4 @@ function fromHexString(hexString: string | undefined): Uint8Array | undefined {
   return Uint8Array.from(match.map((byte) => parseInt(byte, 16)));
 }
 
-export { GetLatestState };
+export { GetLatestState, IsInputReady };
