@@ -26,7 +26,7 @@ local config = {
     DAPP_ADDRESS = "0x7122cd1221c20892234186facfe8615e6743ab02",
 }
 
-local machine_config = "../.sunodo/image"
+local machine_config = ".sunodo/image"
 local machine_runtime_config = { skip_root_hash_check = true }
 local machine_remote_protocol = "jsonrpc"
 
@@ -103,8 +103,8 @@ local timestamp = 1697567000
 local first_bounty_final_state
 
 describe("tests on Lua bounty", function()
-    local bounty_code = "bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
-    local bounty_valid_exploit = readfile("bounties/lua-bounty/exploit-lua-5.4.3.lua")
+    local bounty_code = "tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/lua-bounty/exploit-lua-5.4.3.lua")
     local bounty_invalid_exploit = [[print 'hello world']]
     local bounty_index = 0
     local bounty_started = timestamp
@@ -476,8 +476,8 @@ end
 end)
 
 describe("tests on SQLite bounty", function()
-    local sqlite33202_bounty_code = "bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
-    local bounty_valid_exploit = readfile("bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql")
+    local sqlite33202_bounty_code = "tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql")
     local bounty_index = 1
     local bounty_started = timestamp
     local bounty_deadline = timestamp + 7200
