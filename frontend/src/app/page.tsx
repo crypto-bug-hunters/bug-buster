@@ -16,7 +16,7 @@ import { AppBounty } from "../model/state";
 const Bounty: FC<{ index: number, bounty: AppBounty }> = ({ index, bounty }) => {
     return (
         <Stack>
-            <Link href={"/bounty/info/" + index}>
+            <Link href={"/bounty/" + index}>
                 <Image h={300} src={bounty.Developer.ImgLink} />
                 <Title order={2}>{bounty.Developer.Name}</Title>
             </Link>
