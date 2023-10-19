@@ -23,14 +23,12 @@ type ReaderResult<T> =
   | ReaderErrorResult
   | ReaderSuccessResult<T>;
 
-const GET_LAST_INPUTS = gql(/* GraphQL */ `
-  query getLastInputs {
-    inputs(last: 1000) {
-      totalCount
+const GET_LAST_REPORTS = gql(/* GraphQL */ `
+  query getLastReports {
+    reports(last: 1000) {
       edges {
         node {
-          index
-          status
+          payload
         }
       }
     }
@@ -68,52 +66,21 @@ const GET_INPUT = gql(/* GraphQL */ `
 
 // Get the latest bug less state from the GraphQL API polling the API every 500 ms.
 function GetLatestState(): ReaderResult<BugLessState | null> {
-  const lastInputsQuery = useQuery(GET_LAST_INPUTS, {
+  const { data, loading, error } = useQuery(GET_LAST_REPORTS, {
     pollInterval: 500, // ms
   });
-  let edge = lastInputsQuery.data?.inputs?.edges.findLast(
-    (e) => e.node.status === CompletionStatus.Accepted
-  );
-  let inputIndex = edge?.node.index;
-  const inputQuery = useQuery(GET_INPUT, {
-    skip: !inputIndex,
-    variables: {
-      inputIndex: inputIndex as number, // this cast is fine because of skip above
-    },
-  });
-  let reportEdge = inputQuery.data?.input.reports.edges.find((edge) =>
-    edge.node.payload.startsWith("0x01")
+  if (loading) return { state: "loading" };
+  if (error) return { state: "error", message: error.message };
+  let reportEdge = data?.reports.edges.find((edge) =>
+    edge.node.payload.startsWith("0x0157896b8c")
   );
   let payload = reportEdge?.node.payload;
   let stateBytes = fromHexString(payload?.substring(12));
-  let stateJson = undefined;
+  let stateJson = null;
   if (stateBytes !== undefined) {
     let stateText = new TextDecoder().decode(stateBytes);
     stateJson = JSON.parse(stateText) as BugLessState;
   }
-  if (lastInputsQuery.loading) return { state: "loading" };
-  if (lastInputsQuery.error) {
-    return { state: "error", message: lastInputsQuery.error.message };
-  }
-  if (inputQuery.loading) return { state: "loading" };
-  if (inputQuery.error) {
-    return { state: "error", message: inputQuery.error.message };
-  }
-
-  if (inputIndex === undefined) {
-    return { state: "success", response: null };
-  }
-
-  if (stateJson === undefined) {
-    // This should never happen because the input was accepted.
-    return { state: "error", message: "missing return from accepted input" };
-  }
-
-  if (!payload?.startsWith("0x0157896b8c")) {
-    // Check codec encoding.
-    return { state: "error", message: "wrong codec in report" };
-  }
-
   return { state: "success", response: stateJson };
 }
 
