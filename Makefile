@@ -13,7 +13,7 @@ linux.bin:
 	wget -O linux.bin https://github.com/edubart/riv/releases/download/downloads/linux.bin
 
 test:
-	docker run -v $(shell pwd):/mnt --rm -it sunodo/sdk:0.2.0-lua lua5.4 tests/tests.lua
+	docker run -v $(shell pwd):/mnt --rm -it sunodo/sdk:0.2.0-sandboxing lua5.4 tests/tests.lua
 
 run:
 	sunodo run
