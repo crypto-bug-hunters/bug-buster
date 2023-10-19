@@ -23,6 +23,27 @@ For all the options, run the command below.
 go run ./cli help
 ```
 
+#### Sending dapp address
+
+```
+go run ./cli send dapp-address
+```
+
+### Sending bounty
+
+```
+go run ./cli send bounty \
+    -n "Lua Bounty" \
+    -d "Description of Lua bounty" \
+    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz                  
+```
+
+### Sending sponsor
+
+```
+go run ./cli send sponsor -b 0 -n "Sponsor Name" -v 1000
+```
+
 ### Frontend
 
 Before running the frontend, you should have the `CartesiDApp` address stored in the `NEXT_PUBLIC_DAPP_ADDRESS` enviroment variable.
