@@ -8,6 +8,7 @@ import {
     List,
     Group,
     Image,
+    Flex
 } from "@mantine/core";
 import Link from "next/link";
 import { GetLatestState } from "../model/reader";
@@ -53,13 +54,13 @@ const Home: FC = () => {
 
     return (
         <Stack>
+            <Flex mt={20} mr={20} justify="flex-end">
+                <Link href={"/bounty/create"}>
+                    <Button size="lg">Submit bounty</Button>
+                </Link>
+            </Flex>
             <Center>
                 <BountyList />
-            </Center>
-            <Center>
-                <Link href={"/bounty/create"}>
-                    <Button>Submit bounty</Button>
-                </Link>
             </Center>
         </Stack>
     );
