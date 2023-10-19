@@ -4,16 +4,16 @@ import { CompletionStatus } from "./__generated__/graphql";
 import { BugLessState, AppBounty, SendExploit } from "./state";
 
 type ReaderLoadingResult = {
-    state: "loading";
+    kind: "loading";
 };
 
 type ReaderErrorResult = {
-    state: "error";
+    kind: "error";
     message: string;
 };
 
 type ReaderSuccessResult<T> = {
-    state: "success";
+    kind: "success";
     response: T;
 };
 
@@ -55,8 +55,8 @@ function GetLatestState(): ReaderResult<BugLessState> {
     const { data, loading, error } = useQuery(GET_LAST_REPORTS, {
         pollInterval: 500, // ms
     });
-    if (loading) return { state: "loading" };
-    if (error) return { state: "error", message: error.message };
+    if (loading) return { kind: "loading" };
+    if (error) return { kind: "error", message: error.message };
     let reportEdge = data?.reports.edges.findLast((edge) =>
         edge.node.payload.startsWith("0x0157896b8c"),
     );
@@ -69,7 +69,7 @@ function GetLatestState(): ReaderResult<BugLessState> {
     } else {
         stateJson = { Bounties: [] };
     }
-    return { state: "success", response: stateJson };
+    return { kind: "success", response: stateJson };
 }
 
 // Get the details for the given bounty including the exploit code.
@@ -104,19 +104,19 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
         exploit.Code = atob(sendExploit.Exploit);
     }
 
-    if (reportsQuery.loading) return { state: "loading" };
+    if (reportsQuery.loading) return { kind: "loading" };
     if (reportsQuery.error)
-        return { state: "error", message: reportsQuery.error.message };
+        return { kind: "error", message: reportsQuery.error.message };
 
-    if (exploitQuery.loading) return { state: "loading" };
+    if (exploitQuery.loading) return { kind: "loading" };
     if (exploitQuery.error)
-        return { state: "error", message: exploitQuery.error.message };
+        return { kind: "error", message: exploitQuery.error.message };
 
     if (bounty === undefined) {
-        return { state: "error", message: "bounty not found" };
+        return { kind: "error", message: "bounty not found" };
     }
 
-    return { state: "success", response: bounty };
+    return { kind: "success", response: bounty };
 }
 
 // Get whether the given input is ready.
@@ -127,14 +127,14 @@ function IsInputReady(inputIndex: number): ReaderResult<boolean> {
             inputIndex,
         },
     });
-    if (loading) return { state: "loading" };
+    if (loading) return { kind: "loading" };
     if (error) {
         if (error.message === "input not found")
-            return { state: "success", response: false };
-        return { state: "error", message: error.message };
+            return { kind: "success", response: false };
+        return { kind: "error", message: error.message };
     }
     const ready = data?.input.status == CompletionStatus.Accepted;
-    return { state: "success", response: ready };
+    return { kind: "success", response: ready };
 }
 
 function fromHexString(hexString: string | undefined): Uint8Array | undefined {

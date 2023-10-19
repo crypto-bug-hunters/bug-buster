@@ -26,15 +26,16 @@ const Bounty: FC<{ index: number, bounty: AppBounty }> = ({ index, bounty }) => 
 
 const BountyList: FC = () => {
     const result = GetLatestState();
-    switch (result.state) {
+    switch (result.kind) {
         case "loading":
             return <Center>Loading list of bounties...</Center>;
         case "error":
             return <Center>{result.message}</Center>;
         case "success":
+            const state = result.response;
             return (
                 <Stack>
-                    {result.response.Bounties.map((bounty, index) => {
+                    {state.Bounties.map((bounty, index) => {
                         return <Bounty index={index} bounty={bounty} />;
                     })}
                 </Stack>

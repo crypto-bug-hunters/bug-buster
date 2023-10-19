@@ -33,7 +33,7 @@ const BountyInfoPage: FC<{ params: {bounty_id : number} }> = ({ params: { bounty
 
     const result = GetBounty(bounty_id);
 
-    switch (result.state) {
+    switch (result.kind) {
         case "loading":
             return (
                 <Center>
