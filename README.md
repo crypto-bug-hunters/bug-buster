@@ -32,6 +32,12 @@ In order to take hold of this address, you may run the command below and manuall
 sunodo address-book
 ```
 
+To set the env var automaticaly, run the following command in the repository root directory.
+
+```
+export NEXT_PUBLIC_DAPP_ADDRESS=$(sunodo address-book --json | jq -r .CartesiDApp)
+```
+
 To run the frontend, execute the commands below.
 
 ```shell
