@@ -4,13 +4,11 @@ import {
     Button,
     Center,
     Stack,
-    Title,
-    List,
-    Group,
     Image,
     Card,
     Flex,
-    Text
+    Text,
+    Anchor,
 } from "@mantine/core";
 import Link from "next/link";
 import { GetLatestState } from "../model/reader";
@@ -21,13 +19,19 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
     bounty,
 }) => {
     return (
-        <Card href={"/bounty/" + index}>
-            <Card.Section>
-                <Image h={300} src={bounty.Developer.ImgLink} />
-            </Card.Section>
-            <Text fw={500} size="lg" mt="md">{bounty.Developer.Name}</Text>
-            <Text size="sm" c="dimmend">{bounty.Description}</Text>
-        </Card>
+        <Anchor href={"/bounty/" + index} underline="never">
+            <Card>
+                <Card.Section>
+                    <Image h={300} src={bounty.Developer.ImgLink} />
+                </Card.Section>
+                <Text fw={500} size="lg" mt="md">
+                    {bounty.Developer.Name}
+                </Text>
+                <Text size="sm" c="dimmend">
+                    {bounty.Description}
+                </Text>
+            </Card>
+        </Anchor>
     );
 };
 
