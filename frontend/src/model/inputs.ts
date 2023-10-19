@@ -5,3 +5,9 @@ export interface CreateBounty {
     Deadline: number;
     CodeZipBinary: string;
 }
+
+export interface AddSponsorship{
+    Name: string;
+    ImgLink?: string;
+    BountyIndex:number;
+}
