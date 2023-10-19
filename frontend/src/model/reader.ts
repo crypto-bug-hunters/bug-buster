@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
-import { BugLessState } from "./index";
+import { BugLessState, AppBounty, SendExploit } from "./index";
 
 type ReaderLoadingResult = {
   state: "loading";
@@ -35,31 +34,18 @@ const GET_LAST_REPORTS = gql(/* GraphQL */ `
   }
 `);
 
-const GET_INPUT = gql(/* GraphQL */ `
-  query getInput($inputIndex: Int!) {
+const GET_INPUT_STATUS = gql(/* GraphQL */ `
+  query getInputStatus($inputIndex: Int!) {
     input(index: $inputIndex) {
       status
+    }
+  }
+`);
+
+const GET_INPUT_PAYLOAD = gql(/* GraphQL */ `
+  query getInputPayload($inputIndex: Int!) {
+    input(index: $inputIndex) {
       payload
-      msgSender
-      timestamp
-      blockNumber
-      vouchers {
-        edges {
-          node {
-            index
-            destination
-            payload
-          }
-        }
-      }
-      reports {
-        edges {
-          node {
-            index
-            payload
-          }
-        }
-      }
     }
   }
 `);
@@ -71,7 +57,7 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
   });
   if (loading) return { state: "loading" };
   if (error) return { state: "error", message: error.message };
-  let reportEdge = data?.reports.edges.find((edge) =>
+  let reportEdge = data?.reports.edges.findLast((edge) =>
     edge.node.payload.startsWith("0x0157896b8c")
   );
   let payload = reportEdge?.node.payload;
@@ -84,8 +70,56 @@ function GetLatestState(): ReaderResult<BugLessState | null> {
   return { state: "success", response: stateJson };
 }
 
+// Get the details for the given bounty including the exploit code.
+function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
+  const reportsQuery = useQuery(GET_LAST_REPORTS, {
+    pollInterval: 500, // ms
+  });
+  let reportEdge = reportsQuery.data?.reports.edges.findLast((edge) =>
+    edge.node.payload.startsWith("0x0157896b8c")
+  );
+  let payload = reportEdge?.node.payload;
+  let stateBytes = fromHexString(payload?.substring(12));
+  let stateJson = null;
+  if (stateBytes !== undefined) {
+    let stateText = new TextDecoder().decode(stateBytes);
+    stateJson = JSON.parse(stateText) as BugLessState;
+  }
+  let bounty = stateJson?.Bounties.at(bountyIndex);
+  let exploit = bounty?.Exploit;
+  const exploitQuery = useQuery(GET_INPUT_PAYLOAD, {
+    skip: !exploit?.InputIndex,
+    variables: {
+      inputIndex: exploit?.InputIndex as number, // this is fine because of skip
+    },
+  });
+  let sendExploitBytes = fromHexString(
+    exploitQuery.data?.input.payload?.substring(10)
+  );
+  if (exploit && sendExploitBytes) {
+    let sendExploitText = new TextDecoder().decode(sendExploitBytes);
+    let sendExploit = JSON.parse(sendExploitText) as SendExploit;
+    exploit.Code = atob(sendExploit.Exploit);
+  }
+
+  if (reportsQuery.loading) return { state: "loading" };
+  if (reportsQuery.error)
+    return { state: "error", message: reportsQuery.error.message };
+
+  if (exploitQuery.loading) return { state: "loading" };
+  if (exploitQuery.error)
+    return { state: "error", message: exploitQuery.error.message };
+
+  if (bounty === undefined) {
+    return { state: "error", message: "bounty not found" };
+  }
+
+  return { state: "success", response: bounty };
+}
+
+// Get whether the given input is ready.
 function IsInputReady(inputIndex: number): ReaderResult<boolean> {
-  const { data, loading, error } = useQuery(GET_INPUT, {
+  const { data, loading, error } = useQuery(GET_INPUT_STATUS, {
     pollInterval: 500, // ms
     variables: {
       inputIndex,
@@ -112,4 +146,4 @@ function fromHexString(hexString: string | undefined): Uint8Array | undefined {
   return Uint8Array.from(match.map((byte) => parseInt(byte, 16)));
 }
 
-export { GetLatestState, IsInputReady };
+export { GetLatestState, GetBounty, IsInputReady };
