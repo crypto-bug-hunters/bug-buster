@@ -3,7 +3,7 @@ export interface BugLessState {
 }
 
 export interface AppBounty {
-  Developer: Profile;
+  Developer: Profile; // Name and ImgLink are related to the App
   Description: string;
   Started: number;
   Deadline: number;

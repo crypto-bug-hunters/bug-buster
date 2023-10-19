@@ -67,7 +67,7 @@ function GetLatestState(): ReaderResult<BugLessState> {
     let stateText = new TextDecoder().decode(stateBytes);
     stateJson = JSON.parse(stateText) as BugLessState;
   } else {
-    stateJson = { Bounties: [] }
+    stateJson = { Bounties: [] };
   }
   return { state: "success", response: stateJson };
 }
