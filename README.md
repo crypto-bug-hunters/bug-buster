@@ -24,6 +24,12 @@ For all the options, run the command below.
 go run ./cli help
 ```
 
+### Showing the current state
+
+```
+go run ./cli state
+```
+
 ### Sending dapp address
 
 ```
@@ -52,6 +58,12 @@ go run ./cli send exploit \
     -b 0 \
     -n "Hacker Name" \
     -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+```
+
+### Withdraw bounty
+
+```
+go run ./cli send withdraw -b 0
 ```
 
 ### Testing exploit
