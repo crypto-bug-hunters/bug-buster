@@ -16,21 +16,31 @@ local env = {
     difftime = os.difftime,
     time = os.time,
     getenv = os.getenv,
+    remove = os.remove,
+    rename = os.rename,
+    tmpname = os.tmpname,
     -- allow using exit filtering code 139 (segmentation fault)
     exit = function(code, close)
       assert(code >= 0 and code <= 127, 'os.exit: attempt to exit with a disallowed code')
       return os.exit(code, close)
     end
-    -- rest of 'os' functions are unsafe
+    -- rest of 'os' functions are considered unsafe
   },
   io = {
+    open = io.open,
     close = io.close,
     flush = io.flush,
+    input = io.input,
+    lines = io.lines,
+    output = io.output,
+    read = io.read,
     write = io.write,
     type = io.type,
+    tmpfile = io.tmpfile,
+    stdin = io.stdin,
     stdout = io.stdout,
     stderr = io.stderr,
-    -- rest of 'io' functions could access system files
+    -- rest of 'io' functions are considered unsafe
   },
   -- arg: not useful
   -- debug: has functions that could potentially crash the interpreter
@@ -56,9 +66,7 @@ local env = {
   setmetatable = setmetatable,
   getmetatable = getmetatable,
   collectgarbage = collectgarbage,
-  -- dofile: could access the filesystem
-  -- load: could crash when loading invalid binary chunks
-  -- loadfile: could access the filesystem
+  -- dofile, load, loadfile: could crash when loading invalid binary chunks
   -- require: could require 'os' and other modules again
 }
 env._G = env

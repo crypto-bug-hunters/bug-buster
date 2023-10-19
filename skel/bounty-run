@@ -31,12 +31,11 @@ BWRAPBOX_RLIMIT_STACK_MAX=$((8*1024*1024))
 BWRAPBOX_RLIMIT_AS_HIGH=$((48*1024*1024))
 BWRAPBOX_RLIMIT_AS_MAX=$((64*1024*1024))
 
-# time (in seconds)
-BWRAPBOX_RLIMIT_CPU_MAX=10
+# cpu time (in seconds)
+BWRAPBOX_RLIMIT_CPU_MAX=5
 
 # storage
 BWRAPBOX_RLIMIT_CORE_MAX=0
-BWRAPBOX_ROOT_SIZE=$((16*1024*1024))
 BWRAPBOX_TMP_SIZE=$((16*1024*1024))
 
 # pids
@@ -58,9 +57,13 @@ BWRAPBOX_RLIMIT_SIGPENDING_MAX=64
 # message queue
 BWRAPBOX_RLIMIT_MSGQUEUE_MAX=0
 
-# cgroup time
+# cgroup cpu time
 BWRAPBOX_CLIMIT_TIME_HIGH=$(((BWRAPBOX_RLIMIT_CPU_MAX+1)*1000*1000))
 BWRAPBOX_CLIMIT_TIME_MAX=$(((BWRAPBOX_RLIMIT_CPU_MAX+2)*1000*1000))
+
+# cgroup real time
+BWRAPBOX_CLIMIT_ELAPSED_HIGH=$(((BWRAPBOX_RLIMIT_CPU_MAX+3)*1000*1000))
+BWRAPBOX_CLIMIT_ELAPSED_MAX=$(((BWRAPBOX_RLIMIT_CPU_MAX+4)*1000*1000))
 
 ################################################################################
 
@@ -79,6 +82,8 @@ tar xf $1 --warning=no-timestamp
 bwrapbox \
   --cgroup $BWRAPBOX_USER.bwrapbox \
   --cgroup-overwrite \
+  --climit-elapsed-high $BWRAPBOX_CLIMIT_ELAPSED_HIGH \
+  --climit-elapsed-max $BWRAPBOX_CLIMIT_ELAPSED_MAX \
   --climit cgroup.max.descendants $BWRAPBOX_CLIMIT_CGROUP_MAX_DESCENDANTS \
   --climit cgroup.max.depth $BWRAPBOX_CLIMIT_CGROUP_MAX_DEPTH \
   --climit pids.max $BWRAPBOX_CLIMIT_PIDS_MAX \
@@ -105,7 +110,6 @@ bwrapbox \
   --rlimit rttime.max $BWRAPBOX_RLIMIT_RTTIME_MAX \
   --setuid $(id -u $BWRAPBOX_USER) \
   --setgid $(id -g $BWRAPBOX_USER) \
-  --size $BWRAPBOX_ROOT_SIZE --tmpfs / \
   --dev /dev \
   --proc /proc \
   --ro-bind /usr /usr \
@@ -113,10 +117,10 @@ bwrapbox \
   --ro-bind /sys /sys \
   --ro-bind $BOUNTY_WORKDIR $BWRAPBOX_WORKDIR \
   --perms 1777 --size $BWRAPBOX_TMP_SIZE --tmpfs /tmp \
-  --dir /run \
   --symlink /usr/lib /lib \
   --symlink /usr/bin /bin \
   --symlink /run /var/run \
+  --symlink /tmp /var/tmp \
   --ro-bind $EXPLOIT_FILE /exploit \
   --remount-ro / \
   --unshare-ipc \

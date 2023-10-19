@@ -266,6 +266,7 @@ func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
 	}
 	defer os.Remove("/var/tmp/exploit")
 	cmd := exec.Command("bounty-run", codePath)
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = cmd.Run()

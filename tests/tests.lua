@@ -424,6 +424,28 @@ describe("tests on Lua bounty", function()
         expect.equal(res.status, "rejected")
     end)
 
+    it("should reject inspect of a bounty that consumes too much disk", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = timestamp,
+            data = {
+                Name = "Hacker1",
+                BountyIndex = bounty_index,
+                Exploit = tobase64([[
+s=string.rep('x',4096)
+f=assert(io.open('/tmp/test', 'wb'))
+while true do
+    s=s..s
+    assert(f:write(s))
+    assert(f:flush())
+end
+]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
     it("should reject inspect of a bounty that consumes too much CPU", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
@@ -433,6 +455,20 @@ describe("tests on Lua bounty", function()
                 Name = "Hacker1",
                 BountyIndex = bounty_index,
                 Exploit = tobase64([[while true do end]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject inspect of a bounty that waits IO for too long", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.TestExploit,
+            timestamp = timestamp,
+            data = {
+                Name = "Hacker1",
+                BountyIndex = bounty_index,
+                Exploit = tobase64([[io.stdin:read('a')]]),
             },
         })
         expect.equal(res.status, "rejected")
