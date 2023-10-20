@@ -5,8 +5,8 @@ SOURCE_DIR=lua-$(VERSION)
 BOUNTY_TAR=lua-$(VERSION)-bounty_$(ARCH).tar.xz
 BOUNTY_RISCV64_TAR=lua-$(VERSION)-bounty_riscv64.tar.xz
 
-HARDEN_CFLAGS=-Os -fexceptions -fPIE -pie -D_FORTIFY_SOURCE=2 -fstack-clash-protection -fstack-protector-strong
-HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro -s
+HARDEN_CFLAGS=-Os -D_FORTIFY_SOURCE=2 -fexceptions -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections
+HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections -s
 
 all: $(BOUNTY_TAR)
 
@@ -21,10 +21,10 @@ $(SOURCE_DIR)/src/lua: | $(SOURCE_DIR)
 	$(MAKE) -C $(SOURCE_DIR)/src MYCFLAGS="$(HARDEN_CFLAGS)" MYLDFLAGS="$(HARDEN_LDFLAGS)" linux
 
 lua: $(SOURCE_DIR)/src/lua
-	cp $(SOURCE_DIR)/src/lua lua
+	cp $< $@
 
 $(SOURCE_DIR): $(SOURCE_TAR)
-	tar xzf $(SOURCE_TAR)
+	tar xzf $<
 
 $(SOURCE_TAR):
 	wget -O $(SOURCE_TAR) https://www.lua.org/ftp/$(SOURCE_TAR)
