@@ -1,3 +1,4 @@
+BUSYBOX_ACCOUNT=2
 LUA_ACCOUNT=3
 SQLITE_ACCOUNT=4
 RICH_SPONSOR_ACCOUNT=5
@@ -5,6 +6,27 @@ HACKER_ACCOUNT=6
 
 # send DApp address so we can generate vouchers later
 go run ./cli send dapp-address
+
+# Busybox 1.36.1
+CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+go run ./cli send bounty \
+    -a $BUSYBOX_ACCOUNT \
+    -n "BusyBox 1.36.1" \
+    -i "https://upload.wikimedia.org/wikipedia/commons/3/31/BusyBoxLogo.png" \
+    -d "Released on 19 May 20223" \
+    -c "./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
+
+go run ./cli send sponsor \
+    -a $BUSYBOX_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "BusyBox Sponsor" \
+    -v 0.99
+
+go run ./cli send sponsor \
+    -a $RICH_SPONSOR_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Rich Crypto Guy" \
+    -v 1.337
 
 # Lua 5.4.3
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
