@@ -1,7 +1,7 @@
 import { AppBounty } from "../model/state";
 
 export enum BountyStatus {
-    ACTIVE,
+    OPEN,
     EXPLOITED,
     EXPIRED,
 }
@@ -10,7 +10,7 @@ export function getBountyStatus(bounty: AppBounty, timestamp: BigInt): BountySta
     if (bounty.Exploit) {
         return BountyStatus.EXPLOITED;
     } else if (timestamp < bounty.Deadline) {
-        return BountyStatus.ACTIVE;
+        return BountyStatus.OPEN;
     } else {
         return BountyStatus.EXPIRED;
     }

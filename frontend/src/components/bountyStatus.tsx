@@ -9,10 +9,10 @@ interface BountyStatusBadgeInfo {
 
 export const getBountyStatusBadgeInfo = (bountyStatus: BountyStatus) => {
     switch (bountyStatus) {
-        case BountyStatus.ACTIVE:
+        case BountyStatus.OPEN:
             return {
                 color: "green",
-                label: "Active",
+                label: "Open",
             };
         case BountyStatus.EXPIRED:
             return {

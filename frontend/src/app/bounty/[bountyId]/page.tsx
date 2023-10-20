@@ -104,7 +104,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             const bounty = result.response;
             const profile = bounty.Developer;
             const bountyStatus = getBountyStatus(bounty, blockTimestamp);
-            const isActive = bountyStatus === BountyStatus.ACTIVE;
+            const isOpen = bountyStatus === BountyStatus.OPEN;
             const enableWithdrawals = bountyStatus === BountyStatus.EXPIRED;
             const totalPrize = getBountyTotalPrize(bounty);
             return (
@@ -128,7 +128,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                 <Button
                                     component="a"
                                     href={`/bounty/${bountyId}/sponsor`}
-                                    data-disabled={!isActive}
+                                    data-disabled={!isOpen}
                                     onClick={(event) => event.preventDefault()}
                                 >
                                     Sponsor
@@ -136,7 +136,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                 <Button
                                     component="a"
                                     href={`/bounty/${bountyId}/exploit`}
-                                    data-disabled={!isActive}
+                                    data-disabled={!isOpen}
                                     onClick={(event) => event.preventDefault()}
                                 >
                                     Submit exploit
