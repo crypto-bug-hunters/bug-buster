@@ -69,6 +69,8 @@ github.com/gligneul/eggroll v0.0.0-20231018132728-e6adb93d93d8 h1:cThZVfTRA+doAV
 github.com/gligneul/eggroll v0.0.0-20231018132728-e6adb93d93d8/go.mod h1:Kt9hw1dY0915VjJgKOtKBO1dgsymrlJr/CRNBqi3DXY=
 github.com/gligneul/eggroll v0.0.0-20231019182809-38e2cad5e757 h1:a2CApKYVtygGiNSefqicBObd02Jq9ss0l7cGS/3tnQ0=
 github.com/gligneul/eggroll v0.0.0-20231019182809-38e2cad5e757/go.mod h1:Kt9hw1dY0915VjJgKOtKBO1dgsymrlJr/CRNBqi3DXY=
+github.com/gligneul/eggroll v0.0.0-20231020184625-0a3cb9115777 h1:xTgyuOVV2I8nlKifwecufFN7wDqZc3KLdagA3lZ7Oj0=
+github.com/gligneul/eggroll v0.0.0-20231020184625-0a3cb9115777/go.mod h1:Kt9hw1dY0915VjJgKOtKBO1dgsymrlJr/CRNBqi3DXY=
 github.com/go-ole/go-ole v1.2.5 h1:t4MGB5xEDZvXI+0rMjjsfBsD7yAgp/s9ZDkL1JndXwY=
 github.com/go-ole/go-ole v1.2.5/go.mod h1:pprOEPIfldk/42T2oK7lQ4v4JSDwmV0As9GaiUsvbm0=
 github.com/go-stack/stack v1.8.1 h1:ntEHSVwIt7PNXNpgPmVfMrNhLtgjlmnZha2kOpuRiDw=
