@@ -1,28 +1,39 @@
 import { FC } from "react";
-import { AppBounty } from "../model/state";
-import { BountyStatus, getBountyStatus } from "../utils/bounty";
+import { BountyStatus } from "../utils/bounty";
 import { Badge } from "@mantine/core";
 
-export const BountyStatusBadge: FC<{ bounty: AppBounty }> = ({ bounty }) => {
-    const status: BountyStatus = getBountyStatus(bounty);
+interface BountyStatusBadgeInfo {
+    color: string;
+    label: string;
+}
 
+const getBountyStatusBadgeInfo = (status) => {
+    switch (status) {
+        case BountyStatus.ACTIVE:
+            return {
+                color: "green",
+                label: "Active",
+            }
+        case BountyStatus.EXPIRED:
+            return {
+                color: "gray",
+                label: "Expired",
+            }
+        case BountyStatus.EXPLOITED:
+            return {
+                color: "red",
+                label: "Exploited",
+            }
+        default:
+            throw new Error("Unknown status");
+    }
+};
+
+export const BountyStatusBadge: FC<{ status: BountyStatus }> = ({ status }) => {
+    const { color, label } = getBountyStatusBadgeInfo(status);
     return (
-        <>
-            {status === BountyStatus.ACTIVE && (
-                <>
-                    <Badge color="green">Active</Badge>
-                </>
-            )}
-            {status === BountyStatus.EXPIRED && (
-                <>
-                    <Badge color="gray">Expired</Badge>
-                </>
-            )}
-            {status === BountyStatus.EXPLOITED && (
-                <>
-                    <Badge color="red">Exploited</Badge>
-                </>
-            )}
-        </>
+        <Badge color={color}>
+            {label}
+        </Badge>
     );
 };
