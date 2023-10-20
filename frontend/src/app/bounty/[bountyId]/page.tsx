@@ -1,9 +1,7 @@
 "use client";
-import { FC, useState, useRef, useEffect } from "react";
+import { FC } from "react";
 
 import {
-    Avatar as MantineAvatar,
-    Box,
     Button,
     Center,
     Code,
@@ -11,90 +9,154 @@ import {
     Stack,
     Image,
     Title,
-    Tooltip,
-    useMantineTheme,
-    SimpleGrid,
-    Card,
-    Text,
     Paper,
+    Text,
 } from "@mantine/core";
 
-import NiceAvatar, { genConfig } from "react-nice-avatar";
-import { Address, bytesToHex, toHex, Hex, formatEther } from "viem";
+import { formatEther } from "viem";
 
 import { GetBounty } from "../../../model/reader";
-import Link from "next/link";
-import { Sponsorship, getBountyTotalPrize } from "../../../model/state";
+import { Exploit, getBountyTotalPrize, AppBounty } from "../../../model/state";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
-import { CodeWithCopyButton } from "../../../components/copy";
 import { useBlockTimestamp } from "../../../hooks/block";
 import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
 import { BountyStatusBadge } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
 import { Profile } from "../../../components/profile";
 
-const Avatar: FC<{
-    src: string;
-    altseed: string;
-}> = ({ src, altseed }) => {
-    return (
-        <MantineAvatar src={src} radius="sl" size="xl">
-            <NiceAvatar
-                style={{ width: "6rem", height: "6rem" }}
-                {...genConfig(altseed)}
-            />
-        </MantineAvatar>
-    );
-};
-
-const Sponsorship: FC<{
-    sponsorship: Sponsorship;
-}> = ({ sponsorship }) => {
-    return (
-        <Profile
-            profile={ sponsorship.Sponsor }
-            badge="Sponsor"
-            badgeColor="purple"
-        >
-            {formatEther(BigInt(sponsorship.Value))} ETH
-        </Profile>
-    );
-};
-
-const SponsorshipList: FC<{
-    sponsorships: Sponsorship[];
-}> = ({ sponsorships }) => {
-    return (
-        <Stack g={20} m={20}>
-            {sponsorships.map((sponsorship) => {
-                return <Sponsorship sponsorship={sponsorship} />;
-            })}
-        </Stack>
-    );
-};
-
-const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
-    const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
-    const theme = useMantineTheme();
-
+const WithdrawButton: FC<{
+    bountyId: string;
+    disabled: boolean;
+}> = ({ bountyId, disabled }) => {
     const bountyIndex = Number(bountyId);
     const config = usePrepareWithdrawSponsorship({ BountyIndex: bountyIndex });
     const { data, write } = useInputBoxAddInput(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
     });
+    return (
+        <Group>
+            <Button disabled={disabled || !write || isLoading} onClick={write}>
+                {isLoading ? "Withdrawing..." : "Withdraw"}
+            </Button>
+            <Group justify="center">
+                {isSuccess && (
+                    <>
+                        <Text size="lg">Withdraw transaction successful!</Text>
+                    </>
+                )}
+            </Group>
+        </Group>
+    );
+};
 
+const ButtonsBox: FC<{
+    bountyId: string;
+    bountyStatus: BountyStatus;
+}> = ({ bountyId, bountyStatus }) => {
+    const isOpen = bountyStatus === BountyStatus.OPEN;
+    const enableWithdrawals = bountyStatus === BountyStatus.EXPIRED;
+    return (
+        <Group justify="left">
+            <Button
+                component="a"
+                href={`/bounty/${bountyId}/sponsor`}
+                data-disabled={!isOpen}
+            >
+                Sponsor
+            </Button>
+            <Button
+                component="a"
+                href={`/bounty/${bountyId}/exploit`}
+                data-disabled={!isOpen}
+            >
+                Submit exploit
+            </Button>
+            <WithdrawButton bountyId={bountyId} disabled={!enableWithdrawals} />
+        </Group>
+    );
+};
+
+const BountyBox: FC<{
+    bountyId: string;
+    bounty: AppBounty;
+}> = ({ bountyId, bounty }) => {
     const blockTimestamp = useBlockTimestamp();
+    const bountyStatus = getBountyStatus(bounty, blockTimestamp || BigInt(0));
+    const profile = bounty.Developer;
+    const totalPrize = getBountyTotalPrize(bounty);
+    return (
+        <Stack align="center">
+            <Group>
+                <Title order={2}>{profile.Name}</Title>
+                {bountyStatus && (
+                    <BountyStatusBadge bountyStatus={bountyStatus} />
+                )}
+            </Group>
+            <Image
+                w={300}
+                src={bounty.Developer.ImgLink}
+                fallbackSrc="/static/default_app.webp"
+            />
+            <Paper withBorder={true} p="xl">
+                <Text styles={{ root: { "white-space": "pre-wrap" } }}>
+                    {bounty.Description}
+                </Text>
+            </Paper>
+            <Title order={3}>Total Prize: {formatEther(totalPrize)} ETH</Title>
+            <ButtonsBox bountyId={bountyId} bountyStatus={bountyStatus} />
+        </Stack>
+    );
+};
 
+const ExploitCodeBox: FC<{
+    exploit: Exploit | undefined;
+}> = ({ exploit }) => {
+    if (!!exploit) {
+        return (
+            <Stack align="center">
+                <Title order={2}>Exploit Code</Title>
+                <Code block>{exploit.Code}</Code>
+            </Stack>
+        );
+    }
+    return <></>;
+};
+
+const ParticipantsBox: FC<{
+    bounty: AppBounty;
+}> = ({ bounty }) => {
+    return (
+        <Stack align="center">
+            <Title order={2}>Participants</Title>
+            {bounty.Exploit && (
+                <Profile profile={bounty.Exploit.Hacker} badge="Exploiter" />
+            )}
+            {bounty.Sponsorships &&
+                bounty.Sponsorships.map((sponsorship) => {
+                    return (
+                        <Profile
+                            profile={sponsorship.Sponsor}
+                            badge="Sponsor"
+                            badgeColor="purple"
+                        >
+                            {formatEther(BigInt(sponsorship.Value))} ETH
+                        </Profile>
+                    );
+                })}
+        </Stack>
+    );
+};
+
+const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
+    const bountyIndex = Number(bountyId);
     if (isNaN(bountyIndex)) {
         return <InvalidBountyId />;
     }
-
     const result = GetBounty(bountyIndex);
-
     switch (result.kind) {
         case "loading":
             return <Center>Loading bounty info...</Center>;
@@ -102,82 +164,13 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             return <Center>{result.message}</Center>;
         case "success":
             const bounty = result.response;
-            const profile = bounty.Developer;
-            const bountyStatus = getBountyStatus(bounty, blockTimestamp);
-            const isOpen = bountyStatus === BountyStatus.OPEN;
-            const enableWithdrawals = bountyStatus === BountyStatus.EXPIRED;
-            const totalPrize = getBountyTotalPrize(bounty);
             return (
-                <Center>
-                    <Box p={20} mt={20} bg={theme.colors.dark[7]}>
-                        <Stack w={800} align="center" justify="center">
-                            <Group>
-                                <Title order={2}>{profile.Name}</Title>
-                                {bountyStatus && <BountyStatusBadge bountyStatus={bountyStatus} />}
-                            </Group>
-                            <Image
-                                w={300}
-                                src={bounty.Developer.ImgLink}
-                                fallbackSrc="/static/default_app.webp"
-                            />
-                            <Paper withBorder={true} p="xl">
-                                <Text styles={{root:{'white-space': 'pre-wrap'}}}>
-                                    {bounty.Description}
-                                </Text>
-                            </Paper>
-                            <Title order={3}>
-                                Total Prize: {formatEther(totalPrize)} ETH
-                            </Title>
-                            <Group justify="left">
-                                <Button
-                                    component="a"
-                                    href={`/bounty/${bountyId}/sponsor`}
-                                    data-disabled={!isOpen}
-                                    onClick={(event) => event.preventDefault()}
-                                >
-                                    Sponsor
-                                </Button>
-                                <Button
-                                    component="a"
-                                    href={`/bounty/${bountyId}/exploit`}
-                                    data-disabled={!isOpen}
-                                    onClick={(event) => event.preventDefault()}
-                                >
-                                    Submit exploit
-                                </Button>
-                                <Button
-                                    disabled={!enableWithdrawals || !write || isLoading}
-                                    onClick={write}
-                                >
-                                    {isLoading
-                                        ? "Withdrawing..."
-                                        : "Withdraw"}
-                                </Button>
-                                <Group justify="center">
-                                        {isSuccess && (
-                                            <>
-                                                <Text size="lg">
-                                                    Withdraw transaction
-                                                    successful!
-                                                </Text>
-                                            </>
-                                        )}
-                                    </Group>
-                            </Group>
-                            <Title order={2} mt={50}>
-                                Participants
-                            </Title>
-                            {bounty.Exploit && (
-                                <Profile
-                                    profile={bounty.Exploit.Hacker}
-                                    badge="Exploiter"
-                                />
-                            )}
-                            {bounty.Sponsorships && (<SponsorshipList
-                                sponsorships={bounty.Sponsorships}
-                            />)}
-                        </Stack>
-                    </Box>
+                <Center p={20} mt={20}>
+                    <Stack w={800} gap={50} align="center" justify="center">
+                        <BountyBox bountyId={bountyId} bounty={bounty} />
+                        <ExploitCodeBox exploit={bounty.Exploit} />
+                        <ParticipantsBox bounty={bounty} />
+                    </Stack>
                 </Center>
             );
     }

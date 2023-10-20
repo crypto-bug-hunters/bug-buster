@@ -20,7 +20,7 @@ export const getBountyTotalPrize = (bounty: AppBounty) => {
             .map((s) => BigInt(s.Value))
             .reduce((acc, v) => acc + v);
     } else {
-        return 0;
+        return BigInt(0);
     }
 };
 

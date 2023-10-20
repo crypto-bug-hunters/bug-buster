@@ -41,7 +41,7 @@ export const Profile: FC<{
     profile: Profile;
     badge?: string;
     badgeColor?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }> = ({ profile, badge, badgeColor, children }) => {
     return (
         <Card radius="md" shadow="sm">
