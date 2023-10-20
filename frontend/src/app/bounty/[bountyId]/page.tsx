@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 
 import NiceAvatar, { genConfig } from "react-nice-avatar";
-import { Address, bytesToHex, toHex, Hex } from "viem";
+import { Address, bytesToHex, toHex, Hex, formatEther } from "viem";
 
 import { GetBounty } from "../../../model/reader";
 import Link from "next/link";
@@ -26,7 +26,6 @@ import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
-import { EtherValue } from "../../../util/wei";
 
 const Address: FC<{ address: string }> = ({ address }) => {
     return (
@@ -69,7 +68,7 @@ const Sponsor: FC<{
                 </Text>
                 <Address address={sponsorship.Sponsor.Address} />
                 <Text size="sm" c="dimmend">
-                    Sponsorship : <EtherValue wei={sponsorship.Value} />
+                    Sponsorship : {formatEther(BigInt(sponsorship.Value))}
                 </Text>
             </Stack>
         </Card>
@@ -115,7 +114,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             {bounty.Description}
 
                             <Title order={3}>
-                                Total Prize: <EtherValue wei={totalPrize} />
+                                Total Prize: {formatEther(totalPrize)} ETH
                             </Title>
                             {!hasExploit && (
                                 <>
