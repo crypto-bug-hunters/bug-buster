@@ -24,6 +24,7 @@ go run ./cli send sponsor \
 go run ./cli send exploit \
     -a $HACKER_ACCOUNT \
     -b $CURR_BOUNTY \
+    -n "Mike" \
     -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
 
 # Lua 5.4.6
