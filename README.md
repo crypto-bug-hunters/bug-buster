@@ -129,10 +129,11 @@ To set the env var automaticaly, run the following command in the repository roo
 export NEXT_PUBLIC_DAPP_ADDRESS=$(sunodo address-book --json | jq -r .CartesiDApp)
 ```
 
-Also, it seems that this address is constant, so you can just pop this directly.
+The previous command is unstable and might not work on your environment.
+An alternative solution is to run a similar command that uses `awk` instead, also in the repository root.
 
 ```sh
-export NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C
+export NEXT_PUBLIC_DAPP_ADDRESS=$(sunodo address-book | awk '$1 == "CartesiDApp" { print $2 }')
 ```
 
 You may also want to send yourself some Ether to play with the DApp.
