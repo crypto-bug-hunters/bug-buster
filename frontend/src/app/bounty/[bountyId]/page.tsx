@@ -16,6 +16,7 @@ import {
     Text,
 } from "@mantine/core";
 
+import NiceAvatar, { genConfig } from 'react-nice-avatar';
 import { Address, bytesToHex, toHex, Hex } from "viem";
 
 import { GetBounty } from "../../../model/reader";
@@ -38,7 +39,9 @@ const Sponsor: FC<{
         <Card>
             <Stack justify="center" align="center" w="220">
                 <Card.Section>
-                    <Avatar src={sponsorship.Sponsor.ImgLink} radius="sl" size="xl" />
+                    <Avatar src={sponsorship.Sponsor.ImgLink} radius="sl" size="xl">
+                        <NiceAvatar style={{ width: '6rem', height: '6rem' }} {...genConfig(sponsorship.Sponsor.Address)}/>
+                    </Avatar>
                 </Card.Section>
                 <Text fw={600} size="lg">
                     {sponsorship.Sponsor.Name}

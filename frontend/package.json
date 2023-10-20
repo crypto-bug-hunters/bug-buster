@@ -38,6 +38,7 @@
         "react": "^18",
         "react-dom": "^18",
         "react-icons": "^4",
+        "react-nice-avatar": "^1.4.1",
         "react-use-downloader": "^1",
         "swr": "^2",
         "urql": "^4",
