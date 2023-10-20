@@ -9,6 +9,7 @@ import {
     TextInput,
     useMantineTheme,
     Title,
+    Text
 } from "@mantine/core";
 import { FC, useState } from "react";
 import { Address, parseEther } from "viem";
@@ -49,14 +50,11 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
 
     const config = usePrepareAddSponsorship(addSponsorship, toWei(value));
 
-    const { data, isLoading, isSuccess, write } =
+    const { data, write } =
         useEtherPortalDepositEther(config);
-    const wait = useWaitForTransaction(data);
+    const {isLoading, isSuccess,} = useWaitForTransaction({hash:data?.hash});
 
-    function submit() {
-        if (write) write();
-    }
-
+    
     function wrapSetter(setter) {
         return (e) => setter(e.target.value);
     }
@@ -96,12 +94,17 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         <Button
                             size="lg"
                             type="submit"
-                            disabled={!write || name.trim().length === 0}
-                            onClick={submit}
+                            disabled={!write || isLoading || name.trim().length === 0}
+                            onClick={write}
                         >
-                            {"Add Sponsorship"}
+                            {isLoading? "Adding Sponsorhsip...":"Add Sponsorship"}
                         </Button>
                     </Group>
+                    {isSuccess && <>
+                        <Group justify="center">
+                            <Text size="lg">Sponsorship Successfully Added!</Text>
+                        </Group>
+                    </>}
                 </Stack>
             </Box>
         </Center>
