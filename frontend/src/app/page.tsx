@@ -10,7 +10,6 @@ import {
     Flex,
     Text,
     Anchor,
-    Title,
     SimpleGrid,
 } from "@mantine/core";
 import Link from "next/link";
@@ -25,7 +24,7 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
         <Anchor href={"/bounty/" + index} underline="never">
             <Card>
                 <Card.Section>
-                    <Image h={100} src={bounty.Developer.ImgLink} />
+                    <Image h={100} src={bounty.Developer.ImgLink} fallbackSrc="/static/default_app.webp" />
                 </Card.Section>
                 <Box w={512}>
                     <Text truncate="end" fw={500} size="lg" mt="md">
