@@ -162,7 +162,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             </Title>
                             {bounty.Exploit && (
                                 <Profile
-                                    profile={bounty.Exploit?.Hacker}
+                                    profile={bounty.Exploit.Hacker}
                                     badge="Exploiter"
                                 />
                             )}
