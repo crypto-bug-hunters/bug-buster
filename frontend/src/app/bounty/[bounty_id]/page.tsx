@@ -63,7 +63,17 @@ const BountyInfoPage: FC<{ params: { bounty_id: string } }> = ({
     const theme = useMantineTheme();
     const bountyIndex = parseInt(bounty_id);
 
-    const result = GetBounty(bountyIndex);
+    const bounty_index = Number(bounty_id);
+
+    if (isNaN(bounty_index)) {
+        return (
+            <Box p="lg">
+                <Center>Invalid bounty ID</Center>
+            </Box>
+        );
+    }
+
+    const result = GetBounty(bounty_index);
 
     switch (result.kind) {
         case "loading":
