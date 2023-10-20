@@ -127,7 +127,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                                 "/sponsor"
                                             }
                                         >
-                                            <Button>Add Sponsorship</Button>
+                                            <Button>Sponsor</Button>
                                         </Link>
                                         <Link
                                             href={
@@ -136,7 +136,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                                 "/exploit"
                                             }
                                         >
-                                            <Button>Send Exploit</Button>
+                                            <Button>Submit exploit</Button>
                                         </Link>
                                         {enableWithdrawals && (
                                             <Button onClick={write}>
