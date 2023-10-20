@@ -8,13 +8,36 @@ HACKER_ACCOUNT=6
 
 LUA_LOGO="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg"
 LUA_BOUNTY_DESC=$(cat <<-END
-Lua is a powerful, efficient, lightweight, embeddable scripting language.
-The goal of this bounty is to find bugs in Lua.
+Find bugs in Lua, a powerful, efficient, lightweight, embeddable scripting language!
 
 Submited Lua code will run inside a sanboxed Lua environment, to win the bounty the code must crash its interpreter or escape the sandbox and exit with segmentation fault status (code 139).
 
 The source code of the bounty can be inspected at:
 https://github.com/crypto-bug-hunters/bug-less/tree/main/tests/bounties/lua-bounty
+END
+)
+
+SQLITE_LOGO="https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg"
+SQLITE_BOUNTY_DESC=$(cat <<-END
+Find bugs in SQLite, the most used database engine in the world!
+
+Submited SQL code will run inside a SQLite safe shell open on an empty database, to win the bounty the SQL code must crash the SQLite shell.
+
+The source code of the bounty can be inspected at:
+https://github.com/crypto-bug-hunters/bug-less/tree/main/tests/bounties/sqlite-bounty
+END
+)
+
+BUSYBOX_LOGO="https://upload.wikimedia.org/wikipedia/commons/3/31/BusyBoxLogo.png"
+BUSYBOX_BOUNTY_DESC=$(cat <<-END
+Find bugs in BusyBox, a software suite that provides several Unix utilities!
+
+Did you it is one of the most downloaded software in Docker Hub, with more than one billion downloads?
+
+Submited shell code will run inside a BusyBox with only ash utility enabled, to win this bounty the shell code must crash it.
+
+The source code of the bounty can be inspected at:
+https://github.com/crypto-bug-hunters/bug-less/tree/main/tests/bounties/busybox-bounty
 END
 )
 
@@ -26,8 +49,8 @@ CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
     -a $BUSYBOX_ACCOUNT \
     -n "BusyBox 1.36.1" \
-    -i "https://upload.wikimedia.org/wikipedia/commons/3/31/BusyBoxLogo.png" \
-    -d "Released on 19 May 20223" \
+    -i "$BUSYBOX_LOGO" \
+    -d "$BUSYBOX_BOUNTY_DESC" \
     -c "./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -95,8 +118,8 @@ CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
     -a $SQLITE_ACCOUNT \
     -n "SQLite 3.32.2" \
-    -i "https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" \
-    -d "Released on 4 June 2020" \
+    -i "$SQLITE_LOGO" \
+    -d "$SQLITE_BOUNTY_DESC" \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -116,8 +139,8 @@ CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
     -a $SQLITE_ACCOUNT \
     -n "SQLite 3.43.2" \
-    -i "https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" \
-    -d "Released on 10 October 2023" \
+    -i "$SQLITE_LOGO" \
+    -d "$SQLITE_BOUNTY_DESC" \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
