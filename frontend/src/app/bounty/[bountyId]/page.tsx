@@ -73,9 +73,6 @@ const Sponsorship: FC<{
                         </Text>
                     </Stack>
                 </Group>
-                {enableWithdraw && (
-                    <Button onClick={write}>Withdraw</Button>
-                )}
             </Stack>
         </Card>
     );
@@ -83,17 +80,13 @@ const Sponsorship: FC<{
 
 const SponsorshipList: FC<{
     sponsorships: Sponsorship[];
-    bountyIndex: number;
-    enableWithdrawals: boolean;
-}> = ({ sponsorships, bountyIndex, enableWithdrawals }) => {
+}> = ({ sponsorships }) => {
     return (
         <Stack g={20} m={20}>
             {sponsorships.map((sponsorship) => {
                 return (
                     <Sponsorship
-                        bountyIndex={bountyIndex}
                         sponsorship={sponsorship}
-                        enableWithdrawals={enableWithdrawals}
                     />
                 );
             })}
@@ -188,9 +181,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                 Sponsorships
                             </Title>
                             <SponsorshipList
-                                bountyIndex={bountyIndex}
                                 sponsorships={bounty.Sponsorships}
-                                enableWithdrawals={enableWithdrawals}
                             />
                         </Stack>
                     </Box>
