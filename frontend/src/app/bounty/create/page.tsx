@@ -123,7 +123,7 @@ const CreateBountyPage: FC = () => {
                             onReject={(files) =>
                                 console.log("rejected files", files)
                             }
-                            accept={["application/zip", "application/x-xz"]}
+                            accept={["application/x-xz"]}
                         >
                             <Paper withBorder shadow="sm" radius="lg">
                                 <Group
