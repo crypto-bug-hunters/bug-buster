@@ -13,7 +13,8 @@ export interface AppBounty {
     Withdrawn: boolean;
 }
 
-export const getBountyTotalPrize = (bounty : AppBounty) => {
+export const getBountyTotalPrize = (bounty: AppBounty) => {
+    // prettier-ignore
     return bounty.Sponsorships
         .map((s) => parseInt(s.Value))
         .reduce((acc, v) => acc + v);
