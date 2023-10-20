@@ -50,7 +50,7 @@ const BountyList: FC = () => {
         case "success":
             const state = result.response;
             return (
-                <SimpleGrid m="sm" cols={{ base : 1, sm : 2, lg : 3 }}>
+                <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
                     {state.Bounties?.map((bounty, index) => {
                         return <Bounty index={index} bounty={bounty} />;
                     })}
