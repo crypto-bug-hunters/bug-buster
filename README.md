@@ -106,6 +106,14 @@ go run ./cli test \
     -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
 ```
 
+## Populating DApp
+
+Run the following command to fill up the DApp with test data. 
+
+```sh
+make populate
+```
+
 ## Frontend
 
 Before running the frontend, you should have the `CartesiDApp` address stored in the `NEXT_PUBLIC_DAPP_ADDRESS` enviroment variable.

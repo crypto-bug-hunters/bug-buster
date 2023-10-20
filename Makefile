@@ -17,3 +17,6 @@ test:
 
 run:
 	sunodo run
+
+populate:
+	./populate.sh
