@@ -3,8 +3,8 @@ package cmd
 import (
 	"bugless/shared"
 	"log"
+	"math/big"
 
-	"github.com/holiman/uint256"
 	"github.com/spf13/cobra"
 )
 
@@ -22,17 +22,20 @@ var (
 )
 
 func sponsorRun(cmd *cobra.Command, args []string) {
-	value := new(uint256.Int)
-	err := value.SetFromDecimal(sponsorValue)
-	if err != nil {
-		log.Fatalf("failed to parse value: %v", err)
+	etherValue, ok := new(big.Float).SetString(sponsorValue)
+	if !ok {
+		log.Fatalf("failed to parse value")
 	}
+	tenToEighteen := new(big.Float).SetFloat64(1e18)
+	weiValue := new(big.Float).Mul(etherValue, tenToEighteen)
+	value := new(big.Int)
+	weiValue.Int(value)
 	input := &shared.AddSponsorship{
 		BountyIndex: sponsorBountyIndex,
 		Name:        sponsorName,
 		ImgLink:     sponsorImgLink,
 	}
-	sendEther(value.ToBig(), input)
+	sendEther(value, input)
 }
 
 func init() {
@@ -50,6 +53,6 @@ func init() {
 		&sponsorImgLink, "image", "i", "", "Sponsor image")
 
 	sponsorCmd.Flags().StringVarP(
-		&sponsorValue, "value", "v", "", "Value to sponsor in Wei")
+		&sponsorValue, "value", "v", "", "Value to sponsor in Ether")
 	sponsorCmd.MarkFlagRequired("value")
 }

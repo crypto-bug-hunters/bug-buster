@@ -80,7 +80,7 @@ go run ./cli send bounty \
 ### Sending sponsor
 
 ```sh
-go run ./cli send sponsor -b 0 -n "Sponsor Name" -v 1000
+go run ./cli send sponsor -b 0 -n "Sponsor Name" -v 0.05
 ```
 
 ### Sending exploit
