@@ -1,2 +1,3 @@
 .next
 src/hooks/contracts.tsx
+src/model/__generated__/
