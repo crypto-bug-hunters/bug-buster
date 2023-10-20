@@ -26,6 +26,7 @@ import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
+import { EtherValue } from "../../../util/wei";
 
 const Address: FC<{ address: string }> = ({ address }) => {
     return (
@@ -68,7 +69,7 @@ const Sponsor: FC<{
                 </Text>
                 <Address address={sponsorship.Sponsor.Address} />
                 <Text size="sm" c="dimmend">
-                    Sponsorship: {parseInt(sponsorship.Value)} wei
+                    Sponsorship : <EtherValue wei={sponsorship.Value} />
                 </Text>
             </Stack>
         </Card>
@@ -114,7 +115,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             {bounty.Description}
 
                             <Title order={3}>
-                                Total Prize: {totalPrize} wei
+                                Total Prize: <EtherValue wei={totalPrize} />
                             </Title>
                             {!hasExploit && (
                                 <>
