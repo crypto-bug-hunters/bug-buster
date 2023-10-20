@@ -74,7 +74,7 @@ go run ./cli send dapp-address
 go run ./cli send bounty \
     -n "Lua Bounty" \
     -d "Description of Lua bounty" \
-    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz                  
+    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz
 ```
 
 ### Sending sponsor

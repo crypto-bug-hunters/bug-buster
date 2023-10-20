@@ -264,8 +264,9 @@ func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
 	if err != nil {
 		return fmt.Errorf("writing exploit to file failed: %s", err)
 	}
+	defer os.RemoveAll("/var/tmp/bounty")
 	defer os.Remove("/var/tmp/exploit")
-	cmd := exec.Command("bounty-run", codePath)
+	cmd := exec.Command("bounty-run", codePath, "/var/tmp/bounty", "/var/tmp/exploit")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

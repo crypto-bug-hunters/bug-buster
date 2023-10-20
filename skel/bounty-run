@@ -1,8 +1,9 @@
 #!/bin/sh
 
 # bounty and exploit paths
-BOUNTY_WORKDIR=/var/tmp/bounty
-EXPLOIT_FILE=/var/tmp/exploit
+BOUNTY_TAR=$1
+BOUNTY_WORKDIR=$2
+EXPLOIT_FILE=$3
 
 # user and shell
 BWRAPBOX_TERM=linux
@@ -70,13 +71,11 @@ BWRAPBOX_CLIMIT_ELAPSED_MAX=$(((BWRAPBOX_RLIMIT_CPU_MAX+4)*1000*1000))
 # exit when command fails
 set -e
 
-# create bounty file tree
+# extract bounty files
 rm -rf $BOUNTY_WORKDIR
 mkdir -p $BOUNTY_WORKDIR
-
-# extract bounty files
 cd $BOUNTY_WORKDIR
-tar xf $1 --warning=no-timestamp
+tar xf $BOUNTY_TAR --warning=no-timestamp
 
 # run bounty test in sandboxed environment
 bwrapbox \
@@ -140,9 +139,4 @@ bwrapbox \
   --new-session \
   --seccomp 9 9<$BWRAPBOX_SECCOMP_FILTER \
   -- /bounty/start.sh /exploit
-status=$?
 
-# delete bounty files
-rm -rf $BOUNTY_WORKDIR
-
-exit $status
