@@ -1,39 +1,28 @@
 import { FC } from "react";
 import { AppBounty } from "../model/state";
 import { BountyStatus, getBountyStatus } from "../utils/bounty";
-import { ThemeIcon, Tooltip } from "@mantine/core";
-import {
-    IconDiscountCheck,
-    IconDiscountOff,
-    IconBombFilled,
-} from "@tabler/icons-react";
+import { Badge } from "@mantine/core";
 
 export const BountyStatusBadge: FC<{ bounty: AppBounty }> = ({ bounty }) => {
     const status: BountyStatus = getBountyStatus(bounty);
 
     return (
-        <ThemeIcon>
+        <>
             {status === BountyStatus.ACTIVE && (
                 <>
-                    <Tooltip label={"Active"} withArrow position="right">
-                        <IconDiscountCheck />
-                    </Tooltip>
+                    <Badge color="green">Active</Badge>
                 </>
             )}
             {status === BountyStatus.EXPIRED && (
                 <>
-                    <Tooltip label={"Expired"} withArrow position="right">
-                        <IconDiscountOff />
-                    </Tooltip>
+                    <Badge color="gray">Expired</Badge>
                 </>
             )}
             {status === BountyStatus.EXPLOITED && (
                 <>
-                    <Tooltip label={"Exploited"} withArrow position="right">
-                        <IconBombFilled />
-                    </Tooltip>
+                    <Badge color="red">Exploited</Badge>
                 </>
             )}
-        </ThemeIcon>
+        </>
     );
 };
