@@ -3,7 +3,7 @@ import {
     usePrepareEtherPortalDepositEther,
     usePrepareInputBoxAddInput,
 } from "./contracts";
-import { AddSponsorship, CreateBounty } from "../model/inputs";
+import { AddSponsorship, CreateBounty, SendExploit } from "../model/inputs";
 
 const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
 
@@ -57,4 +57,8 @@ export function usePrepareAddSponsorship(
         sponsorship,
         value,
     );
+}
+
+export function usePrepareSendExploit(exploit: SendExploit) {
+    return usePrepareBuglessInput([0xc2, 0xed, 0xf0, 0x48], exploit);
 }

@@ -11,3 +11,10 @@ export interface AddSponsorship {
     ImgLink?: string;
     BountyIndex: number;
 }
+
+export interface SendExploit {
+    Name: string;
+    ImgLink?: string;
+    BountyIndex: number;
+    Exploit: string;
+}
