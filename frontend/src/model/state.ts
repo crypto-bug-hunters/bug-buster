@@ -15,9 +15,13 @@ export interface AppBounty {
 
 export const getBountyTotalPrize = (bounty: AppBounty) => {
     // prettier-ignore
-    return bounty.Sponsorships
+    if(bounty.Sponsorships){
+        return bounty.Sponsorships?
         .map((s) => BigInt(s.Value))
         .reduce((acc, v) => acc + v);
+    }
+    return 0;
+    
 };
 
 export interface Profile {

@@ -186,9 +186,12 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             <Title order={2} mt={50}>
                                 Sponsorships
                             </Title>
-                            <SponsorshipList
+                            {bounty.Sponsorships && <><SponsorshipList
                                 sponsorships={bounty.Sponsorships}
-                            />
+                            /></>}
+                            {!bounty.Sponsorships && 
+                            <><Text size="lg">No Sponsors yet</Text></>
+                            }
                         </Stack>
                     </Box>
                 </Center>
