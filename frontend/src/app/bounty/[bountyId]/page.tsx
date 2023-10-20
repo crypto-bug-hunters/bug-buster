@@ -36,7 +36,7 @@ const Sponsor: FC<{
         <Card>
             <Stack justify="center" align="center">
                 <Card.Section>
-                    <Image h={300} src={sponsorship.Sponsor.ImgLink} />
+                    <Image h={300} src={sponsorship.Sponsor.ImgLink} fallbackSrc="/static/default_app.webp" />
                 </Card.Section>
 
                 <Text fw={500} size="lg" mt="md">
