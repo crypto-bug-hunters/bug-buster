@@ -11,6 +11,7 @@ import {
     Text,
     Anchor,
     Title,
+    SimpleGrid,
 } from "@mantine/core";
 import Link from "next/link";
 import { GetLatestState } from "../model/reader";
@@ -49,11 +50,11 @@ const BountyList: FC = () => {
         case "success":
             const state = result.response;
             return (
-                <Stack>
+                <SimpleGrid m="sm" cols={{ base : 1, sm : 2, lg : 3 }}>
                     {state.Bounties?.map((bounty, index) => {
                         return <Bounty index={index} bounty={bounty} />;
                     })}
-                </Stack>
+                </SimpleGrid>
             );
     }
 };
