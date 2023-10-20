@@ -39,7 +39,10 @@ const WithdrawButton: FC<{
     });
     return (
         <Group>
-            <Button disabled={disabled || !write || isLoading} onClick={write}>
+            <Button
+                disabled={disabled || !write || isLoading}
+                onClick={write}
+            >
                 {isLoading ? "Withdrawing..." : "Withdraw"}
             </Button>
             <Group justify="center">
@@ -65,6 +68,7 @@ const ButtonsBox: FC<{
                 component="a"
                 href={`/bounty/${bountyId}/sponsor`}
                 data-disabled={!isOpen}
+                onClick={(event) => event.preventDefault()}
             >
                 Sponsor
             </Button>
@@ -72,6 +76,7 @@ const ButtonsBox: FC<{
                 component="a"
                 href={`/bounty/${bountyId}/exploit`}
                 data-disabled={!isOpen}
+                onClick={(event) => event.preventDefault()}
             >
                 Submit exploit
             </Button>
@@ -92,20 +97,16 @@ const BountyBox: FC<{
         <Stack align="center">
             <Group>
                 <Title order={2}>{profile.Name}</Title>
-                {bountyStatus && (
-                    <BountyStatusBadge bountyStatus={bountyStatus} />
-                )}
+                <BountyStatusBadge bountyStatus={bountyStatus} />
             </Group>
             <Image
                 w={300}
                 src={bounty.Developer.ImgLink}
                 fallbackSrc="/static/default_app.webp"
             />
-            <Paper withBorder={true} p="xl">
-                <Text styles={{ root: { "white-space": "pre-wrap" } }}>
-                    {bounty.Description}
-                </Text>
-            </Paper>
+            <Text styles={{ root: { "white-space": "pre-wrap" } }}>
+                {bounty.Description}
+            </Text>
             <Title order={3}>Total Prize: {formatEther(totalPrize)} ETH</Title>
             <ButtonsBox bountyId={bountyId} bountyStatus={bountyStatus} />
         </Stack>
