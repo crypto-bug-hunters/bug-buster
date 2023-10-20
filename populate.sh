@@ -12,8 +12,8 @@ go run ./cli send bounty \
     -a $LUA_ACCOUNT \
     -n "Lua 5.4.3" \
     -i "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" \
-    -d "TODO" \
-    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz
+    -d "Released on 29 March 2021" \
+    -c "./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
     -a $LUA_ACCOUNT \
@@ -25,7 +25,7 @@ go run ./cli send exploit \
     -a $HACKER_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Mike" \
-    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+    -e "./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua"
 
 # Lua 5.4.6
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
@@ -33,8 +33,8 @@ go run ./cli send bounty \
     -a $LUA_ACCOUNT \
     -n "Lua 5.4.6" \
     -i "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" \
-    -d "TODO" \
-    -c ./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz
+    -d "Released on 14 May 2023" \
+    -c "./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
     -a $LUA_ACCOUNT \
@@ -57,8 +57,8 @@ go run ./cli send bounty \
     -a $SQLITE_ACCOUNT \
     -n "SQLite 3.32.2" \
     -i "https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" \
-    -d "TODO" \
-    -c ./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz
+    -d "Released on 4 June 2020" \
+    -c "./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
 
 # SQLite 3.43.2
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
@@ -66,5 +66,5 @@ go run ./cli send bounty \
     -a $SQLITE_ACCOUNT \
     -n "SQLite 3.43.2" \
     -i "https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" \
-    -d "TODO" \
-    -c ./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz
+    -d "Released on 10 October 2023" \
+    -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
