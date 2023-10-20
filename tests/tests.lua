@@ -101,6 +101,7 @@ machine:run_until_yield_or_halt()
 
 local timestamp = 1697567000
 local first_bounty_final_state
+local second_bounty_final_state
 
 describe("tests on Lua bounty", function()
     local bounty_code = "tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
@@ -649,6 +650,7 @@ describe("tests on SQLite bounty", function()
                 },
             },
         })
+        second_bounty_final_state = res.state.Bounties[bounty_index + 1]
         expect.equal(res.vouchers, {
             {
                 address = fromhex(config.DAPP_ADDRESS),
@@ -700,6 +702,101 @@ describe("tests on SQLite bounty", function()
         })
         expect.equal(res.status, "rejected")
         expect.equal(res.error, "rejecting: can't add sponsorship because exploit was found")
+    end)
+end)
+
+describe("tests on BusyBox bounty", function()
+    local sqlite33202_bounty_code = "tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh")
+    local bounty_index = 2
+    local bounty_started = timestamp
+    local bounty_deadline = timestamp + 7200
+
+    it("should create bounty", function()
+        local res = advance_input(machine, {
+            sender = DEVELOPER1_WALLET,
+            opcode = CodecOpcodes.CreateAppBounty,
+            timestamp = timestamp,
+            data = {
+                Name = "BusyBox 1.36.1 Bounty",
+                Description = "Try to crash BusyBox 1.36.1",
+                Deadline = bounty_deadline,
+                CodeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
+            },
+        })
+        expect.equal(res.status, "accepted")
+        expect.equal(res.state, {
+            Bounties = {
+                first_bounty_final_state,
+                second_bounty_final_state,
+                {
+                    Developer = {
+                        Address = DEVELOPER1_WALLET,
+                        ImgLink = "",
+                        Name = "BusyBox 1.36.1 Bounty",
+                    },
+                    Deadline = bounty_deadline,
+                    Description = "Try to crash BusyBox 1.36.1",
+                    Exploit = null,
+                    InputIndex = 9,
+                    Sponsorships = null,
+                    Started = bounty_started,
+                    Withdrawn = false,
+                },
+            },
+        })
+    end)
+
+    timestamp = timestamp + 1
+
+    it("should accept an exploit that succeeded", function()
+        local res = advance_input(machine, {
+            sender = HACKER1_WALLET,
+            opcode = CodecOpcodes.SendExploit,
+            timestamp = timestamp,
+            data = {
+                Name = "Hacker1",
+                BountyIndex = bounty_index,
+                Exploit = tobase64(bounty_valid_exploit),
+            },
+        })
+        expect.equal(res.status, "accepted")
+        expect.equal(res.state, {
+            Bounties = {
+                first_bounty_final_state,
+                second_bounty_final_state,
+                {
+                    Developer = {
+                        Address = DEVELOPER1_WALLET,
+                        ImgLink = "",
+                        Name = "BusyBox 1.36.1 Bounty",
+                    },
+                    Deadline = bounty_deadline,
+                    Description = "Try to crash BusyBox 1.36.1",
+                    Exploit = {
+                        InputIndex = 10,
+                        Hacker = {
+                            Address = HACKER1_WALLET,
+                            ImgLink = "",
+                            Name = "Hacker1",
+                        },
+                    },
+                    InputIndex = 9,
+                    Sponsorships = null,
+                    Started = bounty_started,
+                    Withdrawn = true,
+                },
+            },
+        })
+        expect.equal(res.vouchers, {
+            {
+                address = fromhex(config.DAPP_ADDRESS),
+                payload = cartesix_encoder.encode_ether_transfer_voucher({
+                    destination_address = HACKER1_WALLET,
+                    amount = tobe256(0),
+                }),
+            },
+        })
     end)
 end)
 

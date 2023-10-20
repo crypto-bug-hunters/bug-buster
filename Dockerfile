@@ -63,7 +63,7 @@ make LDFLAGS=-static
 EOF
 
 # install bwrapbox (for sanboxing)
-ARG BWRAPBOX_VER=0.2.0
+ARG BWRAPBOX_VER=0.2.1
 RUN <<EOF
 wget -O bwrapbox-${BWRAPBOX_VER}.tar.gz https://github.com/edubart/bwrapbox/archive/refs/tags/v${BWRAPBOX_VER}.tar.gz
 tar xf bwrapbox-${BWRAPBOX_VER}.tar.gz
