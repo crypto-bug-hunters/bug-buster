@@ -10,6 +10,7 @@ import {
     Stack,
     Image,
     Title,
+    Tooltip,
     useMantineTheme,
     Card,
     Text,
@@ -35,19 +36,20 @@ const Sponsor: FC<{
 
     return (
         <Card>
-            <Stack justify="center" align="center">
+            <Stack justify="center" align="center" w="220">
                 <Card.Section>
                     <Avatar src={sponsorship.Sponsor.ImgLink} radius="sl" size="xl" />
                 </Card.Section>
-
-                <Text fw={500} size="lg" mt="md">
+                <Text fw={600} size="lg">
                     {sponsorship.Sponsor.Name}
                 </Text>
-                <Text fw={500} size="sm" mt="md">
-                    {sponsorship.Sponsor.Address}
-                </Text>
+                <Tooltip label={sponsorship.Sponsor.Address}>
+                    <Text fw={500} size="sm">
+                        {sponsorship.Sponsor.Address.substring(0, 12)}...
+                    </Text>
+                </Tooltip>
                 <Text size="sm" c="dimmend">
-                    Sponsorship : {parseInt(sponsorship.Value)} wei
+                    Sponsorship: {parseInt(sponsorship.Value)} wei
                 </Text>
                 {enableWithdraw && (
                     <>
