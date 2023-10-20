@@ -6,14 +6,17 @@ import {
     Box,
     Button,
     Center,
+    Code,
     Group,
     Stack,
     Image,
     Title,
     Tooltip,
     useMantineTheme,
+    SimpleGrid,
     Card,
     Text,
+    Paper,
 } from "@mantine/core";
 
 import NiceAvatar, { genConfig } from "react-nice-avatar";
@@ -26,6 +29,7 @@ import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
+import { CodeWithCopyButton } from "../../../components/copy";
 
 const Address: FC<{ address: string }> = ({ address }) => {
     return (
@@ -51,27 +55,49 @@ const Avatar: FC<{
     );
 };
 
-const Sponsor: FC<{
+const Sponsorship: FC<{
     sponsorship: Sponsorship;
 }> = ({ sponsorship }) => {
     return (
-        <Card>
-            <Stack justify="center" align="center" w="220">
-                <Card.Section>
-                    <Avatar
-                        src={sponsorship.Sponsor.ImgLink}
-                        altseed={sponsorship.Sponsor.Address}
-                    />
-                </Card.Section>
-                <Text fw={600} size="lg">
-                    {sponsorship.Sponsor.Name}
-                </Text>
-                <Address address={sponsorship.Sponsor.Address} />
-                <Text size="sm" c="dimmend">
-                    Sponsorship : {formatEther(BigInt(sponsorship.Value))}
-                </Text>
+        <Card radius="md" shadow="sm">
+            <Stack p={20}>
+                <Group gap="lg">
+                    <Avatar src={sponsorship.Sponsor.ImgLink} altseed={sponsorship.Sponsor.Address}/>
+                    <Stack>
+                        <Text fw={500} size="lg">
+                            {sponsorship.Sponsor.Name}
+                            <CodeWithCopyButton value={sponsorship.Sponsor.Address} />
+                        </Text>
+                        <Text fw={700} size="xl" c="dimmend">
+                            {formatEther(BigInt(sponsorship.Value))} ETH
+                        </Text>
+                    </Stack>
+                </Group>
+                {enableWithdraw && (
+                    <Button onClick={write}>Withdraw</Button>
+                )}
             </Stack>
         </Card>
+    );
+};
+
+const SponsorshipList: FC<{
+    sponsorships: Sponsorship[];
+    bountyIndex: number;
+    enableWithdrawals: boolean;
+}> = ({ sponsorships, bountyIndex, enableWithdrawals }) => {
+    return (
+        <Stack g={20} m={20}>
+            {sponsorships.map((sponsorship) => {
+                return (
+                    <Sponsorship
+                        bountyIndex={bountyIndex}
+                        sponsorship={sponsorship}
+                        enableWithdrawals={enableWithdrawals}
+                    />
+                );
+            })}
+        </Stack>
     );
 };
 
@@ -158,14 +184,14 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                     <Address address={bounty.Exploit?.Hacker.Address} />
                                 </>
                             )}
-                            <Title order={2}>Sponsors</Title>
-                            <Group>
-                                {bounty.Sponsorships?.map((sponsorship) => {
-                                    return (
-                                        <Sponsor sponsorship={sponsorship} />
-                                    );
-                                })}
-                            </Group>
+                            <Title order={2} mt={50}>
+                                Sponsorships
+                            </Title>
+                            <SponsorshipList
+                                bountyIndex={bountyIndex}
+                                sponsorships={bounty.Sponsorships}
+                                enableWithdrawals={enableWithdrawals}
+                            />
                         </Stack>
                     </Box>
                 </Center>
