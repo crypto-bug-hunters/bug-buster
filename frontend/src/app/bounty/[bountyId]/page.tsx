@@ -36,7 +36,7 @@ const Sponsor: FC<{
         <Card>
             <Stack justify="center" align="center">
                 <Card.Section>
-                    <Image h={300} src={sponsorship.Sponsor.ImgLink} fallbackSrc="/static/default_app.webp" />
+                    <Image h={300} src={sponsorship.Sponsor.ImgLink} />
                 </Card.Section>
 
                 <Text fw={500} size="lg" mt="md">
@@ -91,7 +91,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
                         <Stack w={600} align="center" justify="center">
                             <Title order={2}>{profile.Name}</Title>
-                            <Image w={300} src={bounty.Developer.ImgLink} />
+                            <Image w={300} src={bounty.Developer.ImgLink} fallbackSrc="/static/default_app.webp" />
                             {bounty.Description}
 
                             <Title order={3}>
