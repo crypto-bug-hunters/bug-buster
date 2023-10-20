@@ -2,7 +2,7 @@
 import { FC, useState, useRef, useEffect } from "react";
 
 import {
-    Avatar,
+    Avatar as MantineAvatar,
     Box,
     Button,
     Center,
@@ -27,6 +27,30 @@ import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils.tsx";
 
+const Address: FC<{ address: string }> = ({ address }) => {
+    return (
+        <Tooltip label={address}>
+            <Text fw={500} size="sm">
+                {address.substring(0, 12)}...
+            </Text>
+        </Tooltip>
+    );
+};
+
+const Avatar: FC<{
+    src: string;
+    altseed: string;
+}> = ({ src, altseed }) => {
+    return (
+        <MantineAvatar src={src} radius="sl" size="xl">
+            <NiceAvatar
+                style={{ width: "6rem", height: "6rem" }}
+                {...genConfig(altseed)}
+            />
+        </MantineAvatar>
+    );
+};
+
 const Sponsor: FC<{
     sponsorship: Sponsorship;
 }> = ({ sponsorship }) => {
@@ -36,23 +60,13 @@ const Sponsor: FC<{
                 <Card.Section>
                     <Avatar
                         src={sponsorship.Sponsor.ImgLink}
-                        radius="sl"
-                        size="xl"
-                    >
-                        <NiceAvatar
-                            style={{ width: "6rem", height: "6rem" }}
-                            {...genConfig(sponsorship.Sponsor.Address)}
-                        />
-                    </Avatar>
+                        altseed={sponsorship.Sponsor.Address}
+                    />
                 </Card.Section>
                 <Text fw={600} size="lg">
                     {sponsorship.Sponsor.Name}
                 </Text>
-                <Tooltip label={sponsorship.Sponsor.Address}>
-                    <Text fw={500} size="sm">
-                        {sponsorship.Sponsor.Address.substring(0, 12)}...
-                    </Text>
-                </Tooltip>
+                <Address address={sponsorship.Sponsor.Address} />
                 <Text size="sm" c="dimmend">
                     Sponsorship: {parseInt(sponsorship.Value)} wei
                 </Text>
@@ -126,27 +140,25 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                         >
                                             <Button>Send Exploit</Button>
                                         </Link>
-                                        {enableWithdrawals &&
+                                        {enableWithdrawals && (
                                             <Button onClick={write}>
                                                 Withdraw
                                             </Button>
-                                        }
+                                        )}
                                     </Group>
                                 </>
                             )}
                             {hasExploit && (
                                 <>
                                     <Title order={2}>Exploited by </Title>
+                                    <Avatar
+                                        src={bounty.Exploit?.Hacker.ImgLink}
+                                        altseed={bounty.Exploit?.Hacker.Address}
+                                    />
                                     <Title order={1}>
                                         {bounty.Exploit?.Hacker.Name}
                                     </Title>
-                                    <Title order={3}>
-                                        {bounty.Exploit?.Hacker.Address}
-                                    </Title>
-                                    <Image
-                                        w={300}
-                                        src={bounty.Exploit?.Hacker.ImgLink}
-                                    />
+                                    <Address address={bounty.Exploit?.Hacker.Address} />
                                 </>
                             )}
                             <Title order={2}>Sponsors</Title>
