@@ -21,6 +21,12 @@ go run ./cli send sponsor \
     -n "Lua Sponsor" \
     -v 0.05
 
+go run ./cli send sponsor \
+    -a $RICH_SPONSOR_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Rich Crypto Guy" \
+    -v 1.337
+
 go run ./cli send exploit \
     -a $HACKER_ACCOUNT \
     -b $CURR_BOUNTY \
@@ -48,9 +54,6 @@ go run ./cli send sponsor \
     -n "Rich Crypto Guy" \
     -v 1.337
 
-# TODO sqlite bounties aren't working yet
-exit 0
-
 # SQLite 3.32.2
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
@@ -60,6 +63,18 @@ go run ./cli send bounty \
     -d "Released on 4 June 2020" \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
 
+go run ./cli send sponsor \
+    -a $SQLITE_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Lua Sponsor" \
+    -v 0.32
+
+go run ./cli send sponsor \
+    -a $RICH_SPONSOR_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Rich Crypto Guy" \
+    -v 1.337
+
 # SQLite 3.43.2
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
@@ -68,3 +83,15 @@ go run ./cli send bounty \
     -i "https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" \
     -d "Released on 10 October 2023" \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
+
+go run ./cli send sponsor \
+    -a $SQLITE_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Lua Sponsor" \
+    -v 0.43
+
+go run ./cli send sponsor \
+    -a $RICH_SPONSOR_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Rich Crypto Guy" \
+    -v 1.337
