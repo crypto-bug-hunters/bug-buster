@@ -17,15 +17,17 @@ import { usePrepareAddSponsorship } from "../../../../hooks/bugless";
 import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 
-type AddSponsorhipParams = {
-    params: { bounty_id: string };
-};
+import { BountyParams, InvalidBountyId } from "../utils.tsx";
 
-const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
-    params: { bounty_id },
-}) => {
+const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
+
+    const bountyIndex = Number(bountyId);
+
+    if (isNaN(bountyIndex)) {
+        return <InvalidBountyId />;
+    }
 
     // App name
     const [name, setName] = useState("");
@@ -38,7 +40,7 @@ const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
     const addSponsorship = {
         Name: name,
         ImgLink: imgLink,
-        BountyIndex: parseInt(bounty_id),
+        BountyIndex: bountyIndex,
     } as AddSponsorship;
 
     const config = usePrepareAddSponsorship(addSponsorship, BigInt(value));

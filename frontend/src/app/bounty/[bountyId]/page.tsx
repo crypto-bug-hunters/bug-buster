@@ -22,6 +22,8 @@ import { Sponsorship } from "../../../model/state";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
+import { BountyParams, InvalidBountyId } from "./utils.tsx";
+
 const Sponsor: FC<{
     sponsorship: Sponsorship;
     bountyIndex: number;
@@ -56,24 +58,17 @@ const Sponsor: FC<{
     );
 };
 
-const BountyInfoPage: FC<{ params: { bounty_id: string } }> = ({
-    params: { bounty_id },
-}) => {
+const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
-    const bountyIndex = parseInt(bounty_id);
 
-    const bounty_index = Number(bounty_id);
+    const bountyIndex = Number(bountyId);
 
-    if (isNaN(bounty_index)) {
-        return (
-            <Box p="lg">
-                <Center>Invalid bounty ID</Center>
-            </Box>
-        );
+    if (isNaN(bountyIndex)) {
+        return <InvalidBountyId />;
     }
 
-    const result = GetBounty(bounty_index);
+    const result = GetBounty(bountyIndex);
 
     switch (result.kind) {
         case "loading":
@@ -108,7 +103,7 @@ const BountyInfoPage: FC<{ params: { bounty_id: string } }> = ({
                                         <Link
                                             href={
                                                 "/bounty/" +
-                                                bounty_id +
+                                                bountyId +
                                                 "/sponsor"
                                             }
                                         >
@@ -117,7 +112,7 @@ const BountyInfoPage: FC<{ params: { bounty_id: string } }> = ({
                                         <Link
                                             href={
                                                 "/bounty/" +
-                                                bounty_id +
+                                                bountyId +
                                                 "/exploit"
                                             }
                                         >
