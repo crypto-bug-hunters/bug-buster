@@ -5,11 +5,14 @@ import {
     Box,
     Button,
     Center,
+    Code,
     Group,
     Stack,
+    Title,
     TextInput,
     Textarea,
     useMantineTheme,
+    Paper,
     Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
@@ -76,23 +79,18 @@ const CreateBountyPage: FC = () => {
     }
 
     return (
-        <Center
-        // style={{
-        //     backgroundImage: 'url("/img/banner.jpg")',
-        //     backgroundRepeat: "no-repeat",
-        //     backgroundPosition: "center",
-        //     backgroundAttachment: "fixed",
-        // }}
-        >
-            <Box p={20} mt={180} bg={theme.colors.dark[7]}>
+        <Center>
+            <Box p={20} mt={50} bg={theme.colors.dark[7]}>
                 <Stack w={600}>
+                    <Title>
+                        Submit a bounty
+                    </Title>
                     <TextInput
                         withAsterisk
                         size="lg"
                         label="Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        description="Name of the App"
                     />
                     <Textarea
                         withAsterisk
@@ -100,14 +98,12 @@ const CreateBountyPage: FC = () => {
                         label="Description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        description="Description"
                     />
                     <TextInput
                         size="lg"
                         label="Image Link"
                         value={imgLink}
                         onChange={(e) => setImgLink(e.target.value)}
-                        description="App Image Link"
                     />
 
                     <DateInput
@@ -116,44 +112,43 @@ const CreateBountyPage: FC = () => {
                         label="Deadline"
                         value={deadline}
                         onChange={(e) => setDeadline(e)}
-                        description="Deadline"
                     />
 
-                    <Group justify="space-between" w="100%">
+
+                    <Group mt={20} justify="center" w="100%">
                         <Dropzone
                             onDrop={(files) => readFile(files[0])}
                             onReject={(files) =>
                                 console.log("rejected files", files)
                             }
-                            //maxSize={3 * 1024 ** 2}
+                            accept={['application/zip', 'application/x-xz']}
                         >
-                            <Group
-                                justify="center"
-                                gap="xl"
-                                mih={220}
-                                style={{ pointerEvents: "none" }}
-                            >
-                                <Dropzone.Accept>
-                                    <TbUpload size={60} />
-                                </Dropzone.Accept>
-                                <Dropzone.Reject>
-                                    <TbExclamationCircle size={60} />
-                                </Dropzone.Reject>
-                                <Dropzone.Idle>
-                                    <TbUpload size={60} />
-                                </Dropzone.Idle>
-
-                                <div>
-                                    <Text size="xl" inline>
-                                        Drag App compressed bundle here or click
-                                        to select file
-                                    </Text>
-                                    <Text size="sm" c="dimmed" inline mt={7}>
-                                        Attach a single .zip or tar.xz of the
-                                        App
-                                    </Text>
-                                </div>
-                            </Group>
+                            <Paper withBorder shadow="sm" radius="lg">
+                                <Group
+                                    justify="center"
+                                    gap="xl"
+                                    p="xl"
+                                    style={{ pointerEvents: "none" }}
+                                >
+                                    <Dropzone.Accept>
+                                        <TbUpload size={60} />
+                                    </Dropzone.Accept>
+                                    <Dropzone.Reject>
+                                        <TbExclamationCircle size={60} />
+                                    </Dropzone.Reject>
+                                    <Dropzone.Idle>
+                                        <TbUpload size={60} />
+                                    </Dropzone.Idle>
+                                    <Stack>
+                                        <Text size="xl" inline>
+                                            Drop your bundle here
+                                        </Text>
+                                        <Text size="sm" c="dimmed" inline>
+                                            Only <Code>.zip</Code> and <Code>.tar.xz</Code> files are accepted
+                                        </Text>
+                                    </Stack>
+                                </Group>
+                            </Paper>
                         </Dropzone>
                     </Group>
 
