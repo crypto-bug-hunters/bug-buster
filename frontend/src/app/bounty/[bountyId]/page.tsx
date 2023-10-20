@@ -2,6 +2,7 @@
 import { FC, useState, useRef, useEffect } from "react";
 
 import {
+    Avatar,
     Box,
     Button,
     Center,
@@ -36,7 +37,7 @@ const Sponsor: FC<{
         <Card>
             <Stack justify="center" align="center">
                 <Card.Section>
-                    <Image h={300} src={sponsorship.Sponsor.ImgLink} />
+                    <Avatar src={sponsorship.Sponsor.ImgLink} radius="sl" size="xl" />
                 </Card.Section>
 
                 <Text fw={500} size="lg" mt="md">
