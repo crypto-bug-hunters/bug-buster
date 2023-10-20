@@ -82,9 +82,7 @@ const CreateBountyPage: FC = () => {
         <Center>
             <Box p={20} mt={50} bg={theme.colors.dark[7]}>
                 <Stack w={600}>
-                    <Title>
-                        Submit a bounty
-                    </Title>
+                    <Title>Submit a bounty</Title>
                     <TextInput
                         withAsterisk
                         size="lg"
@@ -114,14 +112,13 @@ const CreateBountyPage: FC = () => {
                         onChange={(e) => setDeadline(e)}
                     />
 
-
                     <Group mt={20} justify="center" w="100%">
                         <Dropzone
                             onDrop={(files) => readFile(files[0])}
                             onReject={(files) =>
                                 console.log("rejected files", files)
                             }
-                            accept={['application/zip', 'application/x-xz']}
+                            accept={["application/zip", "application/x-xz"]}
                         >
                             <Paper withBorder shadow="sm" radius="lg">
                                 <Group
@@ -144,7 +141,9 @@ const CreateBountyPage: FC = () => {
                                             Drop your bundle here
                                         </Text>
                                         <Text size="sm" c="dimmed" inline>
-                                            Only <Code>.zip</Code> and <Code>.tar.xz</Code> files are accepted
+                                            Only <Code>.zip</Code> and{" "}
+                                            <Code>.tar.xz</Code> files are
+                                            accepted
                                         </Text>
                                     </Stack>
                                 </Group>

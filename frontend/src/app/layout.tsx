@@ -1,6 +1,6 @@
 "use client";
 import "@mantine/core/styles.css";
-import '@mantine/dates/styles.css';
+import "@mantine/dates/styles.css";
 import React, { FC } from "react";
 import { ColorSchemeScript } from "@mantine/core";
 import Head from "next/head";
