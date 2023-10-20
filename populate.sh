@@ -66,7 +66,7 @@ go run ./cli send bounty \
 go run ./cli send sponsor \
     -a $SQLITE_ACCOUNT \
     -b $CURR_BOUNTY \
-    -n "Lua Sponsor" \
+    -n "SQLite Sponsor" \
     -v 0.32
 
 go run ./cli send sponsor \
@@ -87,7 +87,7 @@ go run ./cli send bounty \
 go run ./cli send sponsor \
     -a $SQLITE_ACCOUNT \
     -b $CURR_BOUNTY \
-    -n "Lua Sponsor" \
+    -n "SQLite Sponsor" \
     -v 0.43
 
 go run ./cli send sponsor \
