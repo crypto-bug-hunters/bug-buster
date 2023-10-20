@@ -19,7 +19,7 @@ import { useWaitForTransaction } from "wagmi";
 
 import { BountyParams, InvalidBountyId } from "../utils.tsx";
 
-const toWei = (input : string | number) => {
+const toWei = (input: string | number) => {
     if (typeof input == "number") {
         return BigInt(input * 1e18);
     } else {

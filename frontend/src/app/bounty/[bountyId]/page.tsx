@@ -62,11 +62,16 @@ const Sponsorship: FC<{
         <Card radius="md" shadow="sm">
             <Stack p={20}>
                 <Group gap="lg">
-                    <Avatar src={sponsorship.Sponsor.ImgLink} altseed={sponsorship.Sponsor.Address}/>
+                    <Avatar
+                        src={sponsorship.Sponsor.ImgLink}
+                        altseed={sponsorship.Sponsor.Address}
+                    />
                     <Stack>
                         <Text fw={500} size="lg">
                             {sponsorship.Sponsor.Name}
-                            <CodeWithCopyButton value={sponsorship.Sponsor.Address} />
+                            <CodeWithCopyButton
+                                value={sponsorship.Sponsor.Address}
+                            />
                         </Text>
                         <Text fw={700} size="xl" c="dimmend">
                             {formatEther(BigInt(sponsorship.Value))} ETH
@@ -84,11 +89,7 @@ const SponsorshipList: FC<{
     return (
         <Stack g={20} m={20}>
             {sponsorships.map((sponsorship) => {
-                return (
-                    <Sponsorship
-                        sponsorship={sponsorship}
-                    />
-                );
+                return <Sponsorship sponsorship={sponsorship} />;
             })}
         </Stack>
     );
@@ -174,7 +175,9 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                     <Title order={1}>
                                         {bounty.Exploit?.Hacker.Name}
                                     </Title>
-                                    <Address address={bounty.Exploit?.Hacker.Address} />
+                                    <Address
+                                        address={bounty.Exploit?.Hacker.Address}
+                                    />
                                 </>
                             )}
                             <Title order={2} mt={50}>

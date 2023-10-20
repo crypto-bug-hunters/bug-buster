@@ -10,20 +10,20 @@ import {
     Text,
 } from "@mantine/core";
 
-import { IconCopy, IconCheck } from '@tabler/icons-react';
+import { IconCopy, IconCheck } from "@tabler/icons-react";
 
 export const CodeWithCopyButton: FC<{ value: string }> = ({ value }) => {
     return (
         <Group>
             <Code>{value}</Code>
             <CopyButtonWithIcon value={value} />
-         </Group>
+        </Group>
     );
 };
 
 export const CopyButtonWithIcon: FC<{ value: string }> = ({ value }) => {
     return (
-       <CopyButton value={value} timeout={2000}>
+        <CopyButton value={value} timeout={2000}>
             {({ copied, copy }) => (
                 <Tooltip
                     label={copied ? "Copied" : "Copy"}
@@ -36,13 +36,9 @@ export const CopyButtonWithIcon: FC<{ value: string }> = ({ value }) => {
                         onClick={copy}
                     >
                         {copied ? (
-                            <IconCheck
-                                style={{ width: rem(16) }}
-                            />
+                            <IconCheck style={{ width: rem(16) }} />
                         ) : (
-                            <IconCopy
-                                style={{ width: rem(16) }}
-                            />
+                            <IconCopy style={{ width: rem(16) }} />
                         )}
                     </ActionIcon>
                 </Tooltip>
