@@ -9,6 +9,7 @@ import {
     Flex,
     Text,
     Anchor,
+    Title,
 } from "@mantine/core";
 import Link from "next/link";
 import { GetLatestState } from "../model/reader";
@@ -46,7 +47,7 @@ const BountyList: FC = () => {
             const state = result.response;
             return (
                 <Stack>
-                    {state.Bounties.map((bounty, index) => {
+                    {state.Bounties?.map((bounty, index) => {
                         return <Bounty index={index} bounty={bounty} />;
                     })}
                 </Stack>
@@ -55,10 +56,6 @@ const BountyList: FC = () => {
 };
 
 const Home: FC = () => {
-    function handleClick() {
-        console.log("Submit a new Bounty!!!");
-    }
-
     return (
         <Stack>
             <Flex mt={20} mr={20} justify="flex-end">

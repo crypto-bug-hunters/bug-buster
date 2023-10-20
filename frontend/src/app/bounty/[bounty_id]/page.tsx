@@ -34,8 +34,8 @@ const BountyInfoPage: FC<{ params: { bounty_id: number } }> = ({
             const bounty = result.response;
             const profile = bounty.Developer;
             let totalPrize = 0;
-            const sponsors = bounty.Sponsorships?.forEach((sponsorship)=>{
-                totalPrize += parseInt(sponsorship.Value)
+            const sponsors = bounty.Sponsorships?.forEach((sponsorship) => {
+                totalPrize += parseInt(sponsorship.Value);
             });
             return (
                 <Center>
