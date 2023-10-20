@@ -34,16 +34,6 @@ import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
 import { BountyStatusBadge } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
 
-const Address: FC<{ address: string }> = ({ address }) => {
-    return (
-        <Tooltip label={address}>
-            <Text fw={500} size="sm">
-                {address.substring(0, 12)}...
-            </Text>
-        </Tooltip>
-    );
-};
-
 const Avatar: FC<{
     src: string;
     altseed: string;
@@ -197,8 +187,8 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                     <Title order={1}>
                                         {bounty.Exploit?.Hacker.Name}
                                     </Title>
-                                    <Address
-                                        address={bounty.Exploit?.Hacker.Address}
+                                    <CodeWithCopyButton
+                                        value={bounty.Exploit?.Hacker.Address}
                                     />
                                 </>
                             )}
