@@ -6,6 +6,8 @@
         "codegen": "wagmi generate && graphql-codegen",
         "build": "next build",
         "dev": "next dev",
+        "ts": "tsc --noEmit --incremental --preserveWatchOutput --pretty",
+        "ts:watch": "npm run ts -- --watch",
         "prebuild": "npm run codegen",
         "predev": "npm run codegen",
         "start": "next start",
