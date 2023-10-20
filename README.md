@@ -111,14 +111,30 @@ go run ./cli test \
 Before running the frontend, you should have the `CartesiDApp` address stored in the `NEXT_PUBLIC_DAPP_ADDRESS` enviroment variable.
 In order to take hold of this address, you may run the command below and manually extract the address next to `CartesiDApp`.
 
-```
+```sh
 sunodo address-book
 ```
 
 To set the env var automaticaly, run the following command in the repository root directory.
 
-```
+```sh
 export NEXT_PUBLIC_DAPP_ADDRESS=$(sunodo address-book --json | jq -r .CartesiDApp)
+```
+
+Also, it seems that this address is constant, so you can just pop this directly.
+
+```sh
+export NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C
+```
+
+You may also want to send yourself some Ether to play with the DApp.
+Here, we're deducting 1 ETH from Alice's balance.
+
+```sh
+cast send \
+    --value '1ether' \
+    --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+    $YOUR_ADDRESS_HERE
 ```
 
 To run the frontend, execute the commands below.
