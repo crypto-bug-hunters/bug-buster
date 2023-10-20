@@ -35,7 +35,7 @@ func stateRun(cmd *cobra.Command, args []string) {
 
 	state := findLastState(client, results)
 	if state == nil {
-		fmt.Println("{}")
+		fmt.Println("{\"Bounties\":[]}")
 	} else {
 		stateJson, err := json.MarshalIndent(state, "", "  ")
 		if err != nil {
@@ -47,6 +47,9 @@ func stateRun(cmd *cobra.Command, args []string) {
 
 func findLastState(client *eggroll.Client, results []*eggtypes.AdvanceResult) *shared.BugLessState {
 	for i := len(results) - 1; i >= 0; i-- {
+		if len(results[i].RawReturn()) == 0 {
+			continue
+		}
 		return_ := client.DecodeReturn(results[i])
 		if return_ == nil {
 			continue
