@@ -16,7 +16,7 @@ import {
     Text,
 } from "@mantine/core";
 
-import NiceAvatar, { genConfig } from 'react-nice-avatar';
+import NiceAvatar, { genConfig } from "react-nice-avatar";
 import { Address, bytesToHex, toHex, Hex } from "viem";
 
 import { GetBounty } from "../../../model/reader";
@@ -29,18 +29,20 @@ import { BountyParams, InvalidBountyId } from "./utils.tsx";
 
 const Sponsor: FC<{
     sponsorship: Sponsorship;
-    bountyIndex: number;
-    enableWithdraw: boolean;
-}> = ({ sponsorship, bountyIndex, enableWithdraw }) => {
-    const config = usePrepareWithdrawSponsorship({ BountyIndex: bountyIndex });
-    const { write } = useInputBoxAddInput(config);
-
+}> = ({ sponsorship }) => {
     return (
         <Card>
             <Stack justify="center" align="center" w="220">
                 <Card.Section>
-                    <Avatar src={sponsorship.Sponsor.ImgLink} radius="sl" size="xl">
-                        <NiceAvatar style={{ width: '6rem', height: '6rem' }} {...genConfig(sponsorship.Sponsor.Address)}/>
+                    <Avatar
+                        src={sponsorship.Sponsor.ImgLink}
+                        radius="sl"
+                        size="xl"
+                    >
+                        <NiceAvatar
+                            style={{ width: "6rem", height: "6rem" }}
+                            {...genConfig(sponsorship.Sponsor.Address)}
+                        />
                     </Avatar>
                 </Card.Section>
                 <Text fw={600} size="lg">
@@ -54,11 +56,6 @@ const Sponsor: FC<{
                 <Text size="sm" c="dimmend">
                     Sponsorship: {parseInt(sponsorship.Value)} wei
                 </Text>
-                {enableWithdraw && (
-                    <>
-                        <Button onClick={write}>Withdraw</Button>
-                    </>
-                )}
             </Stack>
         </Card>
     );
@@ -69,6 +66,8 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const theme = useMantineTheme();
 
     const bountyIndex = Number(bountyId);
+    const config = usePrepareWithdrawSponsorship({ BountyIndex: bountyIndex });
+    const { write } = useInputBoxAddInput(config);
 
     if (isNaN(bountyIndex)) {
         return <InvalidBountyId />;
@@ -86,10 +85,9 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             const profile = bounty.Developer;
             const hasExploit = !!bounty.Exploit;
             //TODO: needs to check the Deadline as well.
-            //TODO: Should only the actual Sponsor do this? if so, also use 'useAddress()' method and compare with Sponsor.Address
             const enableWithdrawals = !hasExploit;
             let totalPrize = 0;
-            const sponsors = bounty.Sponsorships?.forEach((sponsorship) => {
+            bounty.Sponsorships?.forEach((sponsorship) => {
                 totalPrize += parseInt(sponsorship.Value);
             });
             return (
@@ -97,7 +95,11 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
                         <Stack w={800} align="center" justify="center">
                             <Title order={2}>{profile.Name}</Title>
-                            <Image w={300} src={bounty.Developer.ImgLink} fallbackSrc="/static/default_app.webp" />
+                            <Image
+                                w={300}
+                                src={bounty.Developer.ImgLink}
+                                fallbackSrc="/static/default_app.webp"
+                            />
                             {bounty.Description}
 
                             <Title order={3}>
@@ -124,6 +126,11 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                         >
                                             <Button>Send Exploit</Button>
                                         </Link>
+                                        {enableWithdrawals &&
+                                            <Button onClick={write}>
+                                                Withdraw
+                                            </Button>
+                                        }
                                     </Group>
                                 </>
                             )}
@@ -146,11 +153,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             <Group>
                                 {bounty.Sponsorships?.map((sponsorship) => {
                                     return (
-                                        <Sponsor
-                                            bountyIndex={bountyIndex}
-                                            sponsorship={sponsorship}
-                                            enableWithdraw={enableWithdrawals}
-                                        />
+                                        <Sponsor sponsorship={sponsorship} />
                                     );
                                 })}
                             </Group>
