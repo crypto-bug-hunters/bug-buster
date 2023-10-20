@@ -95,7 +95,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             return (
                 <Center>
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
-                        <Stack w={600} align="center" justify="center">
+                        <Stack w={800} align="center" justify="center">
                             <Title order={2}>{profile.Name}</Title>
                             <Image w={300} src={bounty.Developer.ImgLink} fallbackSrc="/static/default_app.webp" />
                             {bounty.Description}
@@ -143,15 +143,17 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                 </>
                             )}
                             <Title order={2}>Sponsors</Title>
-                            {bounty.Sponsorships?.map((sponsorship) => {
-                                return (
-                                    <Sponsor
-                                        bountyIndex={bountyIndex}
-                                        sponsorship={sponsorship}
-                                        enableWithdraw={enableWithdrawals}
-                                    />
-                                );
-                            })}
+                            <Group>
+                                {bounty.Sponsorships?.map((sponsorship) => {
+                                    return (
+                                        <Sponsor
+                                            bountyIndex={bountyIndex}
+                                            sponsorship={sponsorship}
+                                            enableWithdraw={enableWithdrawals}
+                                        />
+                                    );
+                                })}
+                            </Group>
                         </Stack>
                     </Box>
                 </Center>
