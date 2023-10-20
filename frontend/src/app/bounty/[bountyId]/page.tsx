@@ -25,7 +25,7 @@ import { Sponsorship, getBountyTotalPrize } from "../../../model/state";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
-import { BountyParams, InvalidBountyId } from "./utils.tsx";
+import { BountyParams, InvalidBountyId } from "./utils";
 
 const Address: FC<{ address: string }> = ({ address }) => {
     return (
