@@ -30,6 +30,7 @@ import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
 import { CodeWithCopyButton } from "../../../components/copy";
+import { useBlockTimestamp } from "../../../hooks/block";
 import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
 import { BountyStatusBadge } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
@@ -86,6 +87,8 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         hash: data?.hash,
     });
 
+    const blockTimestamp = useBlockTimestamp();
+
     if (isNaN(bountyIndex)) {
         return <InvalidBountyId />;
     }
@@ -100,24 +103,24 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         case "success":
             const bounty = result.response;
             const profile = bounty.Developer;
-            const bountyStatus = getBountyStatus(bounty);
-            const isActive = bountyStatus == BountyStatus.ACTIVE;
+            const bountyStatus = getBountyStatus(bounty, blockTimestamp);
+            const isActive = bountyStatus === BountyStatus.ACTIVE;
             const enableWithdrawals = bountyStatus === BountyStatus.EXPIRED;
             const totalPrize = getBountyTotalPrize(bounty);
             return (
                 <Center>
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
                         <Stack w={800} align="center" justify="center">
-                            <Title order={2}>{profile.Name}</Title>
+                            <Group>
+                                <Title order={2}>{profile.Name}</Title>
+                                {bountyStatus && <BountyStatusBadge bountyStatus={bountyStatus} />}
+                            </Group>
                             <Image
                                 w={300}
                                 src={bounty.Developer.ImgLink}
                                 fallbackSrc="/static/default_app.webp"
                             />
                             {bounty.Description}
-                            <Group>
-                                <BountyStatusBadge status={bountyStatus} />
-                            </Group>
                             <Title order={3}>
                                 Total Prize: {formatEther(totalPrize)} ETH
                             </Title>

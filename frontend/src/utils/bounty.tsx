@@ -6,12 +6,12 @@ export enum BountyStatus {
     EXPIRED,
 }
 
-export function getBountyStatus(bounty: AppBounty): BountyStatus {
-    if (bounty.Exploit) return BountyStatus.EXPLOITED;
-
-    const dateDiff = bounty.Deadline * 1000 - new Date().getTime();
-
-    if (dateDiff < 0) return BountyStatus.EXPIRED;
-
-    return BountyStatus.ACTIVE;
+export function getBountyStatus(bounty: AppBounty, timestamp: BigInt): BountyStatus {
+    if (bounty.Exploit) {
+        return BountyStatus.EXPLOITED;
+    } else if (timestamp < bounty.Deadline) {
+        return BountyStatus.ACTIVE;
+    } else {
+        return BountyStatus.EXPIRED;
+    }
 }

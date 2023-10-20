@@ -7,30 +7,30 @@ interface BountyStatusBadgeInfo {
     label: string;
 }
 
-const getBountyStatusBadgeInfo = (status) => {
-    switch (status) {
+export const getBountyStatusBadgeInfo = (bountyStatus: BountyStatus) => {
+    switch (bountyStatus) {
         case BountyStatus.ACTIVE:
             return {
                 color: "green",
                 label: "Active",
-            }
+            };
         case BountyStatus.EXPIRED:
             return {
                 color: "gray",
                 label: "Expired",
-            }
+            };
         case BountyStatus.EXPLOITED:
             return {
                 color: "red",
                 label: "Exploited",
-            }
+            };
         default:
-            throw new Error("Unknown status");
+            throw new Error("Unknown bounty status");
     }
 };
 
-export const BountyStatusBadge: FC<{ status: BountyStatus }> = ({ status }) => {
-    const { color, label } = getBountyStatusBadgeInfo(status);
+export const BountyStatusBadge: FC<{ bountyStatus: BountyStatus }> = ({ bountyStatus }) => {
+    const { color, label } = getBountyStatusBadgeInfo(bountyStatus);
     return (
         <Badge color={color}>
             {label}

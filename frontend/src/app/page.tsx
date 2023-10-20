@@ -17,11 +17,15 @@ import Link from "next/link";
 import { GetLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
 import { BountyStatusBadge } from "../components/bountyStatus";
+import { useBlockTimestamp } from "../hooks/block";
+import { getBountyStatus } from "../utils/bounty";
 
-const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
+const Bounty: FC<{ index: number; bounty: AppBounty; blockTimestamp: BigInt }> = ({
     index,
     bounty,
+    blockTimestamp,
 }) => {
+    const bountyStatus = getBountyStatus(bounty, blockTimestamp);
     return (
         <Anchor href={"/bounty/" + index} underline="never">
             <Card>
@@ -32,17 +36,17 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
                         fallbackSrc="/static/default_app.webp"
                     />
                 </Card.Section>
-                <Box w={512}>
-                    <Text truncate="end" fw={500} size="lg" mt="md">
-                        {bounty.Developer.Name}
-                    </Text>
-                    <Text truncate="end" size="sm" c="dimmend">
+                <Box w={512} mt="md">
+                    <Group mb={10}>
+                        <Text truncate="end" fw={700} size="lg">
+                            {bounty.Developer.Name}
+                        </Text>
+                        <BountyStatusBadge bountyStatus={bountyStatus} />
+                    </Group>
+                    <Text truncate="end" size="xs" c="dimmend">
                         {bounty.Description}
                     </Text>
                 </Box>
-                <Group justify="right">
-                    <BountyStatusBadge bounty={bounty} />
-                </Group>
             </Card>
         </Anchor>
     );
@@ -50,6 +54,7 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
 
 const BountyList: FC = () => {
     const result = GetLatestState();
+    const blockTimestamp = useBlockTimestamp();
     switch (result.kind) {
         case "loading":
             return <Center>Loading list of bounties...</Center>;
@@ -60,7 +65,7 @@ const BountyList: FC = () => {
             return (
                 <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
                     {state.Bounties?.map((bounty, index) => {
-                        return <Bounty index={index} bounty={bounty} />;
+                        return <Bounty index={index} bounty={bounty} blockTimestamp={blockTimestamp} />;
                     })}
                 </SimpleGrid>
             );
