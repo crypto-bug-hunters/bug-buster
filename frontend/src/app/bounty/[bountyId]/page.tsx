@@ -30,6 +30,8 @@ import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
 import { CodeWithCopyButton } from "../../../components/copy";
+import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
+import { BountyStatusBadge } from "../../../components/bountyStatus";
 
 const Address: FC<{ address: string }> = ({ address }) => {
     return (
@@ -117,9 +119,8 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         case "success":
             const bounty = result.response;
             const profile = bounty.Developer;
-            const hasExploit = !!bounty.Exploit;
-            //TODO: needs to check the Deadline as well.
-            const enableWithdrawals = !hasExploit;
+            const status = getBountyStatus(bounty);
+            const enableWithdrawals = status === BountyStatus.EXPIRED;
             const totalPrize = getBountyTotalPrize(bounty);
             return (
                 <Center>
@@ -132,11 +133,13 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                 fallbackSrc="/static/default_app.webp"
                             />
                             {bounty.Description}
-
+                            <Group>
+                                <BountyStatusBadge bounty={bounty} />
+                            </Group>
                             <Title order={3}>
                                 Total Prize: {formatEther(totalPrize)} ETH
                             </Title>
-                            {!hasExploit && (
+                            {status === BountyStatus.ACTIVE && (
                                 <>
                                     <Group justify="left">
                                         <Link
@@ -165,7 +168,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                     </Group>
                                 </>
                             )}
-                            {hasExploit && (
+                            {status === BountyStatus.EXPLOITED && (
                                 <>
                                     <Title order={2}>Exploited by </Title>
                                     <Avatar

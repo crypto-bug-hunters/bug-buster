@@ -11,10 +11,12 @@ import {
     Text,
     Anchor,
     SimpleGrid,
+    Group,
 } from "@mantine/core";
 import Link from "next/link";
 import { GetLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
+import { BountyStatusBadge } from "../components/bountyStatus";
 
 const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
     index,
@@ -38,6 +40,9 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
                         {bounty.Description}
                     </Text>
                 </Box>
+                <Group justify="right">
+                    <BountyStatusBadge bounty={bounty} />
+                </Group>
             </Card>
         </Anchor>
     );
