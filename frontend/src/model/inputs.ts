@@ -18,3 +18,7 @@ export interface SendExploit {
     BountyIndex: number;
     Exploit: string;
 }
+
+export interface WithdrawSponsorship {
+    BountyIndex: number;
+}
