@@ -8,6 +8,7 @@ import {
     Stack,
     TextInput,
     useMantineTheme,
+    Title,
 } from "@mantine/core";
 import { FC, useState } from "react";
 import { Address } from "viem";
@@ -62,29 +63,27 @@ const AddSponsorshipPage: FC<AddSponsorhipParams> = ({
 
     return (
         <Center>
-            <Box p={20} mt={180} bg={theme.colors.dark[7]}>
+            <Box p={20} mt={50} bg={theme.colors.dark[7]}>
                 <Stack w={600}>
+                    <Title>Sponsor a bounty</Title>
                     <TextInput
                         withAsterisk
                         size="lg"
-                        label="Name"
+                        label="Your name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        description="Name of the App"
                     />
                     <TextInput
                         size="lg"
-                        label="Image Link"
+                        label="Your avatar link"
                         value={imgLink}
                         onChange={(e) => setImgLink(e.target.value)}
-                        description="App Image Link"
                     />
                     <NumberInput
                         withAsterisk
                         size="lg"
                         label="Value"
                         suffix=" wei"
-                        description="Sponsorship value in wei"
                         value={value}
                         onChange={parseIfNeeded(setValue)}
                     />
