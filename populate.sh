@@ -31,7 +31,7 @@ go run ./cli send exploit \
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
     -a $LUA_ACCOUNT \
-    -n "Lua 5.4.3" \
+    -n "Lua 5.4.6" \
     -i "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" \
     -d "TODO" \
     -c ./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz
