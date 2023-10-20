@@ -11,13 +11,21 @@ import {
     Title,
 } from "@mantine/core";
 import { FC, useState } from "react";
-import { Address } from "viem";
+import { Address, parseEther } from "viem";
 import { AddSponsorship } from "../../../../model/inputs";
 import { usePrepareAddSponsorship } from "../../../../hooks/bugless";
 import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 
 import { BountyParams, InvalidBountyId } from "../utils.tsx";
+
+const toWei = (input : string | number) => {
+    if (typeof input == "number") {
+        return BigInt(input * 1e18);
+    } else {
+        return parseEther(input);
+    }
+};
 
 const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
@@ -29,12 +37,8 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         return <InvalidBountyId />;
     }
 
-    // App name
     const [name, setName] = useState("");
-
-    // ImgLink
     const [imgLink, setImgLink] = useState("");
-
     const [value, setValue] = useState(0);
 
     const addSponsorship = {
@@ -43,7 +47,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         BountyIndex: bountyIndex,
     } as AddSponsorship;
 
-    const config = usePrepareAddSponsorship(addSponsorship, BigInt(value));
+    const config = usePrepareAddSponsorship(addSponsorship, toWei(value));
 
     const { data, isLoading, isSuccess, write } =
         useEtherPortalDepositEther(config);
@@ -53,15 +57,9 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         if (write) write();
     }
 
-    const parseIfNeeded = (setter: (v: number) => void) => {
-        return (s: string | number) => {
-            if (typeof s === "number") {
-                setter(s);
-            } else {
-                setter(parseInt(s));
-            }
-        };
-    };
+    function wrapSetter(setter) {
+        return (e) => setter(e.target.value);
+    }
 
     return (
         <Center>
@@ -74,23 +72,24 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         label="Your name"
                         value={name}
                         placeholder="Satoshi Nakamoto"
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={wrapSetter(setName)}
                     />
                     <TextInput
                         size="lg"
                         label="Your avatar link"
                         value={imgLink}
                         placeholder="https://"
-                        onChange={(e) => setImgLink(e.target.value)}
+                        onChange={wrapSetter(setImgLink)}
                     />
                     <NumberInput
                         withAsterisk
                         size="lg"
                         label="Value"
-                        suffix=" wei"
-                        min={0}
+                        suffix=" ETH"
+                        allowNegative={false}
+                        decimalScale={18}
                         value={value}
-                        onChange={parseIfNeeded(setValue)}
+                        onChange={setValue}
                     />
 
                     <Group justify="center" mt="md">
