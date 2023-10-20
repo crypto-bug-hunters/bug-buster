@@ -13,6 +13,12 @@ export interface AppBounty {
     Withdrawn: boolean;
 }
 
+export const getBountyTotalPrize = (bounty : AppBounty) => {
+    return bounty.Sponsorships
+        .map((s) => parseInt(s.Value))
+        .reduce((acc, v) => acc + v);
+};
+
 export interface Profile {
     Address: string;
     Name: string;

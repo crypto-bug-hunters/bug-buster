@@ -21,7 +21,7 @@ import { Address, bytesToHex, toHex, Hex } from "viem";
 
 import { GetBounty } from "../../../model/reader";
 import Link from "next/link";
-import { Sponsorship } from "../../../model/state";
+import { Sponsorship, getBountyTotalPrize } from "../../../model/state";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
@@ -100,10 +100,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             const hasExploit = !!bounty.Exploit;
             //TODO: needs to check the Deadline as well.
             const enableWithdrawals = !hasExploit;
-            let totalPrize = 0;
-            bounty.Sponsorships?.forEach((sponsorship) => {
-                totalPrize += parseInt(sponsorship.Value);
-            });
+            const totalPrize = getBountyTotalPrize(bounty);
             return (
                 <Center>
                     <Box p={20} mt={20} bg={theme.colors.dark[7]}>
