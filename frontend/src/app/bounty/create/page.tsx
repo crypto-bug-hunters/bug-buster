@@ -115,7 +115,7 @@ const CreateBountyPage: FC = () => {
                         onChange={(e) => setDeadline(e)}
                     />
 
-                    <Group mt={20} justify="center" w="100%">
+                    <Group p={20} justify="center" w="100%">
                         <Dropzone
                             onDrop={(files) => readFile(files[0])}
                             onReject={(files) =>
@@ -144,7 +144,7 @@ const CreateBountyPage: FC = () => {
                                             Drop your bundle here
                                         </Text>
                                         <Text size="sm" c="dimmed" inline>
-                                            Only <Code>.zip</Code> and{" "}
+                                            Only <Code>.zip</Code> and
                                             <Code>.tar.xz</Code> files are
                                             accepted
                                         </Text>
