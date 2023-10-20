@@ -185,7 +185,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		// generate voucher
 		_, err := env.EtherWithdraw(hacker, accBounty)
 		if err != nil {
-			return nil, fmt.Errorf("failed to generate voucher")
+			return nil, fmt.Errorf("failed to generate voucher: %v", err)
 		}
 
 		// register exploit
