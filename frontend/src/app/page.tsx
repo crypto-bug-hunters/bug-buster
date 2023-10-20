@@ -24,13 +24,13 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
         <Anchor href={"/bounty/" + index} underline="never">
             <Card>
                 <Card.Section>
-                    <Image h={256} src={bounty.Developer.ImgLink} />
+                    <Image h={100} src={bounty.Developer.ImgLink} />
                 </Card.Section>
                 <Box w={512}>
-                    <Text fw={500} size="lg" mt="md">
+                    <Text truncate="end" fw={500} size="lg" mt="md">
                         {bounty.Developer.Name}
                     </Text>
-                    <Text size="sm" c="dimmend">
+                    <Text truncate="end" size="sm" c="dimmend">
                         {bounty.Description}
                     </Text>
                 </Box>
