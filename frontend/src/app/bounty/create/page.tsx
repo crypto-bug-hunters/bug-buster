@@ -88,7 +88,7 @@ const CreateBountyPage: FC = () => {
                         size="lg"
                         label="Title"
                         value={name}
-                        placeholder="Lua 5.4.6"
+                        placeholder="Hello World 1.0.0"
                         onChange={(e) => setName(e.target.value)}
                     />
                     <Textarea
@@ -96,14 +96,14 @@ const CreateBountyPage: FC = () => {
                         size="lg"
                         label="Description"
                         value={description}
-                        placeholder="A scripting language."
+                        placeholder="Describe your application in a few words"
                         onChange={(e) => setDescription(e.target.value)}
                     />
                     <TextInput
                         size="lg"
                         label="Image URL"
                         value={imgLink}
-                        placeholder="https://www.lua.org/images/logo.gif"
+                        placeholder="https://"
                         onChange={(e) => setImgLink(e.target.value)}
                     />
 

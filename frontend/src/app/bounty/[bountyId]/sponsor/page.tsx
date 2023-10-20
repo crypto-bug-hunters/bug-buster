@@ -73,12 +73,14 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         size="lg"
                         label="Your name"
                         value={name}
+                        placeholder="Satoshi Nakamoto"
                         onChange={(e) => setName(e.target.value)}
                     />
                     <TextInput
                         size="lg"
                         label="Your avatar link"
                         value={imgLink}
+                        placeholder="https://"
                         onChange={(e) => setImgLink(e.target.value)}
                     />
                     <NumberInput
@@ -86,6 +88,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         size="lg"
                         label="Value"
                         suffix=" wei"
+                        min={0}
                         value={value}
                         onChange={parseIfNeeded(setValue)}
                     />
