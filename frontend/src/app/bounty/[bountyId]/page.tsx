@@ -120,7 +120,11 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                 src={bounty.Developer.ImgLink}
                                 fallbackSrc="/static/default_app.webp"
                             />
-                            {bounty.Description}
+                            <Paper withBorder={true} p="xl">
+                                <Text styles={{root:{'white-space': 'pre-wrap'}}}>
+                                    {bounty.Description}
+                                </Text>
+                            </Paper>
                             <Title order={3}>
                                 Total Prize: {formatEther(totalPrize)} ETH
                             </Title>

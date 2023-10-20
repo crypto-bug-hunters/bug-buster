@@ -1,8 +1,22 @@
+#!/bin/sh
+
 BUSYBOX_ACCOUNT=2
 LUA_ACCOUNT=3
 SQLITE_ACCOUNT=4
 RICH_SPONSOR_ACCOUNT=5
 HACKER_ACCOUNT=6
+
+LUA_LOGO="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg"
+LUA_BOUNTY_DESC=$(cat <<-END
+Lua is a powerful, efficient, lightweight, embeddable scripting language.
+The goal of this bounty is to find bugs in Lua.
+
+Submited Lua code will run inside a sanboxed Lua environment, to win the bounty the code must crash its interpreter or escape the sandbox and exit with segmentation fault status (code 139).
+
+The source code of the bounty can be inspected at:
+https://github.com/crypto-bug-hunters/bug-less/tree/main/tests/bounties/lua-bounty
+END
+)
 
 # send DApp address so we can generate vouchers later
 go run ./cli send dapp-address
@@ -33,8 +47,8 @@ CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
     -a $LUA_ACCOUNT \
     -n "Lua 5.4.3" \
-    -i "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" \
-    -d "Released on 29 March 2021" \
+    -i "$LUA_LOGO" \
+    -d "$LUA_BOUNTY_DESC" \
     -c "./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -60,8 +74,8 @@ CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
     -a $LUA_ACCOUNT \
     -n "Lua 5.4.6" \
-    -i "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg" \
-    -d "Released on 14 May 2023" \
+    -i "$LUA_LOGO" \
+    -d "$LUA_BOUNTY_DESC" \
     -c "./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
