@@ -71,8 +71,10 @@ const CreateBountyPage: FC = () => {
 
     const config = usePrepareCreateBounty(bounty);
 
-    const { data, isLoading, isSuccess, write } = useInputBoxAddInput(config);
-    const wait = useWaitForTransaction(data);
+    const { data, write } = useInputBoxAddInput(config);
+    const {isLoading, isSuccess,} = useWaitForTransaction({
+        hash: data?.hash
+    });
 
     function submit() {
         if (write) write();
@@ -160,6 +162,7 @@ const CreateBountyPage: FC = () => {
                             type="submit"
                             disabled={
                                 !write ||
+                                isLoading ||
                                 !appFile ||
                                 !deadline ||
                                 name.trim().length === 0 ||
@@ -167,9 +170,16 @@ const CreateBountyPage: FC = () => {
                             }
                             onClick={submit}
                         >
-                            {"Create Bounty"}
+                            {isLoading? "Creating Bounty..." : "Create Bounty"}
                         </Button>
                     </Group>
+
+                        {isSuccess && <>
+                        <Group justify="center">
+                            <Text size="lg">Bounty Successfully Created!</Text>
+                        </Group>
+                        </>}
+
                 </Stack>
             </Box>
         </Center>
