@@ -1,6 +1,7 @@
 "use client";
 import { FC } from "react";
 import {
+    Box,
     Button,
     Center,
     Stack,
@@ -23,14 +24,16 @@ const Bounty: FC<{ index: number; bounty: AppBounty }> = ({
         <Anchor href={"/bounty/" + index} underline="never">
             <Card>
                 <Card.Section>
-                    <Image h={300} src={bounty.Developer.ImgLink} />
+                    <Image h={256} src={bounty.Developer.ImgLink} />
                 </Card.Section>
-                <Text fw={500} size="lg" mt="md">
-                    {bounty.Developer.Name}
-                </Text>
-                <Text size="sm" c="dimmend">
-                    {bounty.Description}
-                </Text>
+                <Box w={512}>
+                    <Text fw={500} size="lg" mt="md">
+                        {bounty.Developer.Name}
+                    </Text>
+                    <Text size="sm" c="dimmend">
+                        {bounty.Description}
+                    </Text>
+                </Box>
             </Card>
         </Anchor>
     );
