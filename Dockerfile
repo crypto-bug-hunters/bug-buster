@@ -84,7 +84,7 @@ ARG MACHINE_EMULATOR_TOOLS_VERSION=0.12.0
 RUN <<EOF
 apt-get update
 apt-get upgrade -y
-apt-get install -y --no-install-recommends busybox-static ca-certificates curl xz-utils
+apt-get install -y --no-install-recommends busybox-static ca-certificates curl xz-utils libasan8 libasan6
 curl -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.tar.gz \
   | tar -C / --overwrite -xvzf -
 rm -rf /var/lib/apt/lists/*
