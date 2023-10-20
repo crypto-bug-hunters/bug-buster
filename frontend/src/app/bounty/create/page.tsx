@@ -72,8 +72,8 @@ const CreateBountyPage: FC = () => {
     const config = usePrepareCreateBounty(bounty);
 
     const { data, write } = useInputBoxAddInput(config);
-    const {isLoading, isSuccess,} = useWaitForTransaction({
-        hash: data?.hash
+    const { isLoading, isSuccess } = useWaitForTransaction({
+        hash: data?.hash,
     });
 
     function submit() {
@@ -170,16 +170,19 @@ const CreateBountyPage: FC = () => {
                             }
                             onClick={submit}
                         >
-                            {isLoading? "Creating Bounty..." : "Create Bounty"}
+                            {isLoading ? "Creating Bounty..." : "Create Bounty"}
                         </Button>
                     </Group>
 
-                        {isSuccess && <>
-                        <Group justify="center">
-                            <Text size="lg">Bounty Successfully Created!</Text>
-                        </Group>
-                        </>}
-
+                    {isSuccess && (
+                        <>
+                            <Group justify="center">
+                                <Text size="lg">
+                                    Bounty transaction successful!
+                                </Text>
+                            </Group>
+                        </>
+                    )}
                 </Stack>
             </Box>
         </Center>

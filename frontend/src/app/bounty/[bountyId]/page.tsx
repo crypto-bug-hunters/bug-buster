@@ -32,6 +32,7 @@ import { BountyParams, InvalidBountyId } from "./utils";
 import { CodeWithCopyButton } from "../../../components/copy";
 import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
 import { BountyStatusBadge } from "../../../components/bountyStatus";
+import { useWaitForTransaction } from "wagmi";
 
 const Address: FC<{ address: string }> = ({ address }) => {
     return (
@@ -103,7 +104,10 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
 
     const bountyIndex = Number(bountyId);
     const config = usePrepareWithdrawSponsorship({ BountyIndex: bountyIndex });
-    const { write } = useInputBoxAddInput(config);
+    const { data, write } = useInputBoxAddInput(config);
+    const { isLoading, isSuccess } = useWaitForTransaction({
+        hash: data?.hash,
+    });
 
     if (isNaN(bountyIndex)) {
         return <InvalidBountyId />;
@@ -161,9 +165,24 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                                             <Button>Submit exploit</Button>
                                         </Link>
                                         {enableWithdrawals && (
-                                            <Button onClick={write}>
-                                                Withdraw
+                                            <Button
+                                                disabled={!write || isLoading}
+                                                onClick={write}
+                                            >
+                                                {isLoading
+                                                    ? "Withdrawing..."
+                                                    : "Withdraw"}
                                             </Button>
+                                        )}
+                                    </Group>
+                                    <Group justify="center">
+                                        {isSuccess && (
+                                            <>
+                                                <Text size="lg">
+                                                    Withdraw transaction
+                                                    successful!
+                                                </Text>
+                                            </>
                                         )}
                                     </Group>
                                 </>
@@ -186,12 +205,18 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             <Title order={2} mt={50}>
                                 Sponsorships
                             </Title>
-                            {bounty.Sponsorships && <><SponsorshipList
-                                sponsorships={bounty.Sponsorships}
-                            /></>}
-                            {!bounty.Sponsorships && 
-                            <><Text size="lg">No Sponsors yet</Text></>
-                            }
+                            {bounty.Sponsorships && (
+                                <>
+                                    <SponsorshipList
+                                        sponsorships={bounty.Sponsorships}
+                                    />
+                                </>
+                            )}
+                            {!bounty.Sponsorships && (
+                                <>
+                                    <Text size="lg">No Sponsors yet</Text>
+                                </>
+                            )}
                         </Stack>
                     </Box>
                 </Center>

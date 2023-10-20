@@ -9,7 +9,7 @@ import {
     TextInput,
     useMantineTheme,
     Title,
-    Text
+    Text,
 } from "@mantine/core";
 import { FC, useState } from "react";
 import { Address, parseEther } from "viem";
@@ -50,11 +50,11 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
 
     const config = usePrepareAddSponsorship(addSponsorship, toWei(value));
 
-    const { data, write } =
-        useEtherPortalDepositEther(config);
-    const {isLoading, isSuccess,} = useWaitForTransaction({hash:data?.hash});
+    const { data, write } = useEtherPortalDepositEther(config);
+    const { isLoading, isSuccess } = useWaitForTransaction({
+        hash: data?.hash,
+    });
 
-    
     function wrapSetter(setter) {
         return (e) => setter(e.target.value);
     }
@@ -94,17 +94,25 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         <Button
                             size="lg"
                             type="submit"
-                            disabled={!write || isLoading || name.trim().length === 0}
+                            disabled={
+                                !write || isLoading || name.trim().length === 0
+                            }
                             onClick={write}
                         >
-                            {isLoading? "Adding Sponsorhsip...":"Add Sponsorship"}
+                            {isLoading
+                                ? "Adding Sponsorhsip..."
+                                : "Add Sponsorship"}
                         </Button>
                     </Group>
-                    {isSuccess && <>
-                        <Group justify="center">
-                            <Text size="lg">Sponsorship Successfully Added!</Text>
-                        </Group>
-                    </>}
+                    {isSuccess && (
+                        <>
+                            <Group justify="center">
+                                <Text size="lg">
+                                    Add Sponsorship transaction successful!
+                                </Text>
+                            </Group>
+                        </>
+                    )}
                 </Stack>
             </Box>
         </Center>
