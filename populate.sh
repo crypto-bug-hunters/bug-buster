@@ -52,6 +52,7 @@ go run ./cli send bounty \
     -n "BusyBox 1.36.1" \
     -i "$BUSYBOX_LOGO" \
     -d "$BUSYBOX_BOUNTY_DESC" \
+    --duration $((14*86400)) \
     -c "./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -73,6 +74,7 @@ go run ./cli send bounty \
     -n "Lua 5.4.3" \
     -i "$LUA_LOGO" \
     -d "$LUA_BOUNTY_DESC" \
+    --duration $((30*86400)) \
     -c "./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -100,6 +102,7 @@ go run ./cli send bounty \
     -n "Lua 5.4.6" \
     -i "$LUA_LOGO" \
     -d "$LUA_BOUNTY_DESC" \
+    --duration $((60*86400)) \
     -c "./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -121,6 +124,7 @@ go run ./cli send bounty \
     -n "SQLite 3.32.2" \
     -i "$SQLITE_LOGO" \
     -d "$SQLITE_BOUNTY_DESC" \
+    --duration $((50*86400)) \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
@@ -142,6 +146,7 @@ go run ./cli send bounty \
     -n "SQLite 3.43.2" \
     -i "$SQLITE_LOGO" \
     -d "$SQLITE_BOUNTY_DESC" \
+    --duration $((90*86400)) \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \

@@ -44,7 +44,10 @@ const Bounty: FC<{
                         <Text truncate="end" fw={700} size="lg">
                             {bounty.Developer.Name}
                         </Text>
-                        <BountyStatusBadge bountyStatus={bountyStatus} />
+                        <BountyStatusBadge
+                            bountyStatus={bountyStatus}
+                            bountyDeadline={bounty.Deadline}
+                        />
                     </Group>
                     <Text truncate="end" size="xs" c="dimmend">
                         {bounty.Description}

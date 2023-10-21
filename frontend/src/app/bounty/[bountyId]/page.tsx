@@ -85,7 +85,10 @@ const BountyBox: FC<{
         <Stack align="center">
             <Group>
                 <Title order={2}>{profile.Name}</Title>
-                <BountyStatusBadge bountyStatus={bountyStatus} />
+                <BountyStatusBadge
+                    bountyStatus={bountyStatus}
+                    bountyDeadline={bounty.Deadline}
+                />
             </Group>
             <Image
                 w={300}

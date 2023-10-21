@@ -1,13 +1,20 @@
 import { FC } from "react";
 import { BountyStatus } from "../utils/bounty";
-import { Badge } from "@mantine/core";
+import { Group, Badge } from "@mantine/core";
 
 interface BountyStatusBadgeInfo {
     color: string;
     label: string;
 }
 
-export const getBountyStatusBadgeInfo = (bountyStatus: BountyStatus) => {
+function getCurrentUnixTimestamp() {
+    return Math.floor(Date.now() / 1000);
+}
+
+export const getBountyStatusBadgeInfo = (
+    bountyStatus: BountyStatus,
+    bountyDeadline: number,
+) => {
     switch (bountyStatus) {
         case BountyStatus.OPEN:
             return {
@@ -29,9 +36,23 @@ export const getBountyStatusBadgeInfo = (bountyStatus: BountyStatus) => {
     }
 };
 
-export const BountyStatusBadge: FC<{ bountyStatus: BountyStatus }> = ({
-    bountyStatus,
-}) => {
-    const { color, label } = getBountyStatusBadgeInfo(bountyStatus);
-    return <Badge color={color}>{label}</Badge>;
+export const BountyStatusBadge: FC<{
+    bountyStatus: BountyStatus;
+    bountyDeadline: number;
+}> = ({ bountyStatus, bountyDeadline }) => {
+    const { color, label } = getBountyStatusBadgeInfo(
+        bountyStatus,
+        bountyDeadline,
+    );
+    const daysLeft = Math.ceil(
+        (bountyDeadline - getCurrentUnixTimestamp()) / (24 * 3600),
+    );
+    return (
+        <Group>
+            <Badge color={color}>{label}</Badge>
+            {bountyStatus == BountyStatus.OPEN && daysLeft > 0 && (
+                <Badge color="blue">ends in {daysLeft} days</Badge>
+            )}
+        </Group>
+    );
 };
