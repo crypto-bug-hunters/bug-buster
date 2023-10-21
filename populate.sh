@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 BUSYBOX_ACCOUNT=2
 LUA_ACCOUNT=3
 SQLITE_ACCOUNT=4
@@ -17,7 +18,7 @@ https://github.com/crypto-bug-hunters/bug-less/tree/main/tests/bounties/lua-boun
 END
 )
 
-SQLITE_LOGO="https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg"
+SQLITE_LOGO="https://www.svgrepo.com/show/374094/sqlite.svg"
 SQLITE_BOUNTY_DESC=$(cat <<-END
 Find bugs in SQLite, the most used database engine in the world!
 
@@ -28,7 +29,7 @@ https://github.com/crypto-bug-hunters/bug-less/tree/main/tests/bounties/sqlite-b
 END
 )
 
-BUSYBOX_LOGO="https://upload.wikimedia.org/wikipedia/commons/3/31/BusyBoxLogo.png"
+BUSYBOX_LOGO="https://uawartifacts.blob.core.windows.net/upload-files/Busy_Box_c74c024d34.svg"
 BUSYBOX_BOUNTY_DESC=$(cat <<-END
 Find bugs in BusyBox, a software suite that provides several Unix utilities!
 
