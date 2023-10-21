@@ -161,7 +161,7 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 
 		// try to run exploit
-		if err := RunExploit(env, input.BountyIndex, input.Exploit); err != nil {
+		if err := RunExploit(env, input.BountyIndex, input.Exploit, false); err != nil {
 			return nil, err
 		}
 
@@ -221,7 +221,7 @@ func (c *BugLessContract) Inspect(env eggroll.EnvReader) (any, error) {
 	}
 
 	// try to run exploit
-	if err := RunExploit(env, input.BountyIndex, input.Exploit); err != nil {
+	if err := RunExploit(env, input.BountyIndex, input.Exploit, true); err != nil {
 		return nil, err
 	}
 
@@ -250,11 +250,20 @@ func DecodeUnzipStore(bountyIndex int, zipBinary string) error {
 	return nil
 }
 
+type EnvLogger struct {
+	env    eggroll.EnvReader
+}
+
+func (l *EnvLogger) Write(p []byte) (int, error) {
+	l.env.Log(string(p))
+	return len(p), nil
+}
+
 // Run the exploit for the given code.
 // Return true if succeeds.
-func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
+func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string, captureOutput bool) error {
 	codePath := CodePath(bountyIndex)
-	env.Logf("testing an exploit for %v", codePath)
+	env.Logf("testing an exploit for %v\n", codePath)
 	bytes, err := base64.StdEncoding.DecodeString(exploit)
 	if err != nil {
 		return fmt.Errorf("base64 decode failed: %v", err)
@@ -268,13 +277,19 @@ func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string) error {
 	defer os.Remove("/var/tmp/exploit")
 	cmd := exec.Command("bounty-run", codePath, "/var/tmp/bounty", "/var/tmp/exploit")
 	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	if (captureOutput) {
+		cmd.Stdout = &EnvLogger{env}
+		cmd.Stderr = &EnvLogger{env}
+	} else {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
 	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("exploit failed: %v", err)
+		env.Logf("exploit failed: %v\n", err)
+		return fmt.Errorf("exploit failed")
 	}
-	env.Log("exploit succeeded!")
+	env.Log("exploit succeeded!\n")
 	return nil
 }
 
