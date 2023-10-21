@@ -95,7 +95,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         allowNegative={false}
                         decimalScale={18}
                         value={value}
-                        onChange={wrapSetter(setValue)}
+                        onChange={(e: any) => setValue(e)}
                     />
 
                     <Group justify="center" mt="md">

@@ -19,10 +19,13 @@ run:
 	sunodo run
 
 run-frontend-dev:
-	cd frontend && NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C npm run dev
+	cd frontend && \
+		NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C npm run dev
 
 run-frontend-prod:
-	cd frontend && npm run build && NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C npm run start
+	cd frontend && \
+		NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C npm run build && \
+		NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C npm run start
 
 populate:
 	./populate.sh
