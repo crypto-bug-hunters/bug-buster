@@ -33,7 +33,7 @@ BUSYBOX_LOGO="https://uawartifacts.blob.core.windows.net/upload-files/Busy_Box_c
 BUSYBOX_BOUNTY_DESC=$(cat <<-END
 Find bugs in BusyBox, a software suite that provides several Unix utilities!
 
-Did you it is one of the most downloaded software in Docker Hub, with more than one billion downloads?
+Did you know it is one of the most downloaded software in Docker Hub, with more than one billion downloads?
 
 Submitted shell code will run inside a BusyBox with only ash utility enabled, to win this bounty the shell code must crash it.
 
