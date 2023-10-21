@@ -68,7 +68,7 @@ const ButtonsBox: FC<{
                 component="a"
                 href={`/bounty/${bountyId}/sponsor`}
                 data-disabled={!isOpen}
-                onClick={(event) => event.preventDefault()}
+                onClick={isOpen ? null : (event) => event.preventDefault()}
             >
                 Sponsor
             </Button>
@@ -76,7 +76,7 @@ const ButtonsBox: FC<{
                 component="a"
                 href={`/bounty/${bountyId}/exploit`}
                 data-disabled={!isOpen}
-                onClick={(event) => event.preventDefault()}
+                onClick={isOpen ? null : (event) => event.preventDefault()}
             >
                 Submit exploit
             </Button>
