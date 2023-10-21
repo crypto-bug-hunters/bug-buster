@@ -26,6 +26,7 @@ import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
 import { BountyStatusBadge } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
 import { ProfileCard } from "../../../components/profileCard";
+import { LinkButton } from "../../../components/linkbtn";
 
 const WithdrawButton: FC<{
     bountyId: string;
@@ -61,22 +62,12 @@ const ButtonsBox: FC<{
     const enableWithdrawals = bountyStatus === BountyStatus.EXPIRED;
     return (
         <Group justify="left">
-            <Button
-                component="a"
-                href={`/bounty/${bountyId}/sponsor`}
-                data-disabled={!isOpen}
-                onClick={isOpen ? undefined : (event) => event.preventDefault()}
-            >
+            <LinkButton href={`/bounty/${bountyId}/sponsor`} disabled={!isOpen}>
                 Sponsor
-            </Button>
-            <Button
-                component="a"
-                href={`/bounty/${bountyId}/exploit`}
-                data-disabled={!isOpen}
-                onClick={isOpen ? undefined : (event) => event.preventDefault()}
-            >
+            </LinkButton>
+            <LinkButton href={`/bounty/${bountyId}/exploit`} disabled={!isOpen}>
                 Submit exploit
-            </Button>
+            </LinkButton>
             <WithdrawButton bountyId={bountyId} disabled={!enableWithdrawals} />
         </Group>
     );
