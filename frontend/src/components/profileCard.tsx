@@ -19,6 +19,8 @@ import {
     Paper,
 } from "@mantine/core";
 
+import { Profile } from "../model/state";
+
 import NiceAvatar, { genConfig } from "react-nice-avatar";
 
 import { CodeWithCopyButton } from "./copy";
@@ -37,7 +39,7 @@ export const Avatar: FC<{
     );
 };
 
-export const Profile: FC<{
+export const ProfileCard: FC<{
     profile: Profile;
     badge?: string;
     badgeColor?: string;
@@ -48,21 +50,23 @@ export const Profile: FC<{
             <Stack p={20}>
                 <Group gap="lg">
                     <Avatar
-                        src={profile.ImgLink}
+                        src={profile.ImgLink || ""}
                         altseed={profile.Address}
                     />
                     <Stack>
                         <Text fw={500} size="lg">
                             <Group>
-                                {badge && <Badge color={badgeColor || "red"}>{badge}</Badge>}
+                                {badge && (
+                                    <Badge color={badgeColor || "red"}>
+                                        {badge}
+                                    </Badge>
+                                )}
                                 {profile.Name}
                             </Group>
-                            <CodeWithCopyButton
-                                value={profile.Address}
-                            />
+                            <CodeWithCopyButton value={profile.Address} />
                         </Text>
                         <Text fw={700} size="xl" c="dimmend">
-                            { children }
+                            {children}
                         </Text>
                     </Stack>
                 </Group>
@@ -70,5 +74,3 @@ export const Profile: FC<{
         </Card>
     );
 };
-
-

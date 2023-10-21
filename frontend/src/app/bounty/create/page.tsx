@@ -146,7 +146,8 @@ const CreateBountyPage: FC = () => {
                                             Drop your bundle here
                                         </Text>
                                         <Text size="sm" c="dimmed" inline>
-                                            Only <Code>.tar.xz</Code> files are accepted
+                                            Only <Code>.tar.xz</Code> files are
+                                            accepted
                                         </Text>
                                     </Stack>
                                 </Group>

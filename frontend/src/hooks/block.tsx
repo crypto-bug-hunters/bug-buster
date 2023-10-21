@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
-import { getBlock } from 'viem'
-import { usePublicClient } from 'wagmi'
+import { useEffect, useState } from "react";
+import { usePublicClient } from "wagmi";
 
 export function useBlockTimestamp() {
     const [timestamp, setTimestamp] = useState<bigint>();
@@ -11,4 +10,4 @@ export function useBlockTimestamp() {
         });
     }, [publicClient]);
     return timestamp;
-};
+}

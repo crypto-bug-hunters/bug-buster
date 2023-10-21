@@ -6,7 +6,10 @@ export enum BountyStatus {
     EXPIRED,
 }
 
-export function getBountyStatus(bounty: AppBounty, timestamp: bigint): BountyStatus {
+export function getBountyStatus(
+    bounty: AppBounty,
+    timestamp: bigint,
+): BountyStatus {
     if (bounty.Exploit) {
         return BountyStatus.EXPLOITED;
     } else if (timestamp < bounty.Deadline) {

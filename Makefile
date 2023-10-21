@@ -18,5 +18,13 @@ test:
 run:
 	sunodo run
 
+run-frontend-dev:
+	export NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C
+	cd frontend && npm run dev
+
+run-frontend-prod:
+	export NEXT_PUBLIC_DAPP_ADDRESS=0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C
+	cd frontend && npm run build && npm run start
+
 populate:
 	./populate.sh

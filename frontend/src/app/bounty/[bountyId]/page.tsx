@@ -25,7 +25,7 @@ import { useBlockTimestamp } from "../../../hooks/block";
 import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
 import { BountyStatusBadge } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
-import { Profile } from "../../../components/profile";
+import { ProfileCard } from "../../../components/profileCard";
 
 const WithdrawButton: FC<{
     bountyId: string;
@@ -39,10 +39,7 @@ const WithdrawButton: FC<{
     });
     return (
         <Group>
-            <Button
-                disabled={disabled || !write || isLoading}
-                onClick={write}
-            >
+            <Button disabled={disabled || !write || isLoading} onClick={write}>
                 {isLoading ? "Withdrawing..." : "Withdraw"}
             </Button>
             <Group justify="center">
@@ -68,7 +65,7 @@ const ButtonsBox: FC<{
                 component="a"
                 href={`/bounty/${bountyId}/sponsor`}
                 data-disabled={!isOpen}
-                onClick={isOpen ? null : (event) => event.preventDefault()}
+                onClick={isOpen ? undefined : (event) => event.preventDefault()}
             >
                 Sponsor
             </Button>
@@ -76,7 +73,7 @@ const ButtonsBox: FC<{
                 component="a"
                 href={`/bounty/${bountyId}/exploit`}
                 data-disabled={!isOpen}
-                onClick={isOpen ? null : (event) => event.preventDefault()}
+                onClick={isOpen ? undefined : (event) => event.preventDefault()}
             >
                 Submit exploit
             </Button>
@@ -102,9 +99,10 @@ const BountyBox: FC<{
             <Image
                 w={300}
                 src={bounty.Developer.ImgLink}
+                alt="Bounty Image"
                 fallbackSrc="/static/default_app.webp"
             />
-            <Text styles={{ root: { "white-space": "pre-wrap" } }}>
+            <Text styles={{ root: { whiteSpace: "pre-wrap" } }}>
                 {bounty.Description}
             </Text>
             <Title order={3}>Total Prize: {formatEther(totalPrize)} ETH</Title>
@@ -134,18 +132,22 @@ const ParticipantsBox: FC<{
         <Stack align="center">
             <Title order={2}>Participants</Title>
             {bounty.Exploit && (
-                <Profile profile={bounty.Exploit.Hacker} badge="Exploiter" />
+                <ProfileCard
+                    profile={bounty.Exploit.Hacker}
+                    badge="Exploiter"
+                />
             )}
             {bounty.Sponsorships &&
-                bounty.Sponsorships.map((sponsorship) => {
+                bounty.Sponsorships.map((sponsorship, index) => {
                     return (
-                        <Profile
+                        <ProfileCard
+                            key={index}
                             profile={sponsorship.Sponsor}
                             badge="Sponsor"
                             badgeColor="purple"
                         >
                             {formatEther(BigInt(sponsorship.Value))} ETH
-                        </Profile>
+                        </ProfileCard>
                     );
                 })}
         </Stack>

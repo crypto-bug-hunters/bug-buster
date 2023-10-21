@@ -32,15 +32,11 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
 
-    const bountyIndex = Number(bountyId);
-
-    if (isNaN(bountyIndex)) {
-        return <InvalidBountyId />;
-    }
-
     const [name, setName] = useState("");
     const [imgLink, setImgLink] = useState("");
     const [value, setValue] = useState(0);
+
+    const bountyIndex = Number(bountyId);
 
     const addSponsorship = {
         Name: name,
@@ -55,8 +51,12 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         hash: data?.hash,
     });
 
-    function wrapSetter(setter) {
-        return (e) => setter(e.target.value);
+    if (isNaN(bountyIndex)) {
+        return <InvalidBountyId />;
+    }
+
+    function wrapSetter(setter: any) {
+        return (e: any) => setter(e.target.value);
     }
 
     return (
@@ -87,7 +87,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                         allowNegative={false}
                         decimalScale={18}
                         value={value}
-                        onChange={setValue}
+                        onChange={wrapSetter(setValue)}
                     />
 
                     <Group justify="center" mt="md">

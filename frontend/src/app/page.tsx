@@ -20,11 +20,11 @@ import { BountyStatusBadge } from "../components/bountyStatus";
 import { useBlockTimestamp } from "../hooks/block";
 import { getBountyStatus } from "../utils/bounty";
 
-const Bounty: FC<{ index: number; bounty: AppBounty; blockTimestamp: BigInt }> = ({
-    index,
-    bounty,
-    blockTimestamp,
-}) => {
+const Bounty: FC<{
+    index: number;
+    bounty: AppBounty;
+    blockTimestamp: bigint;
+}> = ({ index, bounty, blockTimestamp }) => {
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
     return (
         <Anchor href={"/bounty/" + index} underline="never">
@@ -34,6 +34,7 @@ const Bounty: FC<{ index: number; bounty: AppBounty; blockTimestamp: BigInt }> =
                         h={200}
                         p={6}
                         fit="contain"
+                        alt="Bounty Image"
                         src={bounty.Developer.ImgLink}
                         fallbackSrc="/static/default_app.webp"
                     />
@@ -67,7 +68,14 @@ const BountyList: FC = () => {
             return (
                 <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
                     {state.Bounties?.map((bounty, index) => {
-                        return <Bounty index={index} bounty={bounty} blockTimestamp={blockTimestamp} />;
+                        return (
+                            <Bounty
+                                key={index}
+                                index={index}
+                                bounty={bounty}
+                                blockTimestamp={blockTimestamp!}
+                            />
+                        );
                     })}
                 </SimpleGrid>
             );

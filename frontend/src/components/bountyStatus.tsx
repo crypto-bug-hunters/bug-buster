@@ -29,11 +29,9 @@ export const getBountyStatusBadgeInfo = (bountyStatus: BountyStatus) => {
     }
 };
 
-export const BountyStatusBadge: FC<{ bountyStatus: BountyStatus }> = ({ bountyStatus }) => {
+export const BountyStatusBadge: FC<{ bountyStatus: BountyStatus }> = ({
+    bountyStatus,
+}) => {
     const { color, label } = getBountyStatusBadgeInfo(bountyStatus);
-    return (
-        <Badge color={color}>
-            {label}
-        </Badge>
-    );
+    return <Badge color={color}>{label}</Badge>;
 };
