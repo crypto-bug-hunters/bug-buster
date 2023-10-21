@@ -19,6 +19,7 @@ import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 
 import { BountyParams, InvalidBountyId } from "../utils.tsx";
+import { GetBounty } from "../../../../model/reader";
 
 const toWei = (input: string | number) => {
     if (typeof input == "number") {
@@ -59,11 +60,18 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         return (e: any) => setter(e.target.value);
     }
 
+    const result = GetBounty(bountyIndex);
+
     return (
         <Center>
             <Box p={20} mt={50} bg={theme.colors.dark[7]}>
                 <Stack w={600}>
-                    <Title>Sponsor a bounty</Title>
+                    <Title>Sponsor bounty</Title>
+                    {result.kind == "success" && (
+                        <Text size="lg" fw={700} c="dimmed">
+                            {result.response.Developer.Name}
+                        </Text>
+                    )}
                     <TextInput
                         withAsterisk
                         size="lg"

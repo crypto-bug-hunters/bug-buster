@@ -32,18 +32,12 @@ const CreateBountyPage: FC = () => {
     const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
 
-    // App name
     const [name, setName] = useState("");
-
-    // Description
     const [description, setDescription] = useState("");
-
-    // ImgLink
     const [imgLink, setImgLink] = useState("");
+    const [dropText, setDropText] = useState("No .tar.xz file attached yet");
 
-    //Deadline
     const [deadline, setDeadline] = useState<Date | null>(null);
-
     const [appFile, setAppFile] = useState<string | null>(null);
 
     const readFile = (f: FileWithPath | null) => {
@@ -57,6 +51,7 @@ const CreateBountyPage: FC = () => {
                             .join(""),
                     ),
                 );
+                setDropText(f.name);
             });
         }
     };
@@ -117,7 +112,7 @@ const CreateBountyPage: FC = () => {
                         onChange={(e) => setDeadline(e)}
                     />
 
-                    <Group p={20} justify="center" w="100%">
+                    <Paper withBorder shadow="sm" radius="sm">
                         <Dropzone
                             onDrop={(files) => readFile(files[0])}
                             onReject={(files) =>
@@ -125,35 +120,39 @@ const CreateBountyPage: FC = () => {
                             }
                             accept={["application/x-xz"]}
                         >
-                            <Paper withBorder shadow="sm" radius="lg">
-                                <Group
-                                    justify="center"
-                                    gap="xl"
-                                    p="xl"
-                                    style={{ pointerEvents: "none" }}
-                                >
-                                    <Dropzone.Accept>
-                                        <TbUpload size={60} />
-                                    </Dropzone.Accept>
-                                    <Dropzone.Reject>
-                                        <TbExclamationCircle size={60} />
-                                    </Dropzone.Reject>
-                                    <Dropzone.Idle>
-                                        <TbUpload size={60} />
-                                    </Dropzone.Idle>
-                                    <Stack>
-                                        <Text size="xl" inline>
-                                            Drop your bundle here
-                                        </Text>
-                                        <Text size="sm" c="dimmed" inline>
-                                            Only <Code>.tar.xz</Code> files are
-                                            accepted
-                                        </Text>
-                                    </Stack>
-                                </Group>
-                            </Paper>
+                            <Group
+                                justify="left"
+                                gap="xl"
+                                ml={20}
+                                mih={120}
+                                style={{ pointerEvents: "none" }}
+                            >
+                                <Dropzone.Accept>
+                                    <TbUpload size={60} />
+                                </Dropzone.Accept>
+                                <Dropzone.Reject>
+                                    <TbExclamationCircle size={60} />
+                                </Dropzone.Reject>
+                                <Dropzone.Idle>
+                                    <TbUpload size={60} />
+                                </Dropzone.Idle>
+                                <div>
+                                    <Text size="xl" inline>
+                                        Drop your bounty .tar.xz bundle here
+                                    </Text>
+                                    <Text
+                                        size="md"
+                                        fw={700}
+                                        c="dimmed"
+                                        inline
+                                        mt={7}
+                                    >
+                                        {dropText}
+                                    </Text>
+                                </div>
+                            </Group>
                         </Dropzone>
-                    </Group>
+                    </Paper>
 
                     <Group justify="center" mt="md">
                         <Button
