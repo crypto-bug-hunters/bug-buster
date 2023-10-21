@@ -28,3 +28,6 @@ run-frontend-prod:
 
 populate:
 	./populate.sh
+
+slides:
+	docker run --rm --init -v $$PWD:/home/marp/app/ -e MARP_USER="$(id -u):$(id -g)" marpteam/marp-cli slides.md --pdf
