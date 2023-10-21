@@ -75,14 +75,14 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                     <TextInput
                         withAsterisk
                         size="lg"
-                        label="Your name"
+                        label="Name"
                         value={name}
                         placeholder="Satoshi Nakamoto"
                         onChange={wrapSetter(setName)}
                     />
                     <TextInput
                         size="lg"
-                        label="Your avatar link"
+                        label="Avatar URL"
                         value={imgLink}
                         placeholder="https://"
                         onChange={wrapSetter(setImgLink)}
