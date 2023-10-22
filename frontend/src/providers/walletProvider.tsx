@@ -31,6 +31,9 @@ createWeb3Modal({
     projectId,
     chains,
     themeMode: "dark",
+    themeVariables: {
+        '--w3m-accent': '#00c3ca',
+    },
 });
 
 const WalletProvider = ({ children }: { children: React.ReactNode }) => {
