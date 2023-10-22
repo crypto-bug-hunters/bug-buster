@@ -1,11 +1,32 @@
-# BugLess DApp
+# BugLess
 
-Bug bounty programs unite hackers and developers to identify bugs for rewards.
-Yet, there's no formal guarantee of fairness.
-Developers might downplay bug severity, underpay, or not pay at all.
-Enter BugLess: a transparent bug bounty system using Cartesi Rollups.
-This lets developers set clear application invariants.
-If breached, it prompts a reward for the deserving hacker.
+<img align="right" height="400" src="logo.png">
+
+Bug bounty programs allow developers to discover vulnerabilities in their applications by rewarding hackers that finds them.
+They are mostly held in the Web2 space, and, thus, rarely provide any form of payment guarantee to whitehats.
+As a result, developers are able to unfairly underpay whitehats, or even refuse to pay them.
+
+To solve this issue, we have developed BugLess—a trustless bug bounty platform powered by [Cartesi Rollups](https://www.cartesi.io/).
+Running inside a deterministic RISC-V machine that boots Linux, BugLess accepts applications written in any major programming language[^1].
+Through a friendly web interface, anyone can submit applications, and sponsor them with Ether to incentivize hackers! All major wallets are supported[^2].
+Meanwhile, hackers can test their exploits right on the browser, without even having to sign Web3 transactions!
+Once the hacker finds a valid exploit, they can finally send a transaction requesting the reward to be transferred to their account.
+If, however, no one is able to submit a valid exploit until a certain deadline, the sponsors may request a refund.
+
+[^1]: Some notable examples of programming languages that can run inside BugLess are C, C++, Python, Lua, JavaScript, and Rust.
+[^2]: BugLess supports +300 wallets, such as WalletConnect, MetaMask, Trust Wallet, and Coinbase.
+
+## Index
+
+- [Dependencies](#dependencies)
+- [Presentation](#presentation)
+- [Back-end](#back-end)
+- [Building bounties](#building-bounties)
+- [Tests](#tests)
+- [CLI](#cli)
+- [Populating DApp](#populating-dapp)
+- [Front-end](#front-end)
+- [Future Work](#future-work)
 
 ## Dependencies
 
