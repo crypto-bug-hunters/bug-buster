@@ -1,6 +1,20 @@
 # BugLess DApp
 
-BugLess is a decentralized bug bounty platform.
+Bug bounty programs unite hackers and developers to identify bugs for rewards.
+Yet, there's no formal guarantee of fairness.
+Developers might downplay bug severity, underpay, or not pay at all.
+Enter BugLess: a transparent bug bounty system using Cartesi Rollups.
+This lets developers set clear application invariants.
+If breached, it prompts a reward for the deserving hacker.
+
+## Presentation
+
+For more info about the project, check out the slides.
+To build the slides, run the following command:
+
+```
+make slides
+```
 
 ## Building the machine image
 
