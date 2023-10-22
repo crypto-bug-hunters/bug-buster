@@ -7,6 +7,22 @@ Enter BugLess: a transparent bug bounty system using Cartesi Rollups.
 This lets developers set clear application invariants.
 If breached, it prompts a reward for the deserving hacker.
 
+## Dependencies
+
+For your purposes, not all dependencies may be required.
+To help you figure out which dependencies you actually need, here is a table of dependencies for each part of the code base.
+
+| Dependency | Presentation | Back-end | Building bounties | Tests | Populating DApp | CLI | Front-end |
+|------------|--------------|----------|-------------------|-------|-----------------|-----|-----------|
+| `docker`   | ☑️           | ☑️       | ☑️                |       |                 |     |           |
+| `go`       |              | ☑️       |                   |       | ☑️              | ☑️  |           |
+| `jq`       |              |          |                   |       | ☑️              |     |           |
+| `lua`      |              |          |                   | ☑️    |                 |     |           |
+| `npm`      |              |          |                   |       |                 |     | ☑️        |
+| `sunodo`   |              | ☑️       |                   | ☑️    |                 |     |           |
+| `tar`      |              |          | ☑️                |       |                 |     |           |
+| `wget`     |              | ☑️       | ☑️                |       |                 |     |           |
+
 ## Presentation
 
 For more info about the project, check out the slides.
@@ -16,14 +32,16 @@ To build the slides, run the following command:
 make slides
 ```
 
-## Building the machine image
+## Back-end
+
+### Building the machine image
 
 ```sh
 make sunodo-sdk-image
 sunodo build
 ```
 
-## Running the Cartesi Node
+### Running the Cartesi Node
 
 ```
 sunodo run
@@ -55,7 +73,7 @@ Along with following exploits:
 ./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql
 ```
 
-## Testing
+## Tests
 
 Before running tests, make sure you built the image and bounties, you can build them with `make all`.
 
@@ -130,7 +148,7 @@ Run the following command to fill up the DApp with test data.
 make populate
 ```
 
-## Frontend
+## Front-end
 
 To run the frontend, execute the commands below.
 
