@@ -32,7 +32,7 @@ createWeb3Modal({
     chains,
     themeMode: "dark",
     themeVariables: {
-        '--w3m-accent': '#00c3ca',
+        "--w3m-accent": "#00c3ca",
     },
 });
 
