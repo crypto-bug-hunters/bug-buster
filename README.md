@@ -12,16 +12,16 @@ If breached, it prompts a reward for the deserving hacker.
 For your purposes, not all dependencies may be required.
 To help you figure out which dependencies you actually need, here is a table of dependencies for each part of the code base.
 
-| Dependency | Presentation | Back-end | Building bounties | Tests | Populating DApp | CLI | Front-end |
-|------------|--------------|----------|-------------------|-------|-----------------|-----|-----------|
-| `docker`   | ☑️           | ☑️       | ☑️                |       |                 |     |           |
-| `go`       |              | ☑️       |                   |       | ☑️              | ☑️  |           |
-| `jq`       |              |          |                   |       | ☑️              |     |           |
-| `lua`      |              |          |                   | ☑️    |                 |     |           |
-| `npm`      |              |          |                   |       |                 |     | ☑️        |
-| `sunodo`   |              | ☑️       |                   | ☑️    |                 |     |           |
-| `tar`      |              |          | ☑️                |       |                 |     |           |
-| `wget`     |              | ☑️       | ☑️                |       |                 |     |           |
+| Dependency | Presentation | Back-end | Examples | Tests | Populate | CLI | Front-end |
+| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| `docker` | ☑️ | ☑️ | ☑️ | | | | |
+| `go` | | ☑️ | | | ☑️ | ☑️ | |
+| `jq` | | | | | ☑️ | | |
+| `lua` | | | | ☑️ | | | |
+| `npm` | | | | | | | ☑️ |
+| `sunodo` | | ☑️ | | ☑️ | | | |
+| `tar` | | | ☑️ | | | | |
+| `wget` | | ☑️ | ☑️ | | | | |
 
 ## Presentation
 
