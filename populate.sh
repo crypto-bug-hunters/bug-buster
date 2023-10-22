@@ -64,8 +64,14 @@ go run ./cli send sponsor \
 go run ./cli send sponsor \
     -a $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
-    -n "Rich Crypto Guy" \
+    -n "Rich Crypto Person" \
     -v 1.337
+
+go run ./cli send exploit \
+    -a $HACKER_ACCOUNT \
+    -b $CURR_BOUNTY \
+    -n "Hacker" \
+    -e "./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh"
 
 # Lua 5.4.3
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
@@ -86,14 +92,14 @@ go run ./cli send sponsor \
 go run ./cli send sponsor \
     -a $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
-    -n "Rich Crypto Guy" \
+    -n "Rich Crypto Person" \
     -v 1.337
 
-go run ./cli send exploit \
-    -a $HACKER_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Mike" \
-    -e "./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua"
+# go run ./cli send exploit \
+#     -a $HACKER_ACCOUNT \
+#     -b $CURR_BOUNTY \
+#     -n "The Hacker" \
+#     -e "./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua"
 
 # Lua 5.4.6
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
@@ -114,7 +120,7 @@ go run ./cli send sponsor \
 go run ./cli send sponsor \
     -a $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
-    -n "Rich Crypto Guy" \
+    -n "Rich Crypto Person" \
     -v 1.337
 
 # SQLite 3.32.2
@@ -136,27 +142,33 @@ go run ./cli send sponsor \
 go run ./cli send sponsor \
     -a $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
-    -n "Rich Crypto Guy" \
+    -n "Rich Crypto Person" \
     -v 1.337
+
+# go run ./cli send exploit \
+#     -a $HACKER_ACCOUNT \
+#     -b $CURR_BOUNTY \
+#     -n "The Hacker" \
+#     -e "./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql"
 
 # SQLite 3.43.2
-CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
-go run ./cli send bounty \
-    -a $SQLITE_ACCOUNT \
-    -n "SQLite 3.43.2" \
-    -i "$SQLITE_LOGO" \
-    -d "$SQLITE_BOUNTY_DESC" \
-    --duration $((90*86400)) \
-    -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
-
-go run ./cli send sponsor \
-    -a $SQLITE_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "SQLite Sponsor" \
-    -v 0.43
-
-go run ./cli send sponsor \
-    -a $RICH_SPONSOR_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Rich Crypto Guy" \
-    -v 1.337
+# CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+# go run ./cli send bounty \
+#     -a $SQLITE_ACCOUNT \
+#     -n "SQLite 3.43.2" \
+#     -i "$SQLITE_LOGO" \
+#     -d "$SQLITE_BOUNTY_DESC" \
+#     --duration $((90*86400)) \
+#     -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
+# 
+# go run ./cli send sponsor \
+#     -a $SQLITE_ACCOUNT \
+#     -b $CURR_BOUNTY \
+#     -n "SQLite Sponsor" \
+#     -v 0.43
+# 
+# go run ./cli send sponsor \
+#     -a $RICH_SPONSOR_ACCOUNT \
+#     -b $CURR_BOUNTY \
+#     -n "Rich Crypto Person" \
+#     -v 1.337
