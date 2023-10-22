@@ -12,21 +12,42 @@ import {
     TextInput,
     Textarea,
     useMantineTheme,
-    Paper,
     Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { Dropzone, FileWithPath } from "@mantine/dropzone";
-import { TbExclamationCircle, TbUpload } from "react-icons/tb";
+import { FileWithPath } from "@mantine/dropzone";
 
 import {
     useInputBoxAddInput,
     usePrepareInputBoxAddInput,
 } from "../../../hooks/contracts";
-import { Address, bytesToHex, toHex, Hex } from "viem";
+import { bytesToHex } from "viem";
 import { useWaitForTransaction } from "wagmi";
 import { CreateBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bugless";
+import { FileDrop } from "../../../components/filedrop";
+
+interface FileDropTextParams {
+    filename?: string;
+}
+
+const FileDropText: FC<FileDropTextParams> = ({ filename }) => {
+    if (filename) {
+        return (
+            <Box>
+                <Text size="lg">Bundle uploaded!</Text>
+                <Code>{filename}</Code>
+            </Box>
+        );
+    } else {
+        return (
+            <Box>
+                <Text size="lg">Drop your bounty bundle here!</Text>
+                <Code>*.tar.xz</Code>
+            </Box>
+        );
+    }
+};
 
 const CreateBountyPage: FC = () => {
     const theme = useMantineTheme();
@@ -34,7 +55,7 @@ const CreateBountyPage: FC = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [imgLink, setImgLink] = useState("");
-    const [dropText, setDropText] = useState("No .tar.xz file attached yet");
+    const [filename, setFilename] = useState<string | undefined>();
 
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [appFile, setAppFile] = useState<string | null>(null);
@@ -50,7 +71,7 @@ const CreateBountyPage: FC = () => {
                             .join(""),
                     ),
                 );
-                setDropText(f.name);
+                setFilename(f.name);
             });
         }
     };
@@ -111,47 +132,12 @@ const CreateBountyPage: FC = () => {
                         onChange={(e) => setDeadline(e)}
                     />
 
-                    <Paper withBorder shadow="sm" radius="sm">
-                        <Dropzone
-                            onDrop={(files) => readFile(files[0])}
-                            onReject={(files) =>
-                                console.log("rejected files", files)
-                            }
-                            accept={["application/x-xz"]}
-                        >
-                            <Group
-                                justify="left"
-                                gap="xl"
-                                ml={20}
-                                mih={120}
-                                style={{ pointerEvents: "none" }}
-                            >
-                                <Dropzone.Accept>
-                                    <TbUpload size={60} />
-                                </Dropzone.Accept>
-                                <Dropzone.Reject>
-                                    <TbExclamationCircle size={60} />
-                                </Dropzone.Reject>
-                                <Dropzone.Idle>
-                                    <TbUpload size={60} />
-                                </Dropzone.Idle>
-                                <div>
-                                    <Text size="xl" inline>
-                                        Drop your bounty .tar.xz bundle here
-                                    </Text>
-                                    <Text
-                                        size="md"
-                                        fw={700}
-                                        c="dimmed"
-                                        inline
-                                        mt={7}
-                                    >
-                                        {dropText}
-                                    </Text>
-                                </div>
-                            </Group>
-                        </Dropzone>
-                    </Paper>
+                    <FileDrop
+                        onDrop={(files) => readFile(files[0])}
+                        accept={["application/x-xz"]}
+                    >
+                        <FileDropText filename={filename} />
+                    </FileDrop>
 
                     <Group justify="center" mt="md">
                         <Button
