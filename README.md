@@ -40,17 +40,19 @@ make bounties
 The following bounties will be compiled and can be used for testing:
 
 ```
-./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz
-./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz
+./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz
 ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz
 ./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz
+./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz
+./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz
 ```
 
 Along with following exploits:
 
 ```
-./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql
+./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh
 ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql
 ```
 
 ## Testing
