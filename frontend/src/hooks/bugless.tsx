@@ -1,4 +1,4 @@
-import { Address, toHex } from "viem";
+import { toHex } from "viem";
 import {
     usePrepareEtherPortalDepositEther,
     usePrepareInputBoxAddInput,
@@ -9,8 +9,7 @@ import {
     SendExploit,
     WithdrawSponsorship,
 } from "../model/inputs";
-
-const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
+import { getDAppAddress } from "../utils/address";
 
 function usePrepareBuglessInput(opcode: number[], jsonContent: any) {
     const encondeJson: Uint8Array = new TextEncoder().encode(
@@ -21,7 +20,7 @@ function usePrepareBuglessInput(opcode: number[], jsonContent: any) {
     inputPayload.set(encondeJson, 4);
 
     const { config } = usePrepareInputBoxAddInput({
-        args: [dapp, toHex(inputPayload)],
+        args: [getDAppAddress(), toHex(inputPayload)],
         enabled: true,
     });
 
@@ -41,7 +40,7 @@ function usePrepareBuglessETHDeposit(
     inputPayload.set(encondeJson, 4);
 
     const { config } = usePrepareEtherPortalDepositEther({
-        args: [dapp, toHex(inputPayload)],
+        args: [getDAppAddress(), toHex(inputPayload)],
         value: valueInWei,
         enabled: true,
     });

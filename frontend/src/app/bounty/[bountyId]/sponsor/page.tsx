@@ -30,7 +30,6 @@ const toWei = (input: string | number) => {
 };
 
 const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
-    const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
 
     const [name, setName] = useState("");

@@ -29,7 +29,6 @@ import { CreateBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bugless";
 
 const CreateBountyPage: FC = () => {
-    const dapp = process.env.NEXT_PUBLIC_DAPP_ADDRESS as Address;
     const theme = useMantineTheme();
 
     const [name, setName] = useState("");
