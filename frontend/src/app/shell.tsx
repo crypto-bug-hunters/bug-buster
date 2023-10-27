@@ -13,7 +13,7 @@ export const Shell: FC<{ children: React.ReactNode }> = ({ children }) => {
                 <Group h="100%" px={20}>
                     <Center>
                         <Anchor href="/" underline="never">
-                            <Title>🐞 BugLess</Title>
+                            <Title>🪲 BugLess</Title>
                         </Anchor>
                     </Center>
                     <Group justify="flex-end" style={{ flex: 1 }}>
