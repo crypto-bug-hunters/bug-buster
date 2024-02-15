@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
-import { BugLessState, AppBounty, SendExploit } from "./state";
+import { BugLessState, AppBounty, SendExploit, Voucher } from "./state";
 
 type ReaderLoadingResult = {
     kind: "loading";
@@ -46,6 +46,36 @@ const GET_INPUT_PAYLOAD = gql(/* GraphQL */ `
     query getInputPayload($inputIndex: Int!) {
         input(index: $inputIndex) {
             payload
+        }
+    }
+`);
+
+const GET_VOUCHERS = gql(/* GraphQL */ `
+    query getVouchers {
+        vouchers {
+            edges {
+                node {
+                    index
+                    input {
+                        index
+                    }
+                    destination
+                    payload
+                    proof {
+                        context
+                        validity {
+                            inputIndexWithinEpoch
+                            machineStateHash
+                            noticesEpochRootHash
+                            outputHashInOutputHashesSiblings
+                            outputHashesInEpochSiblings
+                            outputHashesRootHash
+                            outputIndexWithinInput
+                            vouchersEpochRootHash
+                        }
+                    }
+                }
+            }
         }
     }
 `);
@@ -137,6 +167,21 @@ function IsInputReady(inputIndex: number): ReaderResult<boolean> {
     return { kind: "success", response: ready };
 }
 
+// Get whether the given input is ready.
+function GetVouchers(): ReaderResult<Voucher[]> {
+    const { data, loading, error } = useQuery(GET_VOUCHERS, {
+        pollInterval: 1000, // ms - TODO Check this and other poll intervals to avoid consuming all API request from RPC provider
+    });
+    if (loading) return { kind: "loading" };
+    if (error) {
+        return { kind: "error", message: error.message };
+    }
+
+    const vouchers: Voucher[] = data?.vouchers.edges?.map((edge) => edge.node) as Voucher[];
+
+    return { kind: "success", response: vouchers };
+}
+
 function fromHexString(hexString: string | undefined): Uint8Array | undefined {
     if (hexString === undefined) {
         return undefined;
@@ -148,4 +193,4 @@ function fromHexString(hexString: string | undefined): Uint8Array | undefined {
     return Uint8Array.from(match.map((byte) => parseInt(byte, 16)));
 }
 
-export { GetLatestState, GetBounty, IsInputReady };
+export { GetLatestState, GetBounty, IsInputReady, GetVouchers };
