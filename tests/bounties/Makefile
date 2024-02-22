@@ -7,12 +7,16 @@ all:
 
 	$(MAKE) -C busybox-bounty riscv64 VERSION=1.36.1
 
+	$(MAKE) -C solidity-bounty riscv64 VERSION=0.8.24
+
 clean:
 	$(MAKE) -C lua-bounty clean
 	$(MAKE) -C sqlite-bounty clean
 	$(MAKE) -C busybox-bounty clean
+	$(MAKE) -C solidity-bounty clean
 
 distclean:
 	$(MAKE) -C lua-bounty distclean
 	$(MAKE) -C sqlite-bounty distclean
 	$(MAKE) -C busybox-bounty distclean
+	$(MAKE) -C solidity-bounty distclean
