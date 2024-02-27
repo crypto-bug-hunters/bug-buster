@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -19,6 +19,7 @@ import { AppBounty } from "../model/state";
 import { BountyStatusBadge } from "../components/bountyStatus";
 import { useBlockTimestamp } from "../hooks/block";
 import { getBountyStatus } from "../utils/bounty";
+import { useAccount } from "wagmi";
 
 const Bounty: FC<{
     index: number;
@@ -86,13 +87,26 @@ const BountyList: FC = () => {
 };
 
 const Home: FC = () => {
+    const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
+    const { address, connector, isConnected } = useAccount()
+    
+    useEffect(() => {
+        if ((isConnected)&&(address)&&(connector)) {
+            setHasConnectedAccount(true);
+        } else {
+            setHasConnectedAccount(false);
+        }
+    }, [isConnected, address, connector]);
+
     return (
         <Stack>
+            {hasConnectedAccount && (
             <Flex mt={20} mr={20} justify="flex-end">
-                <Link href={"/bounty/create"}>
-                    <Button size="lg">Submit bounty</Button>
-                </Link>
+                    <Link href={"/bounty/create"}>
+                        <Button size="lg">Create bounty</Button>
+                    </Link>
             </Flex>
+            )}
             <Center>
                 <BountyList />
             </Center>
