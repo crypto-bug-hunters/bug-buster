@@ -1,4 +1,11 @@
-import { Group, Anchor, Center, Title, ActionIcon, Divider } from "@mantine/core";
+import {
+    Group,
+    Anchor,
+    Center,
+    Title,
+    ActionIcon,
+    Divider,
+} from "@mantine/core";
 import { FC, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { FcMoneyTransfer } from "react-icons/fc";
@@ -9,19 +16,24 @@ export default function ConnectButton() {
 
 const VoucherNotification: FC = () => {
     return (
-        <ActionIcon variant="default" aria-label="Settings" component="a" href="/voucher">
-            <FcMoneyTransfer size="24px"/>
+        <ActionIcon
+            variant="default"
+            aria-label="Settings"
+            component="a"
+            href="/voucher"
+        >
+            <FcMoneyTransfer size="24px" />
         </ActionIcon>
     );
-}
+};
 
 export const Header: FC = () => {
-    const [ hasConnectedAccount, setHasConnectedAccount ] = useState(false);
-    const {address} = useAccount();
+    const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
+    const { address } = useAccount();
 
     useEffect(() => {
         if (address) setHasConnectedAccount(true);
-    },[address]);
+    }, [address]);
 
     return (
         <Group h="100%" px={20}>
@@ -31,12 +43,10 @@ export const Header: FC = () => {
                 </Anchor>
             </Center>
             <Group justify="flex-end" style={{ flex: 1 }}>
-                {hasConnectedAccount && (
-                    <VoucherNotification />
-                )}
+                {hasConnectedAccount && <VoucherNotification />}
                 <Divider orientation="vertical" />
                 <ConnectButton />
             </Group>
         </Group>
     );
-}
+};

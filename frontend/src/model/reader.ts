@@ -177,7 +177,9 @@ function GetVouchers(): ReaderResult<Voucher[]> {
         return { kind: "error", message: error.message };
     }
 
-    const vouchers: Voucher[] = data?.vouchers.edges?.map((edge) => edge.node) as Voucher[];
+    const vouchers: Voucher[] = data?.vouchers.edges?.map(
+        (edge) => edge.node,
+    ) as Voucher[];
 
     return { kind: "success", response: vouchers };
 }

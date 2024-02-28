@@ -54,7 +54,7 @@ export interface Voucher {
     destination: string;
     payload: string;
     proof?: {
-        context:string;
+        context: string;
         validity: {
             inputIndexWithinEpoch: number;
             outputIndexWithinInput: number;
