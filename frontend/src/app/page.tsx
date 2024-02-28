@@ -88,24 +88,20 @@ const BountyList: FC = () => {
 
 const Home: FC = () => {
     const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
-    const { address, connector, isConnected } = useAccount()
-    
+    const { address, connector, isConnected } = useAccount();
+
     useEffect(() => {
-        if ((isConnected)&&(address)&&(connector)) {
-            setHasConnectedAccount(true);
-        } else {
-            setHasConnectedAccount(false);
-        }
+        setHasConnectedAccount(!!isConnected && !!address && !!connector);
     }, [isConnected, address, connector]);
 
     return (
         <Stack>
             {hasConnectedAccount && (
-            <Flex mt={20} mr={20} justify="flex-end">
+                <Flex mt={20} mr={20} justify="flex-end">
                     <Link href={"/bounty/create"}>
                         <Button size="lg">Create bounty</Button>
                     </Link>
-            </Flex>
+                </Flex>
             )}
             <Center>
                 <BountyList />
