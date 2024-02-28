@@ -52,7 +52,7 @@ const WithdrawButton: FC<{ voucher: Voucher }> = ({ voucher }) => {
             setIsWaitingProof(true);
             setIsExecuted(false);
         }
-    }, [data, isLoading]);
+    }, [voucher.proof, data, isLoading]);
 
     if (isWaitingProof) {
         return <Badge color="orange">Waiting proof...</Badge>;
