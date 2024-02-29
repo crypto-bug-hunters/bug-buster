@@ -10,8 +10,13 @@ fly apps create bug-less-validator
 We need a PostgreSQL database to store the data. We can create a free one and attach it to the application.
 
 ```shell
-fly pg create bug-less-database --region gig
-fly pg attach bug-less-database bug-less-validator
+fly postgres create \
+    --initial-cluster-size 1 \
+    --name bug-less-database \
+    --region gig \
+    --vm-size shared-cpu-1x \
+    --volume-size 1
+fly postgres attach bug-less-database
 ```
 
 Althoagh we have all the `[env]` configuraion inside `fly.toml`, we need to define some values as secrets.
@@ -20,7 +25,7 @@ Althoagh we have all the `[env]` configuraion inside `fly.toml`, we need to defi
 fly secrets set CARTESI_BLOCKCHAIN_HTTP_ENDPOINT=<alchemy http endpoint>
 fly secrets set CARTESI_BLOCKCHAIN_WS_ENDPOINT=<alchemy ws endpoint>
 fly secrets set CARTESI_AUTH_MNEMONIC=<twelve words mnemonic>
-fly secrets set CARTESI_POSTGRES_ENDPOINT=<value from the fly pg create output>
+fly secrets set CARTESI_POSTGRES_ENDPOINT=<value from the `fly postgres attach bug-less-database` output>
 ```
 
 Now we should build the image locally and send it to the fly.io registry.
@@ -31,16 +36,18 @@ fly auth docker
 docker push registry.fly.io/bug-less-validator:latest
 ```
 
-Now that out image is on the fly.io registry, we can deploy it.
+Now that our image is on the fly.io registry, we can deploy it.
 
 ```shell
-flyctl deploy --app bug-less-validator \
-    --vm-size=shared-cpu-2x \
-    --image registry.fly.io/bug-less-validator:latest
+fly deploy \
+    --app bug-less-validator \
+    --ha=false \
+    --image registry.fly.io/bug-less-validator:latest \
+    --vm-size=shared-cpu-2x
 ```
 
 We can follow the app logs with the following command.
 
 ```shell
-flyctl logs --app bug-less-validator
+fly logs
 ```
