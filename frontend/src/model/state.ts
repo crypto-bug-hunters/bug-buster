@@ -47,3 +47,23 @@ export interface SendExploit {
     ImgLink: string;
     Exploit: string;
 }
+
+export interface Voucher {
+    index: number;
+    input: { index: number };
+    destination: string;
+    payload: string;
+    proof?: {
+        context: string;
+        validity: {
+            inputIndexWithinEpoch: number;
+            outputIndexWithinInput: number;
+            outputHashesRootHash: string;
+            vouchersEpochRootHash: string;
+            noticesEpochRootHash: string;
+            machineStateHash: string;
+            outputHashInOutputHashesSiblings: string[];
+            outputHashesInEpochSiblings: string[];
+        };
+    };
+}

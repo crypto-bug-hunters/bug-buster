@@ -153,6 +153,15 @@ go run ./cli send exploit \
 go run ./cli send withdraw -b 0
 ```
 
+### Voucher Notes
+
+You may advance the time past the expiry date of some bounty to test its expired state (e.g. for sponsors to withdraw their Ether).
+The following command assumes anvil is listening to http://localhost:8545, and advances time by 30 days (in seconds).
+
+```shell
+cast rpc evm_increaseTime $(( 60 * 60 * 24 * 30 ))
+```
+
 ### Testing exploit
 
 ```sh
