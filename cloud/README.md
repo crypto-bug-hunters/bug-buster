@@ -1,6 +1,6 @@
 ## fly.io
 
-You should install flyctl and follow the instructions to login and create an app.
+You should [install flyctl](https://fly.io/docs/hands-on/install-flyctl/) and follow the instructions to login and create an app.
 
 ```shell
 fly auth login
