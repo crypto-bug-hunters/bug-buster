@@ -1,5 +1,7 @@
 ## fly.io
 
+### Deploying the bug-less-validator
+
 You should [install flyctl](https://fly.io/docs/hands-on/install-flyctl/) and follow the instructions to login and create an app.
 
 ```shell
@@ -50,4 +52,13 @@ We can follow the app logs with the following command.
 
 ```shell
 fly logs
+```
+
+### Destroying the apps
+
+If you want to destroy the validator and database, you can use the following commands.
+
+```shell
+fly apps destroy bug-less-validator
+fly apps destroy bug-less-database
 ```
