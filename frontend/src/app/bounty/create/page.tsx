@@ -57,7 +57,10 @@ const CreateBountyPage: FC = () => {
     const [imgLink, setImgLink] = useState("");
     const [filename, setFilename] = useState<string | undefined>();
 
-    const [deadline, setDeadline] = useState<Date | null>(null);
+    var minDeadline = new Date();
+    minDeadline.setDate(minDeadline.getDate() + 1);
+    const [deadline, setDeadline] = useState<Date | null>(minDeadline);
+
     const [appFile, setAppFile] = useState<string | null>(null);
 
     const readFile = (f: FileWithPath | null) => {
@@ -129,6 +132,7 @@ const CreateBountyPage: FC = () => {
                         size="lg"
                         label="Deadline"
                         value={deadline}
+                        minDate={minDeadline}
                         onChange={(e) => setDeadline(e)}
                     />
 
