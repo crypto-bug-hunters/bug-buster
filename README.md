@@ -141,15 +141,6 @@ go run ./cli send exploit \
 go run ./cli send withdraw -b 0
 ```
 
-### Voucher Notes
-
-You may advance the time past the expiry date of some bounty to test its expired state (e.g. for sponsors to withdraw their Ether).
-The following command assumes anvil is listening to http://localhost:8545, and advances time by 30 days (in seconds).
-
-```shell
-cast rpc evm_increaseTime $(( 60 * 60 * 24 * 30 ))
-```
-
 ### Testing exploit
 
 ```sh
@@ -191,3 +182,17 @@ Below are some of those features.
 - Add optional one-time setup phase for applications
 - Add option to download bounty bundle
 - Sandbox applications with Hypervisor
+
+## Debugging
+
+When running BugLess locally, you might want to perform some operations that would otherwise be impossible in a production environment.
+To this end, we advise you to install the [Foundry](https://book.getfoundry.sh/getting-started/installation) toolkit.
+
+### Time travel
+
+When testing sponsor withdrawals, it's handy to be able to instantly advance time past the expiry date of some bounty.
+The following command advances time in 30 days, expressed in seconds.
+
+```shell
+cast rpc evm_increaseTime $((60*60*24*30))
+```
