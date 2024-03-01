@@ -196,3 +196,12 @@ The following command advances time in 30 days, expressed in seconds.
 ```sh
 cast rpc evm_increaseTime $((60*60*24*30))
 ```
+
+### Funding a wallet
+
+In order to publish transactions, you need some Ether.
+The following command sets the balance of address `0xf39Fd...92266` to 1 Ether, expressed in Wei.
+
+```sh
+cast rpc anvil_setBalance 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 $(cast to-wei 1 ether)
+```
