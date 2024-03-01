@@ -5,10 +5,11 @@ import {
     Title,
     ActionIcon,
     Divider,
+    Tooltip,
 } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { FcMoneyTransfer } from "react-icons/fc";
+import { RiMoneyDollarCircleLine } from "react-icons/ri";
 
 export default function ConnectButton() {
     return <w3m-button />;
@@ -16,14 +17,17 @@ export default function ConnectButton() {
 
 const VoucherNotification: FC = () => {
     return (
-        <ActionIcon
-            variant="default"
-            aria-label="Settings"
-            component="a"
-            href="/voucher"
-        >
-            <FcMoneyTransfer size="24px" />
-        </ActionIcon>
+        <Tooltip label="List Vouchers">
+            <ActionIcon
+                variant="filled"
+                aria-label="Settings"
+                component="a"
+                href="/voucher"
+                size="xl"
+            >
+                <RiMoneyDollarCircleLine size="24px" />
+            </ActionIcon>
+        </Tooltip>
     );
 };
 
