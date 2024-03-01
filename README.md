@@ -161,7 +161,7 @@ make populate
 
 To run the frontend, execute the commands below.
 
-```shell
+```sh
 cd frontend
 npm install
 npm run dev
@@ -193,6 +193,6 @@ To this end, we advise you to install the [Foundry](https://book.getfoundry.sh/g
 When testing sponsor withdrawals, it's handy to be able to instantly advance time past the expiry date of some bounty.
 The following command advances time in 30 days, expressed in seconds.
 
-```shell
+```sh
 cast rpc evm_increaseTime $((60*60*24*30))
 ```
