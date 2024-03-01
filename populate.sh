@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
+set -euo pipefail
 
 BUSYBOX_ACCOUNT=2
 LUA_ACCOUNT=3
