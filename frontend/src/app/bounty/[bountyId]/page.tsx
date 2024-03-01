@@ -22,8 +22,9 @@ import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";
 import { useBlockTimestamp } from "../../../hooks/block";
-import { BountyStatus, getBountyStatus } from "../../../utils/bounty";
-import { BountyStatusBadge } from "../../../components/bountyStatus";
+import { BountyStatus } from "../../../model/bountyStatus";
+import { getBountyStatus } from "../../../utils/bounty";
+import { BountyStatusBadgeGroup } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
 import { ProfileCard } from "../../../components/profileCard";
 import { LinkButton } from "../../../components/linkbtn";
@@ -58,8 +59,8 @@ const ButtonsBox: FC<{
     bountyId: string;
     bountyStatus: BountyStatus;
 }> = ({ bountyId, bountyStatus }) => {
-    const isOpen = bountyStatus === BountyStatus.OPEN;
-    const enableWithdrawals = bountyStatus === BountyStatus.EXPIRED;
+    const isOpen = bountyStatus.kind == "open";
+    const enableWithdrawals = bountyStatus.kind == "expired";
     return (
         <Group justify="left">
             <LinkButton href={`/bounty/${bountyId}/sponsor`} disabled={!isOpen}>
@@ -78,17 +79,14 @@ const BountyBox: FC<{
     bounty: AppBounty;
 }> = ({ bountyId, bounty }) => {
     const blockTimestamp = useBlockTimestamp();
-    const bountyStatus = getBountyStatus(bounty, blockTimestamp || BigInt(0));
+    const bountyStatus = getBountyStatus(bounty, blockTimestamp);
     const profile = bounty.Developer;
     const totalPrize = getBountyTotalPrize(bounty);
     return (
         <Stack align="center">
             <Group>
                 <Title order={2}>{profile.Name}</Title>
-                <BountyStatusBadge
-                    bountyStatus={bountyStatus}
-                    bountyDeadline={bounty.Deadline}
-                />
+                <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
             </Group>
             <Image
                 w={300}
