@@ -21,7 +21,7 @@ fly postgres create \
 fly postgres attach bug-less-database
 ```
 
-Althoagh we have all the `[env]` configuraion inside `fly.toml`, we need to define some values as secrets.
+Although we have all the `[env]` configuration inside `fly.toml`, we need to define some values as secrets.
 
 ```shell
 fly secrets set CARTESI_BLOCKCHAIN_HTTP_ENDPOINT=<alchemy http endpoint>
