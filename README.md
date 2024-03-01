@@ -16,18 +16,6 @@ If, however, no one is able to submit a valid exploit until a certain deadline, 
 [^1]: Some notable examples of programming languages that can run inside BugLess are C, C++, Python, Lua, JavaScript, and Rust.
 [^2]: BugLess supports +300 wallets, such as WalletConnect, MetaMask, Trust Wallet, and Coinbase.
 
-## Index
-
-- [Dependencies](#dependencies)
-- [Presentation](#presentation)
-- [Back-end](#back-end)
-- [Building bounties](#building-bounties)
-- [Tests](#tests)
-- [CLI](#cli)
-- [Populating DApp](#populating-dapp)
-- [Front-end](#front-end)
-- [Future Work](#future-work)
-
 ## Dependencies
 
 For your purposes, not all dependencies may be required.
