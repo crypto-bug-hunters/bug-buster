@@ -1,10 +1,10 @@
 package shared
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/gligneul/eggroll"
 	"github.com/holiman/uint256"
 )
 
@@ -63,12 +63,26 @@ type Profile struct {
 // Advances inputs
 //
 
+type InputKind string
+
+const (
+	CreateAppBountyInputKind     InputKind = "CreateAppBountyInputKind"
+	AddSponsorshipInputKind      InputKind = "AddSponsorshipInputKind"
+	WithdrawSponsorshipInputKind InputKind = "WithdrawSponsorshipInputKind"
+	SendExploitInputKind         InputKind = "SendExploitInputKind"
+)
+
+type Input struct {
+	Kind    InputKind       `json:"kind"`
+	Payload json.RawMessage `json:"payload"`
+}
+
 type CreateAppBounty struct {
-	Name          string
-	ImgLink       string
-	Description   string
-	Deadline      int64  // (unix timestamp)
-	CodeZipBinary string // base64?
+	Name          string `json:"kind"`
+	ImgLink       string `json:"imgLink"`
+	Description   string `json:"description"`
+	Deadline      int64  `json:"deadline"`      // (unix timestamp)
+	CodeZipBinary string `json:"codeZipBinary"` // base64?
 }
 
 func (b *CreateAppBounty) Validate() error {
@@ -89,9 +103,9 @@ func (b *CreateAppBounty) Validate() error {
 
 // From portal (Ether)
 type AddSponsorship struct {
-	BountyIndex int
-	Name        string
-	ImgLink     string
+	BountyIndex int    `json:"bountyIndex"`
+	Name        string `json:"name"`
+	ImgLink     string `json:"imgLink"`
 }
 
 func (s *AddSponsorship) Validate() error {
@@ -102,14 +116,14 @@ func (s *AddSponsorship) Validate() error {
 }
 
 type WithdrawSponsorship struct {
-	BountyIndex int
+	BountyIndex int `json:"bountyIndex"`
 }
 
 type SendExploit struct {
-	BountyIndex int
-	Name        string
-	ImgLink     string
-	Exploit     string
+	BountyIndex int    `json:"bountyIndex"`
+	Name        string `json:"name"`
+	ImgLink     string `json:"imgLink"`
+	Exploit     string `json:"exploit"`
 }
 
 func (e *SendExploit) Validate() error {
@@ -128,27 +142,6 @@ func (e *SendExploit) Validate() error {
 
 // To check whether the exploit worked, check the CompletionStatus of the result
 type TestExploit struct {
-	BountyIndex int
-	Exploit     string
-}
-
-//
-// Codecs
-//
-
-func Codecs() []eggroll.Codec {
-	return []eggroll.Codec{
-		eggroll.NewJSONCodec[BugLessState](),
-		eggroll.NewJSONCodec[CreateAppBounty](),
-		eggroll.NewJSONCodec[AddSponsorship](),
-		eggroll.NewJSONCodec[WithdrawSponsorship](),
-		eggroll.NewJSONCodec[SendExploit](),
-		eggroll.NewJSONCodec[TestExploit](),
-	}
-}
-
-func PrintCodecsKeys() {
-	for _, codec := range Codecs() {
-		fmt.Printf("%v\t%v\n", codec.Key(), codec.Type().Elem().Name())
-	}
+	BountyIndex int    `json:"bountyIndex"`
+	Exploit     string `json:"exploit"`
 }

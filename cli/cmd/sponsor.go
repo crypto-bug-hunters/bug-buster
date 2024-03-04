@@ -30,12 +30,13 @@ func sponsorRun(cmd *cobra.Command, args []string) {
 	weiValue := new(big.Float).Mul(etherValue, tenToEighteen)
 	value := new(big.Int)
 	weiValue.Int(value)
-	input := &shared.AddSponsorship{
+	inputKind := shared.InputKind("AddSponsorshipInputKind")
+	payload := &shared.AddSponsorship{
 		BountyIndex: sponsorBountyIndex,
 		Name:        sponsorName,
 		ImgLink:     sponsorImgLink,
 	}
-	sendEther(value, input)
+	sendEther(value, inputKind, payload)
 }
 
 func init() {
