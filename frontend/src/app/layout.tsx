@@ -24,7 +24,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         <html lang="en">
             <Head>
                 <ColorSchemeScript />
-                <link rel="shortcut icon" href="/favicon.svg" />
             </Head>
             <body>
                 <GraphQLProvider>

@@ -14,7 +14,7 @@ interface FileDropParams {
 export const FileDrop: FC<FileDropParams> = ({ onDrop, accept, children }) => {
     return (
         <Paper withBorder shadow="sm" radius="sm">
-            <Dropzone onDrop={onDrop} accept={accept}>
+            <Dropzone loading={false} onDrop={onDrop} accept={accept}>
                 <Group justify="left" m={20} style={{ pointerEvents: "none" }}>
                     <Dropzone.Accept>
                         <TbUpload size={60} />

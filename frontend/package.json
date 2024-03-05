@@ -31,6 +31,7 @@
         "@web3modal/wagmi": "^3.0.0-beta.4",
         "chroma-js": "^2.4.2",
         "encoding": "^0.1",
+        "ethers": "^5.7.2",
         "js-sha256": "^0.10",
         "lokijs": "^1",
         "next": "^13",
