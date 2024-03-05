@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { GetLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
-import { BountyStatusBadge } from "../components/bountyStatus";
+import { BountyStatusBadgeGroup } from "../components/bountyStatus";
 import { useBlockTimestamp } from "../hooks/block";
 import { getBountyStatus } from "../utils/bounty";
 
@@ -44,10 +44,7 @@ const Bounty: FC<{
                         <Text truncate="end" fw={700} size="lg">
                             {bounty.Developer.Name}
                         </Text>
-                        <BountyStatusBadge
-                            bountyStatus={bountyStatus}
-                            bountyDeadline={bounty.Deadline}
-                        />
+                        <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
                     </Group>
                     <Text truncate="end" size="xs" c="dimmend">
                         {bounty.Description}
