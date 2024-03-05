@@ -17,7 +17,7 @@ export default function ConnectButton() {
 
 const VoucherNotification: FC = () => {
     return (
-        <Tooltip label="List Vouchers">
+        <Tooltip label="List vouchers">
             <ActionIcon
                 variant="filled"
                 aria-label="Settings"
