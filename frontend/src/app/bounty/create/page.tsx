@@ -138,7 +138,7 @@ const CreateBountyPage: FC = () => {
 
                     <FileDrop
                         onDrop={(files) => readFile(files[0])}
-                        accept={["application/x-xz"]}
+                        accept={{ "application/octet-stream": [".tar.xz"] }}
                     >
                         <FileDropText filename={filename} />
                     </FileDrop>

@@ -16,18 +16,6 @@ If, however, no one is able to submit a valid exploit until a certain deadline, 
 [^1]: Some notable examples of programming languages that can run inside BugLess are C, C++, Python, Lua, JavaScript, and Rust.
 [^2]: BugLess supports +300 wallets, such as WalletConnect, MetaMask, Trust Wallet, and Coinbase.
 
-## Index
-
-- [Dependencies](#dependencies)
-- [Presentation](#presentation)
-- [Back-end](#back-end)
-- [Building bounties](#building-bounties)
-- [Tests](#tests)
-- [CLI](#cli)
-- [Populating DApp](#populating-dapp)
-- [Front-end](#front-end)
-- [Future Work](#future-work)
-
 ## Dependencies
 
 For your purposes, not all dependencies may be required.
@@ -173,7 +161,7 @@ make populate
 
 To run the frontend, execute the commands below.
 
-```shell
+```sh
 cd frontend
 npm install
 npm run dev
@@ -194,3 +182,26 @@ Below are some of those features.
 - Add optional one-time setup phase for applications
 - Add option to download bounty bundle
 - Sandbox applications with Hypervisor
+
+## Debugging
+
+When running BugLess locally, you might want to perform some operations that would otherwise be impossible in a production environment.
+To this end, we advise you to install the [Foundry](https://book.getfoundry.sh/getting-started/installation) toolkit.
+
+### Time travel
+
+When testing sponsor withdrawals, it's handy to be able to instantly advance time past the expiry date of some bounty.
+The following command advances time in 30 days, expressed in seconds.
+
+```sh
+cast rpc evm_increaseTime $((60*60*24*30))
+```
+
+### Funding a wallet
+
+In order to publish transactions, you need some Ether.
+The following command sets the balance of address `0xf39Fd...92266` to 1 Ether, expressed in Wei.
+
+```sh
+cast rpc anvil_setBalance 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 $(cast to-wei 1 ether)
+```
