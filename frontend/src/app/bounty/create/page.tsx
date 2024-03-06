@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState, useRef, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 
 import {
     Box,
@@ -17,11 +17,7 @@ import {
 import { DateInput } from "@mantine/dates";
 import { FileWithPath } from "@mantine/dropzone";
 
-import {
-    useInputBoxAddInput,
-    usePrepareInputBoxAddInput,
-} from "../../../hooks/contracts";
-import { bytesToHex } from "viem";
+import { useInputBoxAddInput } from "../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 import { CreateBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bugless";
@@ -52,7 +48,7 @@ const FileDropText: FC<FileDropTextParams> = ({ filename }) => {
 
 const CreateBountyPage: FC = () => {
     const theme = useMantineTheme();
-    
+
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [imgLink, setImgLink] = useState("");
@@ -66,7 +62,7 @@ const CreateBountyPage: FC = () => {
             blockTimeStampInMS.setDate(blockTimeStampInMS.getDate() + 1);
             setMinDeadline(blockTimeStampInMS);
         }
-    },[blockTimeStamp]);
+    }, [blockTimeStamp]);
     const [deadline, setDeadline] = useState<Date | null>(null);
 
     const [appFile, setAppFile] = useState<string | null>(null);
