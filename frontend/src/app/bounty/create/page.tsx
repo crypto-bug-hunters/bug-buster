@@ -55,7 +55,7 @@ const CreateBountyPage: FC = () => {
     const [filename, setFilename] = useState<string | undefined>();
 
     const [minDeadline, setMinDeadline] = useState<Date>(new Date());
-    const blockTimeStamp = useBlockTimestamp();
+    const blockTimestamp = useBlockTimestamp();
     useEffect(() => {
         if (blockTimeStamp !== undefined) {
             const blockTimeStampInMS = new Date(Number(blockTimeStamp) * 1000);
