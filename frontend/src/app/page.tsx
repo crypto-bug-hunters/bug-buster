@@ -17,6 +17,7 @@ import Link from "next/link";
 import { GetLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
 import { BountyStatusBadgeGroup } from "../components/bountyStatus";
+import { HasConnectedAccount } from "../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../hooks/block";
 import { getBountyStatus } from "../utils/bounty";
 
@@ -85,11 +86,13 @@ const BountyList: FC = () => {
 const Home: FC = () => {
     return (
         <Stack>
-            <Flex mt={20} mr={20} justify="flex-end">
-                <Link href={"/bounty/create"}>
-                    <Button size="lg">Submit bounty</Button>
-                </Link>
-            </Flex>
+            <HasConnectedAccount>
+                <Flex mt={20} mr={20} justify="flex-end">
+                    <Link href={"/bounty/create"}>
+                        <Button size="lg">Submit bounty</Button>
+                    </Link>
+                </Flex>
+            </HasConnectedAccount>
             <Center>
                 <BountyList />
             </Center>

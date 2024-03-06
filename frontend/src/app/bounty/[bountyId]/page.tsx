@@ -28,6 +28,7 @@ import { BountyStatusBadgeGroup } from "../../../components/bountyStatus";
 import { useWaitForTransaction } from "wagmi";
 import { ProfileCard } from "../../../components/profileCard";
 import { LinkButton } from "../../../components/linkbtn";
+import { HasConnectedAccount } from "../../../components/hasConnectedAccount";
 
 const WithdrawButton: FC<{
     bountyId: string;
@@ -98,7 +99,9 @@ const BountyBox: FC<{
                 {bounty.Description}
             </Text>
             <Title order={3}>Total Prize: {formatEther(totalPrize)} ETH</Title>
-            <ButtonsBox bountyId={bountyId} bountyStatus={bountyStatus} />
+            <HasConnectedAccount>
+                <ButtonsBox bountyId={bountyId} bountyStatus={bountyStatus} />
+            </HasConnectedAccount>
         </Stack>
     );
 };
