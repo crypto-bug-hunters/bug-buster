@@ -54,10 +54,10 @@ const CreateBountyPage: FC = () => {
     const [imgLink, setImgLink] = useState("");
     const [filename, setFilename] = useState<string | undefined>();
 
-    const [minDeadline, setMinDeadline] = useState<Date>(new Date());
+    const [minDeadline, setMinDeadline] = useState<Date>();
     const blockTimestamp = useBlockTimestamp();
     useEffect(() => {
-        if (blockTimeStamp !== undefined) {
+        if (blockTimestamp !== undefined) {
             const blockDate = new Date(Number(blockTimestamp) * 1000);
             blockDate.setDate(blockDate.getDate() + 1);
             setMinDeadline(blockDate);
