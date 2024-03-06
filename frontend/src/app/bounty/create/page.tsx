@@ -62,7 +62,7 @@ const CreateBountyPage: FC = () => {
             blockDate.setDate(blockDate.getDate() + 1);
             setMinDeadline(blockDate);
         }
-    }, [blockTimeStamp]);
+    }, [blockTimestamp]);
     const [deadline, setDeadline] = useState<Date | null>(null);
 
     const [appFile, setAppFile] = useState<string | null>(null);
