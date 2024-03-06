@@ -26,6 +26,7 @@ import { useWaitForTransaction } from "wagmi";
 import { CreateBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bugless";
 import { FileDrop } from "../../../components/filedrop";
+import { useBlockTimestamp } from "../../../hooks/block";
 
 interface FileDropTextParams {
     filename?: string;
@@ -51,15 +52,22 @@ const FileDropText: FC<FileDropTextParams> = ({ filename }) => {
 
 const CreateBountyPage: FC = () => {
     const theme = useMantineTheme();
-
+    
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [imgLink, setImgLink] = useState("");
     const [filename, setFilename] = useState<string | undefined>();
 
-    var minDeadline = new Date();
-    minDeadline.setDate(minDeadline.getDate() + 1);
-    const [deadline, setDeadline] = useState<Date | null>(minDeadline);
+    const [minDeadline, setMinDeadline] = useState<Date>(new Date());
+    const blockTimeStamp = useBlockTimestamp();
+    useEffect(() => {
+        if (blockTimeStamp !== undefined) {
+            const blockTimeStampInMS = new Date(Number(blockTimeStamp) * 1000);
+            blockTimeStampInMS.setDate(blockTimeStampInMS.getDate() + 1);
+            setMinDeadline(blockTimeStampInMS);
+        }
+    },[blockTimeStamp]);
+    const [deadline, setDeadline] = useState<Date | null>(null);
 
     const [appFile, setAppFile] = useState<string | null>(null);
 
