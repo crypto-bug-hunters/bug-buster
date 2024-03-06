@@ -9,6 +9,7 @@ import {
 import { FC, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { FcMoneyTransfer } from "react-icons/fc";
+import { HasConnectedAccount } from "../components/hasConnectedAccount";
 
 export default function ConnectButton() {
     return <w3m-button />;
@@ -28,13 +29,6 @@ const VoucherNotification: FC = () => {
 };
 
 export const Header: FC = () => {
-    const [hasConnectedAccount, setHasConnectedAccount] = useState(false);
-    const { address } = useAccount();
-
-    useEffect(() => {
-        if (address) setHasConnectedAccount(true);
-    }, [address]);
-
     return (
         <Group h="100%" px={20}>
             <Center>
@@ -43,7 +37,9 @@ export const Header: FC = () => {
                 </Anchor>
             </Center>
             <Group justify="flex-end" style={{ flex: 1 }}>
-                {hasConnectedAccount && <VoucherNotification />}
+                <HasConnectedAccount>
+                    <VoucherNotification />
+                </HasConnectedAccount>
                 <Divider orientation="vertical" />
                 <ConnectButton />
             </Group>
