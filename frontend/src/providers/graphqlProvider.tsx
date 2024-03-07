@@ -1,7 +1,11 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
+const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL;
+if (GRAPHQL_URL === undefined || GRAPHQL_URL == "")
+    throw new Error("A GraphQL endpoint is required");
+
 const client = new ApolloClient({
-    uri: "http://localhost:8080/graphql",
+    uri: GRAPHQL_URL,
     cache: new InMemoryCache(),
 });
 
