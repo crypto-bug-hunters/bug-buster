@@ -57,7 +57,9 @@ const CreateBountyPage: FC = () => {
     const [minDeadline, setMinDeadline] = useState<Date>();
     const blockTimestamp = useBlockTimestamp();
     useEffect(() => {
-        if (blockTimestamp !== undefined) {
+        if (blockTimestamp === undefined) {
+            setMinDeadline(undefined);
+        } else {
             const blockDate = new Date(Number(blockTimestamp) * 1000);
             blockDate.setDate(blockDate.getDate() + 1);
             setMinDeadline(blockDate);
