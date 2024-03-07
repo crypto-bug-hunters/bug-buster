@@ -54,17 +54,17 @@ export const ProfileCard: FC<{
                         altseed={profile.Address}
                     />
                     <Stack>
-                        <Text fw={500} size="lg">
-                            <Group>
-                                {badge && (
-                                    <Badge color={badgeColor || "red"}>
-                                        {badge}
-                                    </Badge>
-                                )}
+                        <Group>
+                            {badge && (
+                                <Badge color={badgeColor || "red"}>
+                                    {badge}
+                                </Badge>
+                            )}
+                            <Text fw={500} size="lg">
                                 {profile.Name}
-                            </Group>
-                            <CodeWithCopyButton value={profile.Address} />
-                        </Text>
+                            </Text>
+                        </Group>
+                        <CodeWithCopyButton value={profile.Address} />
                         <Text fw={700} size="xl" c="dimmend">
                             {children}
                         </Text>
