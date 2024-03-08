@@ -21,7 +21,6 @@ const VoucherNotification: FC = () => {
         <Tooltip label="List vouchers">
             <ActionIcon
                 variant="filled"
-                aria-label="Settings"
                 component="a"
                 href="/voucher"
                 size="xl"
