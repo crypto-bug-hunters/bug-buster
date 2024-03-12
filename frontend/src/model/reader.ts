@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
-import { BugLessState, AppBounty, SendExploit, Voucher } from "./state";
+import { BugLessState, AppBounty, SendExploitInput, Voucher } from "./state";
 
 type ReaderLoadingResult = {
     kind: "loading";
@@ -88,10 +88,11 @@ function GetLatestState(): ReaderResult<BugLessState> {
     if (loading) return { kind: "loading" };
     if (error) return { kind: "error", message: error.message };
     let reportEdge = data?.reports.edges.findLast((edge) =>
-        edge.node.payload.startsWith("0x0157896b8c"),
+        // starts with {"Bounties":
+        edge.node.payload.startsWith("0x7b22426f756e74696573223a"),
     );
     let payload = reportEdge?.node.payload;
-    let stateBytes = fromHexString(payload?.substring(12));
+    let stateBytes = fromHexString(payload?.substring(2)); // remove '0x'
     let stateJson = null;
     if (stateBytes !== undefined) {
         let stateText = new TextDecoder().decode(stateBytes);
@@ -108,10 +109,11 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
         pollInterval: 500, // ms
     });
     let reportEdge = reportsQuery.data?.reports.edges.findLast((edge) =>
-        edge.node.payload.startsWith("0x0157896b8c"),
+        // starts with {"Bounties":
+        edge.node.payload.startsWith("0x7b22426f756e74696573223a"),
     );
     let payload = reportEdge?.node.payload;
-    let stateBytes = fromHexString(payload?.substring(12));
+    let stateBytes = fromHexString(payload?.substring(2)); // remove '0x'
     let stateJson = null;
     if (stateBytes !== undefined) {
         let stateText = new TextDecoder().decode(stateBytes);
@@ -125,13 +127,17 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
             inputIndex: exploit?.InputIndex as number, // this is fine because of skip
         },
     });
-    let sendExploitBytes = fromHexString(
-        exploitQuery.data?.input.payload?.substring(10),
+    let SendExploitInputBytes = fromHexString(
+        exploitQuery.data?.input.payload?.substring(2), // remove '0x'
     );
-    if (exploit && sendExploitBytes) {
-        let sendExploitText = new TextDecoder().decode(sendExploitBytes);
-        let sendExploit = JSON.parse(sendExploitText) as SendExploit;
-        exploit.Code = atob(sendExploit.Exploit);
+    if (exploit && SendExploitInputBytes) {
+        let SendExploitInputText = new TextDecoder().decode(
+            SendExploitInputBytes,
+        );
+        let SendExploitInput = JSON.parse(
+            SendExploitInputText,
+        ) as SendExploitInput;
+        exploit.Code = atob(SendExploitInput.payload.exploit);
     }
 
     if (reportsQuery.loading) return { kind: "loading" };

@@ -42,10 +42,15 @@ export interface Sponsorship {
 }
 
 export interface SendExploit {
-    BountyIndex: number;
-    Name: string;
-    ImgLink: string;
-    Exploit: string;
+    bountyIndex: number;
+    name: string;
+    imgLink: string;
+    exploit: string;
+}
+
+export interface SendExploitInput {
+    kind: string;
+    payload: SendExploit;
 }
 
 export interface Voucher {
