@@ -6,11 +6,11 @@ paginate: true
 
 ![bg left:35% 90%](./logo.png)
 
-# BugLess
+# Bugless
 
 October 2023
 
-*github.com/crypto-bug-hunters/bug-less*
+*github.com/crypto-bug-hunters/bugless*
 
 ---
 
@@ -27,7 +27,7 @@ October 2023
 
 - Bug bounty programs unite hackers and developers to identify bugs for rewards.
 - Yet, there's no formal guarantee of fairness. Developers might downplay bug severity, underpay, or not pay at all. 
-- Enter BugLess: a transparent bug bounty system using Cartesi Rollups. This lets developers set clear application invariants. If breached, it prompts a reward for the deserving hacker.
+- Enter Bugless: a transparent bug bounty system using Cartesi Rollups. This lets developers set clear application invariants. If breached, it prompts a reward for the deserving hacker.
 
 ---
 
@@ -41,15 +41,15 @@ October 2023
 # DApp Interaction
 
 
-- A developer posts a new bounty for a Linux program on BugLess, uploading the program binary to the blockchain via rollups.
-- A sponsor backs the bounty by transferring Ether to BugLess. If no exploit is found by the deadline, the sponsor can retrieve their funds.
-- A hacker attempts to breach the program and claim the bounty. Upon discovering an exploit, they can submit an input to BugLess to withdraw the reward.
+- A developer posts a new bounty for a Linux program on Bugless, uploading the program binary to the blockchain via rollups.
+- A sponsor backs the bounty by transferring Ether to Bugless. If no exploit is found by the deadline, the sponsor can retrieve their funds.
+- A hacker attempts to breach the program and claim the bounty. Upon discovering an exploit, they can submit an input to Bugless to withdraw the reward.
 
 ---
 
 # Bounty examples
 
-To demonstrate BugLess's efficacy, we established three test cases using real-world programs with known vulnerabilities.
+To demonstrate Bugless's efficacy, we established three test cases using real-world programs with known vulnerabilities.
 
 - Lua: An efficient, lightweight, and embeddable scripting language.
 - SQLite: The world's most widely adopted database engine.
