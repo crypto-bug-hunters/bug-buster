@@ -27,7 +27,7 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `go` | | ☑️ | | | ☑️ | ☑️ | |
 | `jq` | | | | | ☑️ | | |
 | `lua` | | | | ☑️ | | | |
-| `npm` | | | | | | | ☑️ |
+| `pnpm` | | | | | | | ☑️ |
 | `sunodo` | | ☑️ | | ☑️ | | | |
 | `tar` | | | ☑️ | | | | |
 | `wget` | | ☑️ | ☑️ | | | | |
@@ -163,8 +163,8 @@ To run the frontend, execute the commands below.
 
 ```sh
 cd frontend
-npm install
-npm run dev
+pnpm i
+pnpm dev
 ```
 
 Open http://localhost:3000 in your browser.
