@@ -19,10 +19,10 @@ run:
 	sunodo run
 
 run-frontend-dev:
-	cd frontend && npm run dev
+	cd frontend && pnpm dev
 
 run-frontend-prod:
-	cd frontend && npm run build && npm run start
+	cd frontend && pnpm build && pnpm start
 
 populate:
 	./populate.sh
