@@ -36,7 +36,7 @@ export const Header: FC = () => {
         <Group h="100%" px={20}>
             <Center>
                 <Anchor href="/" underline="never">
-                    <Title>🪲 BugLess</Title>
+                    <Title>🪲 Bugless</Title>
                 </Anchor>
             </Center>
             <Group justify="flex-end" style={{ flex: 1 }}>
