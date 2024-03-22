@@ -1,5 +1,5 @@
 {
-    "name": "bug-less",
+    "name": "bugless",
     "version": "0.1.0",
     "private": true,
     "scripts": {
@@ -7,9 +7,10 @@
         "build": "next build",
         "dev": "next dev",
         "ts": "tsc --noEmit --incremental --preserveWatchOutput --pretty",
-        "ts:watch": "npm run ts -- --watch",
-        "prebuild": "npm run codegen",
-        "predev": "npm run codegen",
+        "ts:watch": "pnpm ts -- --watch",
+        "prebuild": "pnpm codegen",
+        "predev": "pnpm codegen",
+        "preinstall": "npx only-allow pnpm",
         "start": "next start",
         "lint": "next lint",
         "prettier": "prettier --write --check ."
@@ -32,6 +33,7 @@
         "chroma-js": "^2.4.2",
         "encoding": "^0.1",
         "ethers": "^5.7.2",
+        "graphql": "^16",
         "js-sha256": "^0.10",
         "lokijs": "^1",
         "next": "^13",
@@ -39,6 +41,7 @@
         "prettier": "^3.0.3",
         "react": "^18",
         "react-dom": "^18",
+        "react-dropzone-esm": "^15",
         "react-icons": "^4",
         "react-nice-avatar": "^1.4.1",
         "react-use-downloader": "^1",
