@@ -3,6 +3,7 @@
 frontend/node_modules/**
 frontend/.next/**
 frontend/src/hooks/contracts.tsx
+frontend/.env.local
 frontend/src/model/__generated__
 frontend/tsconfig.tsbuildinfo
 frontend/yarn.lock
