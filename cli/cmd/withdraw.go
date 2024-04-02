@@ -14,11 +14,10 @@ var withdrawCmd = &cobra.Command{
 	Use:   "withdraw",
 	Short: "Withdraw from a bounties",
 	Run: func(cmd *cobra.Command, args []string) {
-		inputKind := shared.InputKind("WithdrawSponsorshipInputKind")
 		payload := &shared.WithdrawSponsorship{
 			BountyIndex: withdrawArgs.bountyIndex,
 		}
-		sendInput(inputKind, payload)
+		sendInput(shared.WithdrawSponsorshipInputKind, payload)
 	},
 }
 
