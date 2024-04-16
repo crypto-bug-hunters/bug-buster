@@ -78,7 +78,7 @@ type Input struct {
 }
 
 type CreateAppBounty struct {
-	Name          string `json:"kind"`
+	Name          string `json:"name"`
 	ImgLink       string `json:"imgLink"`
 	Description   string `json:"description"`
 	Deadline      int64  `json:"deadline"`      // (unix timestamp)
