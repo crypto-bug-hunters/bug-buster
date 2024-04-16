@@ -107,7 +107,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             onClick={write}
                         >
                             {isLoading
-                                ? "Adding Sponsorhsip..."
+                                ? "Adding Sponsorship..."
                                 : "Add Sponsorship"}
                         </Button>
                     </Group>
