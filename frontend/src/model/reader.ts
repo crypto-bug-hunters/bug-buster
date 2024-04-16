@@ -1,7 +1,8 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
-import { BugLessState, AppBounty, SendExploitInput, Voucher } from "./state";
+import { BugLessState, AppBounty, Voucher } from "./state";
+import { TaggedInput, SendExploit } from "./inputs";
 
 type ReaderLoadingResult = {
     kind: "loading";
@@ -134,9 +135,10 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
         let SendExploitInputText = new TextDecoder().decode(
             SendExploitInputBytes,
         );
-        let SendExploitInput = JSON.parse(
-            SendExploitInputText,
-        ) as SendExploitInput;
+        let SendExploitInput = JSON.parse(SendExploitInputText) as TaggedInput<
+            "SendExploit",
+            SendExploit
+        >;
         exploit.Code = atob(SendExploitInput.payload.exploit);
     }
 

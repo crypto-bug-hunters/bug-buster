@@ -35,7 +35,7 @@ const WithdrawButton: FC<{
     disabled: boolean;
 }> = ({ bountyId, disabled }) => {
     const bountyIndex = Number(bountyId);
-    const config = usePrepareWithdrawSponsorship({ BountyIndex: bountyIndex });
+    const config = usePrepareWithdrawSponsorship({ bountyIndex });
     const { data, write } = useInputBoxAddInput(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,

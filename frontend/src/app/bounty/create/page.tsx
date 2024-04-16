@@ -19,7 +19,7 @@ import { FileWithPath } from "@mantine/dropzone";
 
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
-import { CreateBounty } from "../../../model/inputs";
+import { CreateAppBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bugless";
 import { FileDrop } from "../../../components/filedrop";
 import { useBlockTimestamp } from "../../../hooks/block";
@@ -86,12 +86,12 @@ const CreateBountyPage: FC = () => {
     };
 
     const bounty = {
-        Name: name,
-        Description: description,
-        ImgLink: imgLink,
-        Deadline: deadline ? deadline.getTime() / 1000 : null,
-        CodeZipBinary: appFile,
-    } as CreateBounty;
+        name,
+        description,
+        imgLink,
+        deadline: deadline ? deadline.getTime() / 1000 : null,
+        codeZipBinary: appFile,
+    } as CreateAppBounty;
 
     const config = usePrepareCreateBounty(bounty);
 

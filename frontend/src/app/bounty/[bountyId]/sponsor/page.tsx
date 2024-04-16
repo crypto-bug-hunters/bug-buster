@@ -39,9 +39,9 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const bountyIndex = Number(bountyId);
 
     const addSponsorship = {
-        Name: name,
-        ImgLink: imgLink,
-        BountyIndex: bountyIndex,
+        name,
+        imgLink,
+        bountyIndex,
     } as AddSponsorship;
 
     const config = usePrepareAddSponsorship(addSponsorship, toWei(value));

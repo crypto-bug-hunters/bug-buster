@@ -1,24 +1,35 @@
-export interface CreateBounty {
-    Name: string;
-    Description: string;
-    ImgLink?: string;
-    Deadline: number;
-    CodeZipBinary: string;
+export interface CreateAppBounty {
+    name: string;
+    description: string;
+    imgLink?: string;
+    deadline: number;
+    codeZipBinary: string;
 }
 
 export interface AddSponsorship {
-    Name: string;
-    ImgLink?: string;
-    BountyIndex: number;
+    name: string;
+    imgLink?: string;
+    bountyIndex: number;
 }
 
 export interface SendExploit {
-    Name: string;
-    ImgLink?: string;
-    BountyIndex: number;
-    Exploit: string;
+    name: string;
+    imgLink?: string;
+    bountyIndex: number;
+    exploit: string;
 }
 
 export interface WithdrawSponsorship {
-    BountyIndex: number;
+    bountyIndex: number;
 }
+
+export interface TaggedInput<K, T> {
+    kind: K;
+    payload: T;
+}
+
+export type Input =
+    | TaggedInput<"CreateAppBounty", CreateAppBounty>
+    | TaggedInput<"AddSponsorship", AddSponsorship>
+    | TaggedInput<"SendExploit", SendExploit>
+    | TaggedInput<"WithdrawSponsorship", WithdrawSponsorship>;

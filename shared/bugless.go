@@ -66,10 +66,10 @@ type Profile struct {
 type InputKind string
 
 const (
-	CreateAppBountyInputKind     InputKind = "CreateAppBountyInputKind"
-	AddSponsorshipInputKind      InputKind = "AddSponsorshipInputKind"
-	WithdrawSponsorshipInputKind InputKind = "WithdrawSponsorshipInputKind"
-	SendExploitInputKind         InputKind = "SendExploitInputKind"
+	CreateAppBountyInputKind     InputKind = "CreateAppBounty"
+	AddSponsorshipInputKind      InputKind = "AddSponsorship"
+	WithdrawSponsorshipInputKind InputKind = "WithdrawSponsorship"
+	SendExploitInputKind         InputKind = "SendExploit"
 )
 
 type Input struct {
