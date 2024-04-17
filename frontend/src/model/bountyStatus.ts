@@ -13,6 +13,7 @@ type BountyExploitedStatus = {
 
 type BountyExpiredStatus = {
     kind: "expired";
+    withdrawn: boolean;
 };
 
 export type BountyStatus =
