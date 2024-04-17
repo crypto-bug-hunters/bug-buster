@@ -308,7 +308,7 @@ func (l *EnvLogger) Write(p []byte) (int, error) {
 // Return true if succeeds.
 func RunExploit(env rollmelette.EnvInspector, bountyIndex int, exploit string, captureOutput bool) error {
 	codePath := CodePath(bountyIndex)
-	slog.Debug("testing an exploit for %v\n", codePath)
+	slog.Debug("testing exploit", "codePath", codePath)
 	bytes, err := base64.StdEncoding.DecodeString(exploit)
 	if err != nil {
 		return fmt.Errorf("base64 decode failed: %v", err)
@@ -331,10 +331,10 @@ func RunExploit(env rollmelette.EnvInspector, bountyIndex int, exploit string, c
 	}
 	err = cmd.Run()
 	if err != nil {
-		slog.Debug("exploit failed: %v\n", err)
+		slog.Debug("exploit failed", "error", err)
 		return fmt.Errorf("exploit failed")
 	}
-	slog.Debug("exploit succeeded!\n")
+	slog.Debug("exploit succeeded!")
 	return nil
 }
 
