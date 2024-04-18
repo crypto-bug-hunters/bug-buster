@@ -25,7 +25,7 @@ var sendCmd = &cobra.Command{
 
 var addressBook = rollmelette.NewAddressBook()
 
-var dappAddress = "0x70ac08179605AF2D9e75782b8DEcDD3c22aA4D0C"
+var dappAddress = "0xab7528bb862fb57e8a2bcd567a2e929a0be56a5e"
 
 func sendDo(inputKind shared.InputKind, payload any, send func(string, context.Context) ([]byte, error)) {
 	payloadJson, err := json.Marshal(payload)
