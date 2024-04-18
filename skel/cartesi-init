@@ -1,5 +1,8 @@
 #!/bin/busybox sh
 
+# disable terminal translation from nl to cr nl
+busybox stty -onlcr
+
 # mount
 busybox mkdir -p /dev/pts /dev/shm
 busybox mount -o nosuid,nodev,noexec          -t proc proc /proc
@@ -20,12 +23,6 @@ busybox mount -o nosuid,nodev,noexec          -t sysfs sys /sys
 [ -f /etc/environment ] && . /etc/environment
 export PATH="$PATH:/opt/cartesi/bin"
 
-# rand
-if [ -f /opt/cartesi/var/run/random-seed ]; then
-  rndaddentropy < /opt/cartesi/var/run/random-seed
-  busybox chmod 600 /opt/cartesi/var/run/random-seed
-fi
-
 # initialize cgroups v2
 if busybox grep -Fq cgroup2 /proc/filesystems; then
     busybox mount -o nosuid,nodev,noexec -t cgroup2 cgroup2 /sys/fs/cgroup
@@ -44,7 +41,7 @@ fi
 
 # is entrypoint not empty?
 if [ -n "$ENTRYPOINT" ]; then
-    USER=${USER:-root}
+    USER=root
     HOME=$(eval echo ~$USER)
     WORKDIR=${WORKDIR:-"$HOME"}
 
@@ -70,8 +67,8 @@ RC=$?
 # shutdown
 busybox mount -o ro,remount /
 busybox umount -af
-if [ $RC != 0 ] && [ -x /opt/cartesi/bin/xhalt ]; then
-    /opt/cartesi/bin/xhalt "$RC"
+if [ $RC != 0 ] && [ -x /usr/sbin/xhalt ]; then
+    /usr/sbin/xhalt "$RC"
 fi
 busybox poweroff -f
 

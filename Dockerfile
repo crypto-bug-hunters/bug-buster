@@ -76,17 +76,19 @@ EOF
 # runtime stage: produces final image that will be executed
 FROM --platform=linux/riscv64 riscv64/ubuntu:22.04
 
-LABEL io.sunodo.sdk_version=0.2.0-sandboxing
+LABEL io.sunodo.sdk_version=0.4.0
 LABEL io.cartesi.rollups.ram_size=128Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 
-ARG MACHINE_EMULATOR_TOOLS_VERSION=0.12.0
+ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
+ARG MACHINE_EMULATOR_TOOLS_DEB=machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 RUN <<EOF
 apt-get update
 apt-get upgrade -y
 apt-get install -y --no-install-recommends busybox-static ca-certificates curl xz-utils libasan8 libasan6
-curl -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.tar.gz \
-  | tar -C / --overwrite -xvzf -
+curl -o ${MACHINE_EMULATOR_TOOLS_DEB} -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/${MACHINE_EMULATOR_TOOLS_DEB}
+dpkg -i ${MACHINE_EMULATOR_TOOLS_DEB}
+rm ${MACHINE_EMULATOR_TOOLS_DEB}
 rm -rf /var/lib/apt/lists/*
 EOF
 
@@ -102,7 +104,7 @@ ENV PATH="/opt/cartesi/bin:${PATH}"
 
 WORKDIR /opt/cartesi/dapp
 COPY --from=build-stage /opt/build/dapp .
-COPY --chmod=755 skel/init /opt/cartesi/bin/init
+COPY --chmod=755 skel/cartesi-init /usr/sbin/cartesi-init
 COPY --chmod=755 skel/bounty-run /usr/bin/bounty-run
 
 ENTRYPOINT ["rollup-init"]
