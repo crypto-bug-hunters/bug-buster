@@ -1,4 +1,4 @@
-all: bounties image
+all: bounties test-image image
 
 image:
 	sunodo build
@@ -6,8 +6,11 @@ image:
 bounties:
 	$(MAKE) -C tests/bounties
 
+test-image:
+	docker build --tag bugless-test-image --file tests/Dockerfile --progress plain .
+
 test:
-	docker run -v $(shell pwd):/mnt --rm -it sunodo/sdk:0.4.0 lua5.4 tests/tests.lua
+	docker run -v $(shell pwd):/mnt --rm -it bugless-test-image lua5.4 tests/tests.lua
 
 run:
 	sunodo run
