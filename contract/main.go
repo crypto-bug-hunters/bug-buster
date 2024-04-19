@@ -2,13 +2,16 @@ package main
 
 import (
 	"bugless/shared"
+	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/exec"
 
-	"github.com/gligneul/eggroll"
-	"github.com/gligneul/eggroll/wallets"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/gligneul/rollmelette"
 	"github.com/holiman/uint256"
 )
 
@@ -16,36 +19,51 @@ type BugLessContract struct {
 	state shared.BugLessState
 }
 
-func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
-	switch input := env.DecodeInput().(type) {
-	case *shared.CreateAppBounty:
+func (c *BugLessContract) Advance(
+	env rollmelette.Env,
+	metadata rollmelette.Metadata,
+	deposit rollmelette.Deposit,
+	payload []byte,
+) error {
+	var input shared.Input
+	err := json.Unmarshal(payload, &input)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal input: %w", err)
+	}
+	switch input.Kind {
+	case shared.CreateAppBountyInputKind:
+		var inputPayload shared.CreateAppBounty
+		err = json.Unmarshal(input.Payload, &inputPayload)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal payload: %w", err)
+		}
+
 		// validate input
-		if err := input.Validate(); err != nil {
-			return nil, err
+		if err := inputPayload.Validate(); err != nil {
+			return err
 		}
 
 		// Check deadline
-		metadata := env.Metadata()
 		currTime := metadata.BlockTimestamp
-		if input.Deadline <= currTime {
-			return nil, fmt.Errorf("deadline already over")
+		if inputPayload.Deadline <= currTime {
+			return fmt.Errorf("deadline already over")
 		}
 
 		// create new bounty
 		bountyIndex := len(c.state.Bounties)
-		err := DecodeUnzipStore(bountyIndex, input.CodeZipBinary)
+		err := DecodeUnzipStore(bountyIndex, inputPayload.CodeZipBinary)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		bounty := &shared.AppBounty{
 			Developer: shared.Profile{
-				Address: env.Sender(),
-				Name:    input.Name,
-				ImgLink: input.ImgLink,
+				Address: metadata.MsgSender,
+				Name:    inputPayload.Name,
+				ImgLink: inputPayload.ImgLink,
 			},
-			Description:  input.Description,
+			Description:  inputPayload.Description,
 			Started:      currTime,
-			Deadline:     input.Deadline,
+			Deadline:     inputPayload.Deadline,
 			InputIndex:   metadata.InputIndex,
 			Sponsorships: nil,
 			Exploit:      nil,
@@ -53,120 +71,143 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 		}
 		c.state.Bounties = append(c.state.Bounties, bounty)
 
-	case *shared.AddSponsorship:
-		// validate input
-		if err := input.Validate(); err != nil {
-			return nil, err
+	case shared.AddSponsorshipInputKind:
+		var inputPayload shared.AddSponsorship
+		err = json.Unmarshal(input.Payload, &inputPayload)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal payload: %w", err)
 		}
 
-		// get ether deposit
-		deposit, ok := env.Deposit().(*wallets.EtherDeposit)
-		if !ok {
-			return nil, fmt.Errorf("expected ether deposit")
+		// validate input
+		if err := inputPayload.Validate(); err != nil {
+			return err
 		}
 
 		// check if bounty exist
-		bounty := c.state.GetBounty(input.BountyIndex)
+		bounty := c.state.GetBounty(inputPayload.BountyIndex)
 		if bounty == nil {
-			return nil, fmt.Errorf("bounty not found")
+			return fmt.Errorf("bounty not found")
 		}
 
 		// check exploit
 		if bounty.Exploit != nil {
-			return nil, fmt.Errorf("can't add sponsorship because exploit was found")
+			return fmt.Errorf("can't add sponsorship because exploit was found")
 		}
 
 		// check bounty deadline
-		currTime := env.Metadata().BlockTimestamp
+		currTime := metadata.BlockTimestamp
 		if currTime >= bounty.Deadline {
-			return nil, fmt.Errorf("can't add sponsorship after deadline")
+			return fmt.Errorf("can't add sponsorship after deadline")
 		}
 
-		sponsorship := bounty.GetSponsorship(env.Sender())
+		var etherDepositSender common.Address
+		var etherDepositValue *uint256.Int
+
+		switch deposit := deposit.(type) {
+		case *rollmelette.EtherDeposit:
+			etherDepositSender = deposit.Sender
+			etherDepositValue, _ = uint256.FromBig(deposit.Value)
+		default:
+			return fmt.Errorf("unsupported deposit: %T", deposit)
+		}
+
+		sponsorship := bounty.GetSponsorship(etherDepositSender)
 		if sponsorship != nil {
 			// Add to existing sponsorship
-			newValue := new(uint256.Int).Add(sponsorship.Value, &deposit.Value)
+			newValue := new(uint256.Int).Add(sponsorship.Value, etherDepositValue)
 			sponsorship.Value = newValue
 			// Update profile
-			sponsorship.Sponsor.Name = input.Name
-			sponsorship.Sponsor.ImgLink = input.ImgLink
+			sponsorship.Sponsor.Name = inputPayload.Name
+			sponsorship.Sponsor.ImgLink = inputPayload.ImgLink
 		} else {
 			// Create new sponsorship
 			sponsorship := &shared.Sponsorship{
 				Sponsor: shared.Profile{
-					Address: env.Sender(),
-					Name:    input.Name,
-					ImgLink: input.ImgLink,
+					Address: etherDepositSender,
+					Name:    inputPayload.Name,
+					ImgLink: inputPayload.ImgLink,
 				},
-				Value: &deposit.Value,
+				Value: etherDepositValue,
 			}
 			bounty.Sponsorships = append(bounty.Sponsorships, sponsorship)
 		}
 
-	case *shared.WithdrawSponsorship:
+	case shared.WithdrawSponsorshipInputKind:
+		var inputPayload shared.WithdrawSponsorship
+		err = json.Unmarshal(input.Payload, &inputPayload)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal payload: %w", err)
+		}
+
 		// check if bounty exist
-		bounty := c.state.GetBounty(input.BountyIndex)
+		bounty := c.state.GetBounty(inputPayload.BountyIndex)
 		if bounty == nil {
-			return nil, fmt.Errorf("bounty not found")
+			return fmt.Errorf("bounty not found")
 		}
 
 		// check exploit
 		if bounty.Exploit != nil {
-			return nil, fmt.Errorf("can't withdraw because exploit was found")
+			return fmt.Errorf("can't withdraw because exploit was found")
 		}
 
 		// check bounty deadline
-		currTime := env.Metadata().BlockTimestamp
+		currTime := metadata.BlockTimestamp
 		if currTime < bounty.Deadline {
-			return nil, fmt.Errorf("can't withdraw before deadline")
+			return fmt.Errorf("can't withdraw before deadline")
 		}
 
 		// check if already withdrawn
 		if bounty.Withdrawn {
-			return nil, fmt.Errorf("sponsorships already withdrawn")
+			return fmt.Errorf("sponsorships already withdrawn")
 		}
 
 		// generate voucher for each sponsor
 		for _, sponsorship := range bounty.Sponsorships {
-			_, err := env.EtherWithdraw(sponsorship.Sponsor.Address, sponsorship.Value)
+			_, err := env.EtherWithdraw(sponsorship.Sponsor.Address, sponsorship.Value.ToBig())
 			if err != nil {
-				return nil, fmt.Errorf("failed to withdraw: %v", err)
+				return fmt.Errorf("failed to withdraw: %v", err)
 			}
 		}
 
 		// set bounty as withdrawn
 		bounty.Withdrawn = true
 
-	case *shared.SendExploit:
+	case shared.SendExploitInputKind:
+		var inputPayload shared.SendExploit
+		err = json.Unmarshal(input.Payload, &inputPayload)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal payload: %w", err)
+		}
+
 		// validate input
-		if err := input.Validate(); err != nil {
-			return nil, err
+		if err := inputPayload.Validate(); err != nil {
+			return err
 		}
 
 		// check if bounty exist
-		bounty := c.state.GetBounty(input.BountyIndex)
+		bounty := c.state.GetBounty(inputPayload.BountyIndex)
 		if bounty == nil {
-			return nil, fmt.Errorf("bounty not found")
+			return fmt.Errorf("bounty not found")
 		}
 
 		// check exploit
 		if bounty.Exploit != nil {
-			return nil, fmt.Errorf("can't send exploit because exploit was found")
+			return fmt.Errorf("can't send exploit because exploit was found")
 		}
 
 		// check bounty deadline
-		currTime := env.Metadata().BlockTimestamp
+		currTime := metadata.BlockTimestamp
 		if currTime >= bounty.Deadline {
-			return nil, fmt.Errorf("can't run exploit after deadline")
+			return fmt.Errorf("can't run exploit after deadline")
 		}
 
 		// try to run exploit
-		if err := RunExploit(env, input.BountyIndex, input.Exploit, false); err != nil {
-			return nil, err
+		if err := RunExploit(env, inputPayload.BountyIndex, inputPayload.Exploit, false); err != nil {
+			return err
 		}
 
 		// Move assets to hacker
-		hacker := env.Sender()
+		hacker := metadata.MsgSender
 		accBounty := new(uint256.Int)
 		for _, sponsorship := range bounty.Sponsorships {
 			accBounty = new(uint256.Int).Add(accBounty, sponsorship.Value)
@@ -175,61 +216,64 @@ func (c *BugLessContract) Advance(env eggroll.Env) (any, error) {
 			if sponsor == hacker {
 				continue
 			}
-			err := env.EtherTransfer(sponsor, hacker, sponsorship.Value)
+			err := env.EtherTransfer(sponsor, hacker, sponsorship.Value.ToBig())
 			if err != nil {
 				// this should be impossible
-				return nil, fmt.Errorf("failed to transfer asset: %v", err)
+				return fmt.Errorf("failed to transfer asset: %v", err)
 			}
 		}
 
 		// generate voucher
-		_, err := env.EtherWithdraw(hacker, accBounty)
+		_, err := env.EtherWithdraw(hacker, accBounty.ToBig())
 		if err != nil {
-			return nil, fmt.Errorf("failed to generate voucher: %v", err)
+			return fmt.Errorf("failed to generate voucher: %v", err)
 		}
 
 		// register exploit
 		bounty.Exploit = &shared.Exploit{
 			Hacker: shared.Profile{
 				Address: hacker,
-				Name:    input.Name,
-				ImgLink: input.ImgLink,
+				Name:    inputPayload.Name,
+				ImgLink: inputPayload.ImgLink,
 			},
-			InputIndex: env.Metadata().InputIndex,
+			InputIndex: metadata.InputIndex,
 		}
 
 		// set bounty as withdrawn
 		bounty.Withdrawn = true
 
 	default:
-		return nil, fmt.Errorf("invalid input: %v", input)
+		return fmt.Errorf("invalid input: %v", input)
 	}
 
-	return &c.state, nil
+	cJson, _ := json.Marshal(c.state)
+	env.Report(cJson)
+
+	return nil
 }
 
-func (c *BugLessContract) Inspect(env eggroll.EnvReader) (any, error) {
-	input, ok := env.DecodeInput().(*shared.TestExploit)
-	if !ok {
-		return nil, fmt.Errorf("expected TestExploit input")
+func (c *BugLessContract) Inspect(env rollmelette.EnvInspector, payload []byte) error {
+	var input shared.TestExploit
+	err := json.Unmarshal(payload, &input)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal input: %w", err)
 	}
 
 	// check if bounty exist
 	bounty := c.state.GetBounty(input.BountyIndex)
 	if bounty == nil {
-		return nil, fmt.Errorf("bounty not found")
+		return fmt.Errorf("bounty not found")
 	}
 
 	// try to run exploit
 	if err := RunExploit(env, input.BountyIndex, input.Exploit, true); err != nil {
-		return nil, err
+		return err
 	}
 
-	return &c.state, nil
-}
+	cJson, _ := json.Marshal(c.state)
+	env.Report(cJson)
 
-func (c *BugLessContract) Codecs() []eggroll.Codec {
-	return shared.Codecs()
+	return nil
 }
 
 func CodePath(bountyIndex int) string {
@@ -251,19 +295,20 @@ func DecodeUnzipStore(bountyIndex int, zipBinary string) error {
 }
 
 type EnvLogger struct {
-	env    eggroll.EnvReader
+	env rollmelette.EnvInspector
 }
 
 func (l *EnvLogger) Write(p []byte) (int, error) {
-	l.env.Log(string(p))
+	slog.Debug(string(p))
+	l.env.Report(p)
 	return len(p), nil
 }
 
 // Run the exploit for the given code.
 // Return true if succeeds.
-func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string, captureOutput bool) error {
+func RunExploit(env rollmelette.EnvInspector, bountyIndex int, exploit string, captureOutput bool) error {
 	codePath := CodePath(bountyIndex)
-	env.Logf("testing an exploit for %v\n", codePath)
+	slog.Debug("testing exploit", "codePath", codePath)
 	bytes, err := base64.StdEncoding.DecodeString(exploit)
 	if err != nil {
 		return fmt.Errorf("base64 decode failed: %v", err)
@@ -277,7 +322,7 @@ func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string, captureO
 	defer os.Remove("/var/tmp/exploit")
 	cmd := exec.Command("bounty-run", codePath, "/var/tmp/bounty", "/var/tmp/exploit")
 	cmd.Stdin = os.Stdin
-	if (captureOutput) {
+	if captureOutput {
 		cmd.Stdout = &EnvLogger{env}
 		cmd.Stderr = &EnvLogger{env}
 	} else {
@@ -286,13 +331,19 @@ func RunExploit(env eggroll.EnvReader, bountyIndex int, exploit string, captureO
 	}
 	err = cmd.Run()
 	if err != nil {
-		env.Logf("exploit failed: %v\n", err)
+		slog.Debug("exploit failed", "error", err)
 		return fmt.Errorf("exploit failed")
 	}
-	env.Log("exploit succeeded!\n")
+	slog.Debug("exploit succeeded!")
 	return nil
 }
 
 func main() {
-	eggroll.Roll(&BugLessContract{})
+	ctx := context.Background()
+	opts := rollmelette.NewRunOpts()
+	app := new(BugLessContract)
+	err := rollmelette.Run(ctx, opts, app)
+	if err != nil {
+		slog.Error("application error", "error", err)
+	}
 }

@@ -3,11 +3,11 @@ package cmd
 import (
 	"bugless/shared"
 	"context"
+	"encoding/json"
 	"log"
 	"time"
 
-	"github.com/gligneul/eggroll"
-	"github.com/gligneul/eggroll/eggtypes"
+	"github.com/gligneul/rollmelette/integration"
 	"github.com/spf13/cobra"
 )
 
@@ -24,31 +24,31 @@ var (
 )
 
 func testRun(cmd *cobra.Command, args []string) {
+	InspectEndpoint := "http://localhost:8080/inspect"
+
 	input := &shared.TestExploit{
 		BountyIndex: testBountyIndex,
 		Exploit:     loadExploit(testPath),
+	}
+	inputJson, err := json.Marshal(input)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	client, _, err := eggroll.NewDevClient(ctx, shared.Codecs())
+	result, err := integration.Inspect(ctx, InspectEndpoint, inputJson)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	result, err := client.Inspect(ctx, input)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if result.Status == eggtypes.CompletionStatusAccepted {
+	if result.Status == integration.Accepted {
 		log.Print("input accepted")
 	} else {
 		log.Print("input not accepted")
 	}
 
-	for _, logMsg := range result.Logs() {
+	for _, logMsg := range result.Reports {
 		log.Printf("contract: %v", logMsg)
 	}
 }

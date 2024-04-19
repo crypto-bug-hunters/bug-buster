@@ -8,8 +8,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/gligneul/eggroll"
-	"github.com/gligneul/eggroll/eggtypes"
+	"github.com/Khan/genqlient/graphql"
+	"github.com/cartesi/rollups-node/pkg/readerclient"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/spf13/cobra"
 )
 
@@ -23,17 +24,13 @@ func stateRun(cmd *cobra.Command, args []string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	client, _, err := eggroll.NewDevClient(ctx, shared.Codecs())
+	client := graphql.NewClient("http://127.0.0.1:8080/graphql", nil)
+	inputs, err := readerclient.GetInputs(ctx, client)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	results, err := client.GetResults(ctx, 0)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	state := findLastState(client, results)
+	state := findLastState(inputs)
 	if state == nil {
 		fmt.Println("{\"Bounties\":[]}")
 	} else {
@@ -45,20 +42,31 @@ func stateRun(cmd *cobra.Command, args []string) {
 	}
 }
 
-func findLastState(client *eggroll.Client, results []*eggtypes.AdvanceResult) *shared.BugLessState {
-	for i := len(results) - 1; i >= 0; i-- {
-		if len(results[i].RawReturn()) == 0 {
+func findLastState(inputs []readerclient.Input) *shared.BugLessState {
+	for i := len(inputs) - 1; i >= 0; i-- {
+		if len(inputs[i].Reports) == 0 {
 			continue
 		}
-		return_ := client.DecodeReturn(results[i])
-		if return_ == nil {
+
+		if inputs[i].Status != readerclient.CompletionStatusAccepted {
 			continue
 		}
-		state, ok := return_.(*shared.BugLessState)
-		if !ok {
-			log.Fatalf("failed to decode return: %v", return_)
+
+		report := inputs[i].Reports[0] // each input only has 1 report at the moment
+		payloadString := report.Payload.String()
+		payload, err := hexutil.Decode(payloadString)
+		if err != nil {
+			log.Fatal(err)
 		}
-		return state
+
+		var state shared.BugLessState
+		err = json.Unmarshal(payload, &state)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return &state
 	}
 	return nil
 }

@@ -1,3 +1,4 @@
 .next
 src/hooks/contracts.tsx
 src/model/__generated__/
+pnpm-lock.yaml

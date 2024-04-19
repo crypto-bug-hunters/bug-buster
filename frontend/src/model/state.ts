@@ -41,13 +41,6 @@ export interface Sponsorship {
     Value: string; // number encoded as hex string
 }
 
-export interface SendExploit {
-    BountyIndex: number;
-    Name: string;
-    ImgLink: string;
-    Exploit: string;
-}
-
 export interface Voucher {
     index: number;
     input: { index: number };

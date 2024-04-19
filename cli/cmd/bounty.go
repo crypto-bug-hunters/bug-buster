@@ -32,14 +32,14 @@ func bountyRun(cmd *cobra.Command, args []string) {
 	}
 	durationSecs := time.Duration(bountyDuration) * time.Second
 	deadline := time.Now().UTC().Add(durationSecs).Unix()
-	input := &shared.CreateAppBounty{
+	payload := &shared.CreateAppBounty{
 		Name:          bountyName,
 		ImgLink:       bountyImgLink,
 		Description:   bountyDescription,
 		Deadline:      deadline,
 		CodeZipBinary: code,
 	}
-	sendInput(input)
+	sendInput(shared.CreateAppBountyInputKind, payload)
 }
 
 func bountyLoadCode() (string, error) {

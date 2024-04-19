@@ -39,9 +39,9 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const bountyIndex = Number(bountyId);
 
     const addSponsorship = {
-        Name: name,
-        ImgLink: imgLink,
-        BountyIndex: bountyIndex,
+        name,
+        imgLink,
+        bountyIndex,
     } as AddSponsorship;
 
     const config = usePrepareAddSponsorship(addSponsorship, toWei(value));
@@ -107,7 +107,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                             onClick={write}
                         >
                             {isLoading
-                                ? "Adding Sponsorhsip..."
+                                ? "Adding Sponsorship..."
                                 : "Add Sponsorship"}
                         </Button>
                     </Group>

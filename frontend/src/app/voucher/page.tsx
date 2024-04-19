@@ -60,11 +60,7 @@ const WithdrawButton: FC<{ voucher: Voucher }> = ({ voucher }) => {
         if (isExecuted) {
             return <Badge color="green">Executed!</Badge>;
         } else {
-            return (
-                <Button onClick={() => write && write()}>
-                    Withdraw
-                </Button>
-            );
+            return <Button onClick={() => write && write()}>Withdraw</Button>;
         }
     }
 };

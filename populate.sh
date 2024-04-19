@@ -2,11 +2,11 @@
 
 set -euo pipefail
 
-BUSYBOX_ACCOUNT=2
-LUA_ACCOUNT=3
-SQLITE_ACCOUNT=4
-RICH_SPONSOR_ACCOUNT=5
-HACKER_ACCOUNT=6
+BUSYBOX_ACCOUNT=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+LUA_ACCOUNT=0x90F79bf6EB2c4f870365E785982E1f101E93b906
+SQLITE_ACCOUNT=0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65
+RICH_SPONSOR_ACCOUNT=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc
+HACKER_ACCOUNT=0x976EA74026E726554dB657fA54763abd0C3a0aa9
 
 LUA_LOGO="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg"
 LUA_BOUNTY_DESC=$(cat <<-END
@@ -49,7 +49,7 @@ go run ./cli send dapp-address
 # Busybox 1.36.1
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
-    -a $BUSYBOX_ACCOUNT \
+    -f $BUSYBOX_ACCOUNT \
     -n "BusyBox 1.36.1" \
     -i "$BUSYBOX_LOGO" \
     -d "$BUSYBOX_BOUNTY_DESC" \
@@ -57,19 +57,19 @@ go run ./cli send bounty \
     -c "./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
-    -a $BUSYBOX_ACCOUNT \
+    -f $BUSYBOX_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "BusyBox Sponsor" \
     -v 0.99
 
 go run ./cli send sponsor \
-    -a $RICH_SPONSOR_ACCOUNT \
+    -f $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Rich Crypto Person" \
     -v 1.337
 
 go run ./cli send exploit \
-    -a $HACKER_ACCOUNT \
+    -f $HACKER_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Hacker" \
     -e "./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh"
@@ -77,7 +77,7 @@ go run ./cli send exploit \
 # Lua 5.4.3
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
-    -a $LUA_ACCOUNT \
+    -f $LUA_ACCOUNT \
     -n "Lua 5.4.3" \
     -i "$LUA_LOGO" \
     -d "$LUA_BOUNTY_DESC" \
@@ -85,19 +85,19 @@ go run ./cli send bounty \
     -c "./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
-    -a $LUA_ACCOUNT \
+    -f $LUA_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Lua Sponsor" \
     -v 0.05
 
 go run ./cli send sponsor \
-    -a $RICH_SPONSOR_ACCOUNT \
+    -f $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Rich Crypto Person" \
     -v 1.337
 
 # go run ./cli send exploit \
-#     -a $HACKER_ACCOUNT \
+#     -f $HACKER_ACCOUNT \
 #     -b $CURR_BOUNTY \
 #     -n "The Hacker" \
 #     -e "./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua"
@@ -105,7 +105,7 @@ go run ./cli send sponsor \
 # Lua 5.4.6
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
-    -a $LUA_ACCOUNT \
+    -f $LUA_ACCOUNT \
     -n "Lua 5.4.6" \
     -i "$LUA_LOGO" \
     -d "$LUA_BOUNTY_DESC" \
@@ -113,13 +113,13 @@ go run ./cli send bounty \
     -c "./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
-    -a $LUA_ACCOUNT \
+    -f $LUA_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Lua Sponsor" \
     -v 0.05
 
 go run ./cli send sponsor \
-    -a $RICH_SPONSOR_ACCOUNT \
+    -f $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Rich Crypto Person" \
     -v 1.337
@@ -127,7 +127,7 @@ go run ./cli send sponsor \
 # SQLite 3.32.2
 CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 go run ./cli send bounty \
-    -a $SQLITE_ACCOUNT \
+    -f $SQLITE_ACCOUNT \
     -n "SQLite 3.32.2" \
     -i "$SQLITE_LOGO" \
     -d "$SQLITE_BOUNTY_DESC" \
@@ -135,19 +135,19 @@ go run ./cli send bounty \
     -c "./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
 
 go run ./cli send sponsor \
-    -a $SQLITE_ACCOUNT \
+    -f $SQLITE_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "SQLite Sponsor" \
     -v 0.32
 
 go run ./cli send sponsor \
-    -a $RICH_SPONSOR_ACCOUNT \
+    -f $RICH_SPONSOR_ACCOUNT \
     -b $CURR_BOUNTY \
     -n "Rich Crypto Person" \
     -v 1.337
 
 # go run ./cli send exploit \
-#     -a $HACKER_ACCOUNT \
+#     -f $HACKER_ACCOUNT \
 #     -b $CURR_BOUNTY \
 #     -n "The Hacker" \
 #     -e "./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql"
@@ -155,7 +155,7 @@ go run ./cli send sponsor \
 # SQLite 3.43.2
 # CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
 # go run ./cli send bounty \
-#     -a $SQLITE_ACCOUNT \
+#     -f $SQLITE_ACCOUNT \
 #     -n "SQLite 3.43.2" \
 #     -i "$SQLITE_LOGO" \
 #     -d "$SQLITE_BOUNTY_DESC" \
@@ -163,13 +163,13 @@ go run ./cli send sponsor \
 #     -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
 # 
 # go run ./cli send sponsor \
-#     -a $SQLITE_ACCOUNT \
+#     -f $SQLITE_ACCOUNT \
 #     -b $CURR_BOUNTY \
 #     -n "SQLite Sponsor" \
 #     -v 0.43
 # 
 # go run ./cli send sponsor \
-#     -a $RICH_SPONSOR_ACCOUNT \
+#     -f $RICH_SPONSOR_ACCOUNT \
 #     -b $CURR_BOUNTY \
 #     -n "Rich Crypto Person" \
 #     -v 1.337
