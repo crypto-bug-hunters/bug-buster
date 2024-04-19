@@ -30,7 +30,6 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `pnpm` | | | | | | | ☑️ |
 | `sunodo` | | ☑️ | | ☑️ | | | |
 | `tar` | | | ☑️ | | | | |
-| `wget` | | | ☑️ | | | | |
 
 ## Presentation
 
