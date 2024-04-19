@@ -23,13 +23,11 @@ To help you figure out which dependencies you actually need, here is a table of 
 
 | Dependency | Presentation | Back-end | Examples | Tests | Populate | CLI | Front-end |
 | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| `docker` | ☑️ | ☑️ | ☑️ | | | | |
-| `go` | | ☑️ | | | ☑️ | ☑️ | |
+| `docker` | ☑️ | ☑️ | ☑️ | ☑️ | | | |
+| `go` | | | | | ☑️ | ☑️ | |
 | `jq` | | | | | ☑️ | | |
-| `lua` | | | | ☑️ | | | |
 | `pnpm` | | | | | | | ☑️ |
 | `sunodo` | | ☑️ | | ☑️ | | | |
-| `tar` | | | ☑️ | | | | |
 
 ## Presentation
 
