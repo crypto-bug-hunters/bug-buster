@@ -61,7 +61,7 @@ const ButtonsBox: FC<{
     bountyStatus: BountyStatus;
 }> = ({ bountyId, bountyStatus }) => {
     const isOpen = bountyStatus.kind == "open";
-    const enableWithdrawals = bountyStatus.kind == "expired";
+    const enableWithdrawals = bountyStatus.kind == "expired" && !bountyStatus.withdrawn;
     return (
         <Group justify="left">
             <LinkButton href={`/bounty/${bountyId}/sponsor`} disabled={!isOpen}>

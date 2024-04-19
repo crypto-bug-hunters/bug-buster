@@ -20,7 +20,7 @@ export function getBountyStatus(
             const daysLeft = secondsToDays(secondsLeft);
             return { kind: "open", daysLeft: daysLeft };
         } else {
-            return { kind: "expired" };
+            return { kind: "expired", withdrawn: bounty.Withdrawn };
         }
     }
 }
