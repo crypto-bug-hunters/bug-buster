@@ -82,7 +82,9 @@ LABEL io.cartesi.rollups.data_size=128Mb
 
 ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
 ARG MACHINE_EMULATOR_TOOLS_DEB=machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
+ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
+set -e
 apt-get update
 apt-get upgrade -y
 apt-get install -y --no-install-recommends busybox-static ca-certificates curl xz-utils libasan8 libasan6
