@@ -30,34 +30,17 @@ local machine_config = ".sunodo/image"
 local machine_runtime_config = { skip_root_hash_check = true }
 local machine_remote_protocol = "jsonrpc"
 
-local CodecOpcodes = {
-    BugLessState = 0x57896b8c,
-    CreateAppBounty = 0x5792993c,
-    AddSponsorship = 0x43032fa8,
-    WithdrawSponsorship = 0x7e9de47b,
-    SendExploit = 0xc2edf048,
-    TestExploit = 0x18cc70af,
-}
-
 --------------------------------------------------------------------------------
 -- Utilities
 
 local function decode_response_jsons(res)
     for _, v in ipairs(res.reports) do
-        local status = string.byte(v.payload:sub(1, 1))
-        if status == 0 then -- log
-            local text = v.payload:sub(2)
-            res.error = (res.error or "") .. text
-        elseif status == 1 then
-            local opcode = string.unpack(">I4", v.payload:sub(2, 5))
-            assert(opcode == CodecOpcodes.BugLessState, "unexpected bugless state")
-            local body = v.payload:sub(6)
-            res.state = fromjson(body)
-        else
-            error("unknown response status " .. status)
+        local body = v.payload
+        local ok, state = pcall(fromjson, body)
+        if ok then
+            res.state = state
         end
     end
-    if res.error then res.error = res.error:gsub("\n$", "") end
     res.reports = nil
     return res
 end
@@ -65,13 +48,13 @@ end
 local function advance_input(machine, opts)
     return decode_response_jsons(machine:advance_state({
         metadata = { msg_sender = fromhex(opts.sender), timestamp = opts.timestamp },
-        payload = string.pack(">I4", opts.opcode) .. tojson(opts.data),
+        payload = tojson{ kind = opts.kind, payload = opts.data },
     }, true))
 end
 
 local function inspect_input(machine, opts)
     return decode_response_jsons(machine:inspect_state({
-        payload = string.pack(">I4", opts.opcode) .. tojson(opts.data),
+        payload = tojson(opts.data),
     }, true))
 end
 
@@ -81,7 +64,7 @@ local function advance_ether_deposit(machine, opts)
         payload = cartesix_encoder.encode_ether_deposit({
             sender_address = fromhex(opts.sender),
             amount = tobe256(opts.amount),
-            extra_data = string.pack(">I4", opts.opcode) .. tojson(opts.data),
+            extra_data = tojson{ kind = opts.kind, payload = opts.data },
         }),
     }, true))
 end
@@ -125,13 +108,13 @@ describe("tests on Lua bounty", function()
     it("should create bounty", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.CreateAppBounty,
+            kind = "CreateAppBounty",
             timestamp = timestamp,
             data = {
-                Name = "Lua 5.4.3 Bounty",
-                Description = "Try to crash a sandboxed Lua 5.4.3 script",
-                Deadline = bounty_deadline,
-                CodeZipBinary = tobase64(readfile(bounty_code)),
+                name = "Lua 5.4.3 Bounty",
+                description = "Try to crash a sandboxed Lua 5.4.3 script",
+                deadline = bounty_deadline,
+                codeZipBinary = tobase64(readfile(bounty_code)),
             },
         })
         expect.equal(res.status, "accepted")
@@ -159,11 +142,11 @@ describe("tests on Lua bounty", function()
         local res = advance_ether_deposit(machine, {
             sender = DEVELOPER1_WALLET,
             amount = 1000,
-            opcode = CodecOpcodes.AddSponsorship,
+            kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                Name = "Developer1",
-                BountyIndex = bounty_index,
+                name = "Developer1",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
@@ -186,7 +169,7 @@ describe("tests on Lua bounty", function()
                                 ImgLink = "",
                                 Name = "Developer1",
                             },
-                            Value = tohex(1000),
+                            Value = "1000",
                         },
                     },
                     Started = bounty_started,
@@ -200,11 +183,11 @@ describe("tests on Lua bounty", function()
         local res = advance_ether_deposit(machine, {
             sender = SPONSOR1_WALLET,
             amount = 2000,
-            opcode = CodecOpcodes.AddSponsorship,
+            kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                Name = "Sponsor1",
-                BountyIndex = bounty_index,
+                name = "Sponsor1",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
@@ -227,7 +210,7 @@ describe("tests on Lua bounty", function()
                                 ImgLink = "",
                                 Name = "Developer1",
                             },
-                            Value = tohex(1000),
+                            Value = "1000",
                         },
                         {
                             Sponsor = {
@@ -235,7 +218,7 @@ describe("tests on Lua bounty", function()
                                 ImgLink = "",
                                 Name = "Sponsor1",
                             },
-                            Value = tohex(2000),
+                            Value = "2000",
                         },
                     },
                     Started = bounty_started,
@@ -251,37 +234,34 @@ describe("tests on Lua bounty", function()
     it("should reject sponsor withdraw for an invalid bounty", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.WithdrawSponsorship,
+            kind = "WithdrawSponsorship",
             timestamp = timestamp,
             data = {
-                BountyIndex = 9999,
+                bountyIndex = 9999,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: bounty not found")
     end)
 
     it("should reject sponsor withdraw before deadline", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.WithdrawSponsorship,
+            kind = "WithdrawSponsorship",
             timestamp = timestamp,
             data = {
-                BountyIndex = bounty_index,
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: can't withdraw before deadline")
     end)
 
     it("should accept inspect of a exploit that succeeded", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
             timestamp = timestamp,
             data = {
-                BountyIndex = bounty_index,
-                Exploit = tobase64(bounty_valid_exploit),
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "accepted")
@@ -290,12 +270,11 @@ describe("tests on Lua bounty", function()
     it("should reject inspect of a exploit that failed", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64(bounty_invalid_exploit),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_invalid_exploit),
             },
         })
         expect.equal(res.status, "rejected")
@@ -307,10 +286,10 @@ describe("tests on Lua bounty", function()
     it("should accept withdraw after deadline", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.WithdrawSponsorship,
+            kind = "WithdrawSponsorship",
             timestamp = timestamp,
             data = {
-                BountyIndex = bounty_index,
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
@@ -333,7 +312,7 @@ describe("tests on Lua bounty", function()
                                 ImgLink = "",
                                 Name = "Developer1",
                             },
-                            Value = tohex(1000),
+                            Value = "1000",
                         },
                         {
                             Sponsor = {
@@ -341,7 +320,7 @@ describe("tests on Lua bounty", function()
                                 ImgLink = "",
                                 Name = "Sponsor1",
                             },
-                            Value = tohex(2000),
+                            Value = "2000",
                         },
                     },
                     Started = bounty_started,
@@ -371,55 +350,51 @@ describe("tests on Lua bounty", function()
     it("should reject double withdraw", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.WithdrawSponsorship,
+            kind = "WithdrawSponsorship",
             timestamp = timestamp,
             data = {
-                BountyIndex = bounty_index,
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: sponsorships already withdrawn")
     end)
 
     it("should reject exploit after deadline", function()
         local res = advance_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.SendExploit,
+            kind = "SendExploit",
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64(bounty_valid_exploit),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: can't run exploit after deadline")
     end)
 
     it("should reject sponsorship after deadline", function()
         local res = advance_ether_deposit(machine, {
             sender = SPONSOR1_WALLET,
             amount = 1000,
-            opcode = CodecOpcodes.AddSponsorship,
+            kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                Name = "Sponsor1",
-                BountyIndex = bounty_index,
+                name = "Sponsor1",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: can't add sponsorship after deadline")
     end)
 
     it("should reject inspect of a bounty that consumes too much RAM", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64([[s=string.rep('x',4096) while true do s=s..s end]]),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[s=string.rep('x',4096) while true do s=s..s end]]),
             },
         })
         expect.equal(res.status, "rejected")
@@ -428,12 +403,11 @@ describe("tests on Lua bounty", function()
     it("should reject inspect of a bounty that consumes too much disk", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64([[
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[
 s=string.rep('x',4096)
 f=assert(io.open('/tmp/test', 'wb'))
 while true do
@@ -450,12 +424,11 @@ end
     it("should reject inspect of a bounty that consumes too much CPU", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64([[while true do end]]),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[while true do end]]),
             },
         })
         expect.equal(res.status, "rejected")
@@ -464,12 +437,11 @@ end
     it("should reject inspect of a bounty that waits IO for too long", function()
         local res = inspect_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.TestExploit,
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64([[io.stdin:read('a')]]),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[io.stdin:read('a')]]),
             },
         })
         expect.equal(res.status, "rejected")
@@ -486,13 +458,13 @@ describe("tests on SQLite bounty", function()
     it("should create bounty", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.CreateAppBounty,
+            kind = "CreateAppBounty",
             timestamp = timestamp,
             data = {
-                Name = "SQLite3 3.32.2 Bounty",
-                Description = "Try to crash SQLite 3.32.2 with a SQL query",
-                Deadline = bounty_deadline,
-                CodeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
+                name = "SQLite3 3.32.2 Bounty",
+                description = "Try to crash SQLite 3.32.2 with a SQL query",
+                deadline = bounty_deadline,
+                codeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
             },
         })
         expect.equal(res.status, "accepted")
@@ -521,11 +493,11 @@ describe("tests on SQLite bounty", function()
         local res = advance_ether_deposit(machine, {
             sender = SPONSOR1_WALLET,
             amount = 4000,
-            opcode = CodecOpcodes.AddSponsorship,
+            kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                Name = "Sponsor1 Old Name",
-                BountyIndex = bounty_index,
+                name = "Sponsor1 Old Name",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
@@ -549,7 +521,7 @@ describe("tests on SQLite bounty", function()
                                 ImgLink = "",
                                 Name = "Sponsor1 Old Name",
                             },
-                            Value = tohex(4000),
+                            Value = "4000",
                         },
                     },
                     Started = bounty_started,
@@ -563,11 +535,11 @@ describe("tests on SQLite bounty", function()
         local res = advance_ether_deposit(machine, {
             sender = SPONSOR1_WALLET,
             amount = 5000,
-            opcode = CodecOpcodes.AddSponsorship,
+            kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                Name = "Sponsor1",
-                BountyIndex = bounty_index,
+                name = "Sponsor1",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
@@ -591,7 +563,7 @@ describe("tests on SQLite bounty", function()
                                 ImgLink = "",
                                 Name = "Sponsor1",
                             },
-                            Value = tohex(9000),
+                            Value = "9000",
                         },
                     },
                     Started = bounty_started,
@@ -606,12 +578,12 @@ describe("tests on SQLite bounty", function()
     it("should accept an exploit that succeeded", function()
         local res = advance_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.SendExploit,
+            kind = "SendExploit",
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64(bounty_valid_exploit),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "accepted")
@@ -642,7 +614,7 @@ describe("tests on SQLite bounty", function()
                                 ImgLink = "",
                                 Name = "Sponsor1",
                             },
-                            Value = tohex(9000),
+                            Value = "9000",
                         },
                     },
                     Started = bounty_started,
@@ -665,12 +637,12 @@ describe("tests on SQLite bounty", function()
     it("should reject a valid exploit after a previous exploit succeeded", function()
         local res = advance_input(machine, {
             sender = HACKER2_WALLET,
-            opcode = CodecOpcodes.SendExploit,
+            kind = "SendExploit",
             timestamp = timestamp,
             data = {
-                Name = "Hacker2",
-                BountyIndex = bounty_index,
-                Exploit = tobase64(bounty_valid_exploit),
+                name = "Hacker2",
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "rejected")
@@ -679,29 +651,27 @@ describe("tests on SQLite bounty", function()
     it("should reject withdraw after a previous exploit succeeded", function()
         local res = advance_input(machine, {
             sender = SPONSOR1_WALLET,
-            opcode = CodecOpcodes.WithdrawSponsorship,
+            kind = "WithdrawSponsorship",
             timestamp = timestamp,
             data = {
-                BountyIndex = bounty_index,
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: can't withdraw because exploit was found")
     end)
 
     it("should reject sponsorship after a previous exploit succeeded", function()
         local res = advance_ether_deposit(machine, {
             sender = SPONSOR1_WALLET,
             amount = 1000,
-            opcode = CodecOpcodes.AddSponsorship,
+            kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                Name = "Sponsor1",
-                BountyIndex = bounty_index,
+                name = "Sponsor1",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
-        expect.equal(res.error, "rejecting: can't add sponsorship because exploit was found")
     end)
 end)
 
@@ -715,13 +685,13 @@ describe("tests on BusyBox bounty", function()
     it("should create bounty", function()
         local res = advance_input(machine, {
             sender = DEVELOPER1_WALLET,
-            opcode = CodecOpcodes.CreateAppBounty,
+            kind = "CreateAppBounty",
             timestamp = timestamp,
             data = {
-                Name = "BusyBox 1.36.1 Bounty",
-                Description = "Try to crash BusyBox 1.36.1",
-                Deadline = bounty_deadline,
-                CodeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
+                name = "BusyBox 1.36.1 Bounty",
+                description = "Try to crash BusyBox 1.36.1",
+                deadline = bounty_deadline,
+                codeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
             },
         })
         expect.equal(res.status, "accepted")
@@ -752,12 +722,12 @@ describe("tests on BusyBox bounty", function()
     it("should accept an exploit that succeeded", function()
         local res = advance_input(machine, {
             sender = HACKER1_WALLET,
-            opcode = CodecOpcodes.SendExploit,
+            kind = "SendExploit",
             timestamp = timestamp,
             data = {
-                Name = "Hacker1",
-                BountyIndex = bounty_index,
-                Exploit = tobase64(bounty_valid_exploit),
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
             },
         })
         expect.equal(res.status, "accepted")
