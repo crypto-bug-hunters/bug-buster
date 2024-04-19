@@ -4,7 +4,9 @@
 # cross build stage
 FROM ubuntu:22.04 as build-stage
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
+set -e
 apt update
 apt upgrade -y
 apt install -y --no-install-recommends \
@@ -39,7 +41,9 @@ RUN go build -o ./dapp ./contract
 # riscv64 build stage
 FROM --platform=linux/riscv64 riscv64/ubuntu:22.04 as riscv64-build-stage
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
+set -e
 apt update
 apt upgrade -y
 apt install -y --no-install-recommends \
@@ -87,7 +91,13 @@ RUN <<EOF
 set -e
 apt-get update
 apt-get upgrade -y
-apt-get install -y --no-install-recommends busybox-static ca-certificates curl xz-utils libasan8 libasan6
+apt-get install -y --no-install-recommends \
+    busybox-static \
+    ca-certificates \
+    curl \
+    libasan6 \
+    libasan8 \
+    xz-utils
 curl -o ${MACHINE_EMULATOR_TOOLS_DEB} -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/${MACHINE_EMULATOR_TOOLS_DEB}
 dpkg -i ${MACHINE_EMULATOR_TOOLS_DEB}
 rm ${MACHINE_EMULATOR_TOOLS_DEB}
