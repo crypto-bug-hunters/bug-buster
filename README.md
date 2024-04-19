@@ -30,7 +30,6 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `pnpm` | | | | | | | ☑️ |
 | `sunodo` | | ☑️ | | ☑️ | | | |
 | `tar` | | | ☑️ | | | | |
-| `wget` | | ☑️ | ☑️ | | | | |
 
 ## Presentation
 
@@ -46,7 +45,6 @@ make slides
 ### Building the machine image
 
 ```sh
-make sunodo-sdk-image
 sunodo build
 ```
 
