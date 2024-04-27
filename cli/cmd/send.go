@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/gligneul/rollmelette"
+	"github.com/rollmelette/rollmelette"
 	"github.com/spf13/cobra"
 )
 

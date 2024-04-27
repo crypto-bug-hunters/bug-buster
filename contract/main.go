@@ -11,7 +11,7 @@ import (
 	"os/exec"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/gligneul/rollmelette"
+	"github.com/rollmelette/rollmelette"
 	"github.com/holiman/uint256"
 )
 

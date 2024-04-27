@@ -6,8 +6,8 @@ require (
 	github.com/Khan/genqlient v0.6.0
 	github.com/cartesi/rollups-node v1.3.0
 	github.com/ethereum/go-ethereum v1.13.12
-	github.com/gligneul/rollmelette v0.1.0
 	github.com/holiman/uint256 v1.2.4
+	github.com/rollmelette/rollmelette v0.1.1
 	github.com/spf13/cobra v1.8.0
 )
 

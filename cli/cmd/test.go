@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/gligneul/rollmelette/integration"
+	"github.com/rollmelette/rollmelette/integration"
 	"github.com/spf13/cobra"
 )
 
