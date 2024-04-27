@@ -21,13 +21,13 @@ If, however, no one is able to submit a valid exploit until a certain deadline, 
 For your purposes, not all dependencies may be required.
 To help you figure out which dependencies you actually need, here is a table of dependencies for each part of the code base.
 
-| Dependency | Presentation | Back-end | Examples | Tests | Populate | CLI | Front-end |
-| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| `docker` | ☑️ | ☑️ | ☑️ | ☑️ | | | |
-| `go` | | | | | ☑️ | ☑️ | |
-| `jq` | | | | | ☑️ | | |
-| `pnpm` | | | | | | | ☑️ |
-| `cartesi` | | ☑️ | | ☑️ | | | |
+| Dependency | Version | Presentation | Back-end | Examples | Tests | Populate | CLI | Front-end |
+| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| `docker` | 26.1 | ☑️ | ☑️ | ☑️ | ☑️ | | | |
+| `go` | 1.21.1 | | | | | ☑️ | ☑️ | |
+| `jq` | 1.6 | | | | | ☑️ | | |
+| `pnpm` | 8.15.6 | | | | | | | ☑️ |
+| `cartesi` | 0.14.0 | | ☑️ | | ☑️ | | | |
 
 ## Presentation
 
