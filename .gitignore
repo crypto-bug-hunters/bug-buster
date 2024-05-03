@@ -1,5 +1,5 @@
-.sunodo
-.sunodo.env
+.cartesi
+.cartesi.env
 frontend/node_modules/**
 frontend/.next/**
 frontend/src/hooks/contracts.tsx

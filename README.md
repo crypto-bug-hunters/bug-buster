@@ -27,7 +27,7 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `go` | | | | | ☑️ | ☑️ | |
 | `jq` | | | | | ☑️ | | |
 | `pnpm` | | | | | | | ☑️ |
-| `sunodo` | | ☑️ | | ☑️ | | | |
+| `cartesi` | | ☑️ | | ☑️ | | | |
 
 ## Presentation
 
@@ -43,13 +43,13 @@ make slides
 ### Building the machine image
 
 ```sh
-sunodo build
+cartesi build
 ```
 
 ### Running the Cartesi Node
 
 ```
-sunodo run
+cartesi run
 ```
 
 ## Building bounties

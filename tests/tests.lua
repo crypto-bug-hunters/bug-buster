@@ -26,7 +26,7 @@ local config = {
     DAPP_ADDRESS = "0x7122cd1221c20892234186facfe8615e6743ab02",
 }
 
-local machine_config = ".sunodo/image"
+local machine_config = ".cartesi/image"
 local machine_runtime_config = { skip_root_hash_check = true }
 local machine_remote_protocol = "jsonrpc"
 

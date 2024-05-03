@@ -1,4 +1,4 @@
-FROM sunodo/sdk:0.4.0
+FROM cartesi/sdk:0.6.0
 
 RUN apt-get update
 RUN apt-get install -y build-essential luarocks lua5.4-dev git

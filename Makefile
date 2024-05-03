@@ -1,7 +1,7 @@
 all: bounties test-image image
 
 image:
-	sunodo build
+	cartesi build
 
 bounties:
 	$(MAKE) -C tests/bounties
@@ -13,7 +13,7 @@ test:
 	docker run -v $(shell pwd):/mnt --rm -it bugless-test-image lua5.4 tests/tests.lua
 
 run:
-	sunodo run
+	cartesi run
 
 run-frontend-dev:
 	cd frontend && pnpm dev
