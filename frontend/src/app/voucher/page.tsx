@@ -25,7 +25,7 @@ const WithdrawButton: FC<{ voucher: Voucher }> = ({ voucher }) => {
     const [isExecuted, setIsExecuted] = useState(false);
     const [isWaitingProof, setIsWaitingProof] = useState(true);
 
-    const { data, isError, isLoading } = useContractRead({
+    const { data, isLoading } = useContractRead({
         address: getDAppAddress(),
         abi: getWasVoucherExecutedABI(),
         functionName: "wasVoucherExecuted",
@@ -66,9 +66,9 @@ const WithdrawButton: FC<{ voucher: Voucher }> = ({ voucher }) => {
 };
 
 const VoucherInfo: FC<{ voucher: Voucher }> = ({ voucher }) => {
-    const { voucherDestination, voucherAmount } = decodePayload(
-        voucher.payload,
-    ) || { voucherDestination: null, voucherAmount: null };
+    const { voucherAmount } = decodePayload(voucher.payload) || {
+        voucherAmount: null,
+    };
 
     return (
         <Center>

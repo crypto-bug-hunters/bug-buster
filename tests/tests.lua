@@ -119,20 +119,20 @@ describe("tests on Lua bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "Lua 5.4.3 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "Lua 5.4.3 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
-                    Exploit = null,
-                    InputIndex = 1,
-                    Sponsorships = null,
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    deadline = bounty_deadline,
+                    description = "Try to crash a sandboxed Lua 5.4.3 script",
+                    exploit = null,
+                    inputIndex = 1,
+                    sponsorships = null,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -151,29 +151,29 @@ describe("tests on Lua bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "Lua 5.4.3 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "Lua 5.4.3 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
-                    Exploit = null,
-                    InputIndex = 1,
-                    Sponsorships = {
+                    deadline = bounty_deadline,
+                    description = "Try to crash a sandboxed Lua 5.4.3 script",
+                    exploit = null,
+                    inputIndex = 1,
+                    sponsorships = {
                         {
-                            Sponsor = {
-                                Address = DEVELOPER1_WALLET,
-                                ImgLink = "",
-                                Name = "Developer1",
+                            sponsor = {
+                                address = DEVELOPER1_WALLET,
+                                imgLink = "",
+                                name = "Developer1",
                             },
-                            Value = "1000",
+                            value = "1000",
                         },
                     },
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -192,37 +192,37 @@ describe("tests on Lua bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "Lua 5.4.3 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "Lua 5.4.3 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
-                    Exploit = null,
-                    InputIndex = 1,
-                    Sponsorships = {
+                    deadline = bounty_deadline,
+                    description = "Try to crash a sandboxed Lua 5.4.3 script",
+                    exploit = null,
+                    inputIndex = 1,
+                    sponsorships = {
                         {
-                            Sponsor = {
-                                Address = DEVELOPER1_WALLET,
-                                ImgLink = "",
-                                Name = "Developer1",
+                            sponsor = {
+                                address = DEVELOPER1_WALLET,
+                                imgLink = "",
+                                name = "Developer1",
                             },
-                            Value = "1000",
+                            value = "1000",
                         },
                         {
-                            Sponsor = {
-                                Address = SPONSOR1_WALLET,
-                                ImgLink = "",
-                                Name = "Sponsor1",
+                            sponsor = {
+                                address = SPONSOR1_WALLET,
+                                imgLink = "",
+                                name = "Sponsor1",
                             },
-                            Value = "2000",
+                            value = "2000",
                         },
                     },
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -294,37 +294,37 @@ describe("tests on Lua bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "Lua 5.4.3 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "Lua 5.4.3 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash a sandboxed Lua 5.4.3 script",
-                    Exploit = null,
-                    InputIndex = 1,
-                    Sponsorships = {
+                    deadline = bounty_deadline,
+                    description = "Try to crash a sandboxed Lua 5.4.3 script",
+                    exploit = null,
+                    inputIndex = 1,
+                    sponsorships = {
                         {
-                            Sponsor = {
-                                Address = DEVELOPER1_WALLET,
-                                ImgLink = "",
-                                Name = "Developer1",
+                            sponsor = {
+                                address = DEVELOPER1_WALLET,
+                                imgLink = "",
+                                name = "Developer1",
                             },
-                            Value = "1000",
+                            value = "1000",
                         },
                         {
-                            Sponsor = {
-                                Address = SPONSOR1_WALLET,
-                                ImgLink = "",
-                                Name = "Sponsor1",
+                            sponsor = {
+                                address = SPONSOR1_WALLET,
+                                imgLink = "",
+                                name = "Sponsor1",
                             },
-                            Value = "2000",
+                            value = "2000",
                         },
                     },
-                    Started = bounty_started,
-                    Withdrawn = true,
+                    started = bounty_started,
+                    withdrawn = true,
                 },
             },
         })
@@ -344,7 +344,7 @@ describe("tests on Lua bounty", function()
                 }),
             },
         })
-        first_bounty_final_state = res.state.Bounties[bounty_index + 1]
+        first_bounty_final_state = res.state.bounties[bounty_index + 1]
     end)
 
     it("should reject double withdraw", function()
@@ -469,21 +469,21 @@ describe("tests on SQLite bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 first_bounty_final_state,
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "SQLite3 3.32.2 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "SQLite3 3.32.2 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash SQLite 3.32.2 with a SQL query",
-                    Exploit = null,
-                    InputIndex = 5,
-                    Sponsorships = null,
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    deadline = bounty_deadline,
+                    description = "Try to crash SQLite 3.32.2 with a SQL query",
+                    exploit = null,
+                    inputIndex = 5,
+                    sponsorships = null,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -496,36 +496,36 @@ describe("tests on SQLite bounty", function()
             kind = "AddSponsorship",
             timestamp = timestamp,
             data = {
-                name = "Sponsor1 Old Name",
+                name = "Sponsor1 Old name",
                 bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 first_bounty_final_state,
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "SQLite3 3.32.2 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "SQLite3 3.32.2 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash SQLite 3.32.2 with a SQL query",
-                    Exploit = null,
-                    InputIndex = 5,
-                    Sponsorships = {
+                    deadline = bounty_deadline,
+                    description = "Try to crash SQLite 3.32.2 with a SQL query",
+                    exploit = null,
+                    inputIndex = 5,
+                    sponsorships = {
                         {
-                            Sponsor = {
-                                Address = SPONSOR1_WALLET,
-                                ImgLink = "",
-                                Name = "Sponsor1 Old Name",
+                            sponsor = {
+                                address = SPONSOR1_WALLET,
+                                imgLink = "",
+                                name = "Sponsor1 Old name",
                             },
-                            Value = "4000",
+                            value = "4000",
                         },
                     },
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -544,30 +544,30 @@ describe("tests on SQLite bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 first_bounty_final_state,
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "SQLite3 3.32.2 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "SQLite3 3.32.2 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash SQLite 3.32.2 with a SQL query",
-                    Exploit = null,
-                    InputIndex = 5,
-                    Sponsorships = {
+                    deadline = bounty_deadline,
+                    description = "Try to crash SQLite 3.32.2 with a SQL query",
+                    exploit = null,
+                    inputIndex = 5,
+                    sponsorships = {
                         {
-                            Sponsor = {
-                                Address = SPONSOR1_WALLET,
-                                ImgLink = "",
-                                Name = "Sponsor1",
+                            sponsor = {
+                                address = SPONSOR1_WALLET,
+                                imgLink = "",
+                                name = "Sponsor1",
                             },
-                            Value = "9000",
+                            value = "9000",
                         },
                     },
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -588,41 +588,41 @@ describe("tests on SQLite bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 first_bounty_final_state,
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "SQLite3 3.32.2 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "SQLite3 3.32.2 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash SQLite 3.32.2 with a SQL query",
-                    Exploit = {
-                        InputIndex = 8,
-                        Hacker = {
-                            Address = HACKER1_WALLET,
-                            ImgLink = "",
-                            Name = "Hacker1",
+                    deadline = bounty_deadline,
+                    description = "Try to crash SQLite 3.32.2 with a SQL query",
+                    exploit = {
+                        inputIndex = 8,
+                        hacker = {
+                            address = HACKER1_WALLET,
+                            imgLink = "",
+                            name = "Hacker1",
                         },
                     },
-                    InputIndex = 5,
-                    Sponsorships = {
+                    inputIndex = 5,
+                    sponsorships = {
                         {
-                            Sponsor = {
-                                Address = SPONSOR1_WALLET,
-                                ImgLink = "",
-                                Name = "Sponsor1",
+                            sponsor = {
+                                address = SPONSOR1_WALLET,
+                                imgLink = "",
+                                name = "Sponsor1",
                             },
-                            Value = "9000",
+                            value = "9000",
                         },
                     },
-                    Started = bounty_started,
-                    Withdrawn = true,
+                    started = bounty_started,
+                    withdrawn = true,
                 },
             },
         })
-        second_bounty_final_state = res.state.Bounties[bounty_index + 1]
+        second_bounty_final_state = res.state.bounties[bounty_index + 1]
         expect.equal(res.vouchers, {
             {
                 address = fromhex(config.DAPP_ADDRESS),
@@ -696,22 +696,22 @@ describe("tests on BusyBox bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 first_bounty_final_state,
                 second_bounty_final_state,
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "BusyBox 1.36.1 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "BusyBox 1.36.1 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash BusyBox 1.36.1",
-                    Exploit = null,
-                    InputIndex = 9,
-                    Sponsorships = null,
-                    Started = bounty_started,
-                    Withdrawn = false,
+                    deadline = bounty_deadline,
+                    description = "Try to crash BusyBox 1.36.1",
+                    exploit = null,
+                    inputIndex = 9,
+                    sponsorships = null,
+                    started = bounty_started,
+                    withdrawn = false,
                 },
             },
         })
@@ -732,29 +732,29 @@ describe("tests on BusyBox bounty", function()
         })
         expect.equal(res.status, "accepted")
         expect.equal(res.state, {
-            Bounties = {
+            bounties = {
                 first_bounty_final_state,
                 second_bounty_final_state,
                 {
-                    Developer = {
-                        Address = DEVELOPER1_WALLET,
-                        ImgLink = "",
-                        Name = "BusyBox 1.36.1 Bounty",
+                    developer = {
+                        address = DEVELOPER1_WALLET,
+                        imgLink = "",
+                        name = "BusyBox 1.36.1 Bounty",
                     },
-                    Deadline = bounty_deadline,
-                    Description = "Try to crash BusyBox 1.36.1",
-                    Exploit = {
-                        InputIndex = 10,
-                        Hacker = {
-                            Address = HACKER1_WALLET,
-                            ImgLink = "",
-                            Name = "Hacker1",
+                    deadline = bounty_deadline,
+                    description = "Try to crash BusyBox 1.36.1",
+                    exploit = {
+                        inputIndex = 10,
+                        hacker = {
+                            address = HACKER1_WALLET,
+                            imgLink = "",
+                            name = "Hacker1",
                         },
                     },
-                    InputIndex = 9,
-                    Sponsorships = null,
-                    Started = bounty_started,
-                    Withdrawn = true,
+                    inputIndex = 9,
+                    sponsorships = null,
+                    started = bounty_started,
+                    withdrawn = true,
                 },
             },
         })

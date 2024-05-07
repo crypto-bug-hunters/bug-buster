@@ -47,7 +47,7 @@ END
 go run ./cli send dapp-address
 
 # Busybox 1.36.1
-CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
 go run ./cli send bounty \
     -f $BUSYBOX_ACCOUNT \
     -n "BusyBox 1.36.1" \
@@ -75,7 +75,7 @@ go run ./cli send exploit \
     -e "./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh"
 
 # Lua 5.4.3
-CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
 go run ./cli send bounty \
     -f $LUA_ACCOUNT \
     -n "Lua 5.4.3" \
@@ -103,7 +103,7 @@ go run ./cli send sponsor \
 #     -e "./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua"
 
 # Lua 5.4.6
-CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
 go run ./cli send bounty \
     -f $LUA_ACCOUNT \
     -n "Lua 5.4.6" \
@@ -125,7 +125,7 @@ go run ./cli send sponsor \
     -v 1.337
 
 # SQLite 3.32.2
-CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
 go run ./cli send bounty \
     -f $SQLITE_ACCOUNT \
     -n "SQLite 3.32.2" \
@@ -153,7 +153,7 @@ go run ./cli send sponsor \
 #     -e "./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql"
 
 # SQLite 3.43.2
-# CURR_BOUNTY=$(go run ./cli state | jq '.Bounties | length')
+# CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
 # go run ./cli send bounty \
 #     -f $SQLITE_ACCOUNT \
 #     -n "SQLite 3.43.2" \

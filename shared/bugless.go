@@ -13,7 +13,7 @@ import (
 //
 
 type BugLessState struct {
-	Bounties []*AppBounty
+	Bounties []*AppBounty `json:"bounties"`
 }
 
 func (s *BugLessState) GetBounty(bountyIndex int) *AppBounty {
@@ -24,14 +24,14 @@ func (s *BugLessState) GetBounty(bountyIndex int) *AppBounty {
 }
 
 type AppBounty struct {
-	Developer    Profile
-	Description  string
-	Started      int64 // (unix timestamp)
-	Deadline     int64 // (unix timestamp)
-	InputIndex   int
-	Sponsorships []*Sponsorship
-	Exploit      *Exploit
-	Withdrawn    bool
+	Developer    Profile        `json:"developer"`
+	Description  string         `json:"description"`
+	Started      int64          `json:"started"`  // (unix timestamp)
+	Deadline     int64          `json:"deadline"` // (unix timestamp)
+	InputIndex   int            `json:"inputIndex"`
+	Sponsorships []*Sponsorship `json:"sponsorships"`
+	Exploit      *Exploit       `json:"exploit"`
+	Withdrawn    bool           `json:"withdrawn"`
 }
 
 func (b *AppBounty) GetSponsorship(sponsorAddress common.Address) *Sponsorship {
@@ -44,19 +44,19 @@ func (b *AppBounty) GetSponsorship(sponsorAddress common.Address) *Sponsorship {
 }
 
 type Sponsorship struct {
-	Sponsor Profile
-	Value   *uint256.Int
+	Sponsor Profile      `json:"sponsor"`
+	Value   *uint256.Int `json:"value"`
 }
 
 type Exploit struct {
-	Hacker     Profile
-	InputIndex int
+	Hacker     Profile `json:"hacker"`
+	InputIndex int     `json:"inputIndex"`
 }
 
 type Profile struct {
-	Address common.Address
-	Name    string
-	ImgLink string // optional
+	Address common.Address `json:"address"`
+	Name    string         `json:"name"`
+	ImgLink string         `json:"imgLink"` // optional
 }
 
 //

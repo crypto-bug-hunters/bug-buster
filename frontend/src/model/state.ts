@@ -1,23 +1,23 @@
 export interface BugLessState {
-    Bounties: AppBounty[];
+    bounties: AppBounty[];
 }
 
 export interface AppBounty {
-    Developer: Profile; // Name and ImgLink are related to the App
-    Description: string;
-    Started: number;
-    Deadline: number;
-    InputIndex: number;
-    Sponsorships?: Sponsorship[];
-    Exploit?: Exploit;
-    Withdrawn: boolean;
+    developer: Profile; // Name and ImgLink are related to the App
+    description: string;
+    started: number;
+    deadline: number;
+    inputIndex: number;
+    sponsorships?: Sponsorship[];
+    exploit?: Exploit;
+    withdrawn: boolean;
 }
 
 export const getBountyTotalPrize = (bounty: AppBounty) => {
-    if (bounty.Sponsorships) {
+    if (bounty.sponsorships) {
         // prettier-ignore
-        return bounty.Sponsorships
-            .map((s) => BigInt(s.Value))
+        return bounty.sponsorships
+            .map((s) => BigInt(s.value))
             .reduce((acc, v) => acc + v);
     } else {
         return BigInt(0);
@@ -25,20 +25,20 @@ export const getBountyTotalPrize = (bounty: AppBounty) => {
 };
 
 export interface Profile {
-    Address: string;
-    Name: string;
-    ImgLink?: string;
+    address: string;
+    name: string;
+    imgLink?: string;
 }
 
 export interface Exploit {
-    Hacker: Profile;
-    InputIndex: number;
-    Code: string;
+    hacker: Profile;
+    inputIndex: number;
+    code: string;
 }
 
 export interface Sponsorship {
-    Sponsor: Profile;
-    Value: string; // number encoded as hex string
+    sponsor: Profile;
+    value: string; // number encoded as hex string
 }
 
 export interface Voucher {

@@ -9,7 +9,6 @@ import {
     Stack,
     Image,
     Title,
-    Paper,
     Text,
 } from "@mantine/core";
 
@@ -61,7 +60,8 @@ const ButtonsBox: FC<{
     bountyStatus: BountyStatus;
 }> = ({ bountyId, bountyStatus }) => {
     const isOpen = bountyStatus.kind == "open";
-    const enableWithdrawals = bountyStatus.kind == "expired" && !bountyStatus.withdrawn;
+    const enableWithdrawals =
+        bountyStatus.kind == "expired" && !bountyStatus.withdrawn;
     return (
         <Group justify="left">
             <LinkButton href={`/bounty/${bountyId}/sponsor`} disabled={!isOpen}>
@@ -81,22 +81,22 @@ const BountyBox: FC<{
 }> = ({ bountyId, bounty }) => {
     const blockTimestamp = useBlockTimestamp();
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
-    const profile = bounty.Developer;
+    const profile = bounty.developer;
     const totalPrize = getBountyTotalPrize(bounty);
     return (
         <Stack align="center">
             <Group>
-                <Title order={2}>{profile.Name}</Title>
+                <Title order={2}>{profile.name}</Title>
                 <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
             </Group>
             <Image
                 w={300}
-                src={bounty.Developer.ImgLink}
+                src={bounty.developer.imgLink}
                 alt="Bounty Image"
                 fallbackSrc="/static/default_app.webp"
             />
             <Text styles={{ root: { whiteSpace: "pre-wrap" } }}>
-                {bounty.Description}
+                {bounty.description}
             </Text>
             <Title order={3}>Total Prize: {formatEther(totalPrize)} ETH</Title>
             <HasConnectedAccount>
@@ -113,7 +113,7 @@ const ExploitCodeBox: FC<{
         return (
             <Stack align="center">
                 <Title order={2}>Exploit Code</Title>
-                <Code block>{exploit.Code}</Code>
+                <Code block>{exploit.code}</Code>
             </Stack>
         );
     }
@@ -126,22 +126,22 @@ const ParticipantsBox: FC<{
     return (
         <Stack align="center">
             <Title order={2}>Participants</Title>
-            {bounty.Exploit && (
+            {bounty.exploit && (
                 <ProfileCard
-                    profile={bounty.Exploit.Hacker}
+                    profile={bounty.exploit.hacker}
                     badge="Exploiter"
                 />
             )}
-            {bounty.Sponsorships &&
-                bounty.Sponsorships.map((sponsorship, index) => {
+            {bounty.sponsorships &&
+                bounty.sponsorships.map((sponsorship, index) => {
                     return (
                         <ProfileCard
                             key={index}
-                            profile={sponsorship.Sponsor}
+                            profile={sponsorship.sponsor}
                             badge="Sponsor"
                             badgeColor="purple"
                         >
-                            {formatEther(BigInt(sponsorship.Value))} ETH
+                            {formatEther(BigInt(sponsorship.value))} ETH
                         </ProfileCard>
                     );
                 })}
@@ -166,7 +166,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                 <Center p={20} mt={20}>
                     <Stack w={800} gap={50} align="center" justify="center">
                         <BountyBox bountyId={bountyId} bounty={bounty} />
-                        <ExploitCodeBox exploit={bounty.Exploit} />
+                        <ExploitCodeBox exploit={bounty.exploit} />
                         <ParticipantsBox bounty={bounty} />
                     </Stack>
                 </Center>

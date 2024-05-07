@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { BountyStatus } from "../model/bountyStatus";
 import { Group, Badge } from "@mantine/core";
-import { useBlockTimestamp } from "../hooks/block";
 
 interface BadgeDescriptor {
     color: string;

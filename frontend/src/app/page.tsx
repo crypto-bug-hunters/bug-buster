@@ -36,19 +36,19 @@ const Bounty: FC<{
                         p={6}
                         fit="contain"
                         alt="Bounty Image"
-                        src={bounty.Developer.ImgLink}
+                        src={bounty.developer.imgLink}
                         fallbackSrc="/static/default_app.webp"
                     />
                 </Card.Section>
                 <Box w={400} mt="md">
                     <Group mb={10}>
                         <Text truncate="end" fw={700} size="lg">
-                            {bounty.Developer.Name}
+                            {bounty.developer.name}
                         </Text>
                         <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
                     </Group>
                     <Text truncate="end" size="xs" c="dimmend">
-                        {bounty.Description}
+                        {bounty.description}
                     </Text>
                 </Box>
             </Card>
@@ -68,7 +68,7 @@ const BountyList: FC = () => {
             const state = result.response;
             return (
                 <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
-                    {state.Bounties?.map((bounty, index) => {
+                    {state.bounties?.map((bounty, index) => {
                         return (
                             <Bounty
                                 key={index}

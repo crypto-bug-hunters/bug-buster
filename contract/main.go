@@ -11,8 +11,8 @@ import (
 	"os/exec"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/rollmelette/rollmelette"
 	"github.com/holiman/uint256"
+	"github.com/rollmelette/rollmelette"
 )
 
 type BugLessContract struct {
