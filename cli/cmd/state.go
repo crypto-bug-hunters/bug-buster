@@ -32,14 +32,15 @@ func stateRun(cmd *cobra.Command, args []string) {
 
 	state := findLastState(inputs)
 	if state == nil {
-		fmt.Println("{\"Bounties\":[]}")
-	} else {
-		stateJson, err := json.MarshalIndent(state, "", "  ")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(string(stateJson))
+		state = new(shared.BugLessState)
+		state.Bounties = make([]*shared.AppBounty, 0)
 	}
+
+	stateJson, err := json.MarshalIndent(state, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(stateJson))
 }
 
 func findLastState(inputs []readerclient.Input) *shared.BugLessState {

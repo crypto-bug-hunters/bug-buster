@@ -89,8 +89,8 @@ function GetLatestState(): ReaderResult<BugLessState> {
     if (loading) return { kind: "loading" };
     if (error) return { kind: "error", message: error.message };
     let reportEdge = data?.reports.edges.findLast((edge) =>
-        // starts with {"Bounties":
-        edge.node.payload.startsWith("0x7b22426f756e74696573223a"),
+        // starts with {"bounties":
+        edge.node.payload.startsWith("0x7b22626f756e74696573223a"),
     );
     let payload = reportEdge?.node.payload;
     let stateBytes = fromHexString(payload?.substring(2)); // remove '0x'
@@ -99,7 +99,7 @@ function GetLatestState(): ReaderResult<BugLessState> {
         let stateText = new TextDecoder().decode(stateBytes);
         stateJson = JSON.parse(stateText) as BugLessState;
     } else {
-        stateJson = { Bounties: [] };
+        stateJson = { bounties: [] };
     }
     return { kind: "success", response: stateJson };
 }
@@ -110,8 +110,8 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
         pollInterval: 500, // ms
     });
     let reportEdge = reportsQuery.data?.reports.edges.findLast((edge) =>
-        // starts with {"Bounties":
-        edge.node.payload.startsWith("0x7b22426f756e74696573223a"),
+        // starts with {"bounties":
+        edge.node.payload.startsWith("0x7b22626f756e74696573223a"),
     );
     let payload = reportEdge?.node.payload;
     let stateBytes = fromHexString(payload?.substring(2)); // remove '0x'
@@ -120,12 +120,12 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
         let stateText = new TextDecoder().decode(stateBytes);
         stateJson = JSON.parse(stateText) as BugLessState;
     }
-    let bounty = stateJson?.Bounties.at(bountyIndex);
-    let exploit = bounty?.Exploit;
+    let bounty = stateJson?.bounties.at(bountyIndex);
+    let exploit = bounty?.exploit;
     const exploitQuery = useQuery(GET_INPUT_PAYLOAD, {
-        skip: !exploit?.InputIndex,
+        skip: !exploit?.inputIndex,
         variables: {
-            inputIndex: exploit?.InputIndex as number, // this is fine because of skip
+            inputIndex: exploit?.inputIndex as number, // this is fine because of skip
         },
     });
     let SendExploitInputBytes = fromHexString(
@@ -139,7 +139,7 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
             "SendExploit",
             SendExploit
         >;
-        exploit.Code = atob(SendExploitInput.payload.exploit);
+        exploit.code = atob(SendExploitInput.payload.exploit);
     }
 
     if (reportsQuery.loading) return { kind: "loading" };

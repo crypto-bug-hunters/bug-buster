@@ -7,7 +7,6 @@ import {
     rem,
     Code,
     Group,
-    Text,
 } from "@mantine/core";
 
 import { IconCopy, IconCheck } from "@tabler/icons-react";

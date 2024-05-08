@@ -12,7 +12,7 @@ import {
     Text,
 } from "@mantine/core";
 import { FC, useState } from "react";
-import { Address, parseEther } from "viem";
+import { parseEther } from "viem";
 import { AddSponsorship } from "../../../../model/inputs";
 import { usePrepareAddSponsorship } from "../../../../hooks/bugless";
 import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
@@ -68,7 +68,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                     <Title>Sponsor bounty</Title>
                     {result.kind == "success" && (
                         <Text size="lg" fw={700} c="dimmed">
-                            {result.response.Developer.Name}
+                            {result.response.developer.name}
                         </Text>
                     )}
                     <TextInput

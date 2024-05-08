@@ -7,8 +7,7 @@ import {
     Divider,
     Tooltip,
 } from "@mantine/core";
-import { FC, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { HasConnectedAccount } from "../components/hasConnectedAccount";
 

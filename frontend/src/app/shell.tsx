@@ -1,12 +1,5 @@
 "use client";
-import {
-    AppShell,
-    Group,
-    Anchor,
-    Center,
-    Title,
-    ActionIcon,
-} from "@mantine/core";
+import { AppShell } from "@mantine/core";
 import { FC } from "react";
 import { Header } from "./header";
 

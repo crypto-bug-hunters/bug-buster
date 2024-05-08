@@ -2,21 +2,11 @@ import React, { FC } from "react";
 
 import {
     Avatar as MantineAvatar,
-    Box,
     Badge,
-    Button,
-    Center,
-    Code,
     Group,
     Stack,
-    Image,
-    Title,
-    Tooltip,
-    useMantineTheme,
-    SimpleGrid,
     Card,
     Text,
-    Paper,
 } from "@mantine/core";
 
 import { Profile } from "../model/state";
@@ -50,8 +40,8 @@ export const ProfileCard: FC<{
             <Stack p={20}>
                 <Group gap="lg">
                     <Avatar
-                        src={profile.ImgLink || ""}
-                        altseed={profile.Address}
+                        src={profile.imgLink || ""}
+                        altseed={profile.address}
                     />
                     <Stack>
                         <Group>
@@ -61,10 +51,10 @@ export const ProfileCard: FC<{
                                 </Badge>
                             )}
                             <Text fw={500} size="lg">
-                                {profile.Name}
+                                {profile.name}
                             </Text>
                         </Group>
-                        <CodeWithCopyButton value={profile.Address} />
+                        <CodeWithCopyButton value={profile.address} />
                         <Text fw={700} size="xl" c="dimmend">
                             {children}
                         </Text>

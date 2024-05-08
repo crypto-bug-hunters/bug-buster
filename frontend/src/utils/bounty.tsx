@@ -10,17 +10,17 @@ export function getBountyStatus(
     bounty: AppBounty,
     blockTimestamp?: bigint,
 ): BountyStatus {
-    if (bounty.Exploit) {
+    if (bounty.exploit) {
         return { kind: "exploited" };
     } else if (blockTimestamp === undefined) {
         return { kind: "loading" };
     } else {
-        const secondsLeft = BigInt(bounty.Deadline) - blockTimestamp;
+        const secondsLeft = BigInt(bounty.deadline) - blockTimestamp;
         if (secondsLeft > 0) {
             const daysLeft = secondsToDays(secondsLeft);
             return { kind: "open", daysLeft: daysLeft };
         } else {
-            return { kind: "expired", withdrawn: bounty.Withdrawn };
+            return { kind: "expired", withdrawn: bounty.withdrawn };
         }
     }
 }
