@@ -7,4 +7,4 @@ COPY Makefile .
 COPY --chmod=755 start.sh .
 ARG VERSION
 RUN make download VERSION=${VERSION}
-RUN make -j`nproc` VERSION=${VERSION}
+RUN make VERSION=${VERSION}
