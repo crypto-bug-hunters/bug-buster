@@ -1,3 +1,4 @@
 {
-    "extends": "next/core-web-vitals"
+    // adding next/babel to fix parsing error on next.conf.js
+    "extends": ["next/babel","next/core-web-vitals"]
 }
