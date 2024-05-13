@@ -56,11 +56,8 @@ func (c *BugLessContract) Advance(
 			return err
 		}
 		bounty := &shared.AppBounty{
-			Developer: shared.Profile{
-				Address: metadata.MsgSender,
-				Name:    inputPayload.Name,
-				ImgLink: inputPayload.ImgLink,
-			},
+			Name:         inputPayload.Name,
+			ImgLink:      inputPayload.ImgLink,
 			Description:  inputPayload.Description,
 			Deadline:     inputPayload.Deadline,
 			Sponsorships: nil,

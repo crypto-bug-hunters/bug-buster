@@ -81,17 +81,16 @@ const BountyBox: FC<{
 }> = ({ bountyId, bounty }) => {
     const blockTimestamp = useBlockTimestamp();
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
-    const profile = bounty.developer;
     const totalPrize = getBountyTotalPrize(bounty);
     return (
         <Stack align="center">
             <Group>
-                <Title order={2}>{profile.name}</Title>
+                <Title order={2}>{bounty.name}</Title>
                 <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
             </Group>
             <Image
                 w={300}
-                src={bounty.developer.imgLink}
+                src={bounty.imgLink}
                 alt="Bounty Image"
                 fallbackSrc="/static/default_app.webp"
             />

@@ -120,14 +120,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = null,
                     withdrawn = false,
                 },
@@ -150,14 +147,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -189,14 +183,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -289,14 +280,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -462,14 +450,11 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = null,
                     withdrawn = false,
                 },
@@ -493,14 +478,11 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -533,14 +515,11 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -575,11 +554,6 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = {
@@ -590,6 +564,8 @@ describe("tests on SQLite bounty", function()
                             name = "Hacker1",
                         },
                     },
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -681,14 +657,11 @@ describe("tests on BusyBox bounty", function()
                 first_bounty_final_state,
                 second_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "BusyBox 1.36.1 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash BusyBox 1.36.1",
                     exploit = null,
+                    imgLink = "",
+                    name = "BusyBox 1.36.1 Bounty",
                     sponsorships = null,
                     withdrawn = false,
                 },
@@ -715,11 +688,6 @@ describe("tests on BusyBox bounty", function()
                 first_bounty_final_state,
                 second_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "BusyBox 1.36.1 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash BusyBox 1.36.1",
                     exploit = {
@@ -730,6 +698,8 @@ describe("tests on BusyBox bounty", function()
                             name = "Hacker1",
                         },
                     },
+                    imgLink = "",
+                    name = "BusyBox 1.36.1 Bounty",
                     sponsorships = null,
                     withdrawn = true,
                 },
