@@ -62,7 +62,6 @@ func (c *BugLessContract) Advance(
 				ImgLink: inputPayload.ImgLink,
 			},
 			Description:  inputPayload.Description,
-			Started:      currTime,
 			Deadline:     inputPayload.Deadline,
 			Sponsorships: nil,
 			Exploit:      nil,

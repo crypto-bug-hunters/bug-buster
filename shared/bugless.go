@@ -26,7 +26,6 @@ func (s *BugLessState) GetBounty(bountyIndex int) *AppBounty {
 type AppBounty struct {
 	Developer    Profile        `json:"developer"`
 	Description  string         `json:"description"`
-	Started      int64          `json:"started"`  // (unix timestamp)
 	Deadline     int64          `json:"deadline"` // (unix timestamp)
 	Sponsorships []*Sponsorship `json:"sponsorships"`
 	Exploit      *Exploit       `json:"exploit"`

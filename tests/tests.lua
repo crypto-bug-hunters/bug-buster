@@ -91,8 +91,7 @@ describe("tests on Lua bounty", function()
     local bounty_valid_exploit = readfile("tests/bounties/lua-bounty/exploit-lua-5.4.3.lua")
     local bounty_invalid_exploit = [[print 'hello world']]
     local bounty_index = 0
-    local bounty_started = timestamp
-    local bounty_deadline = bounty_started + 3600
+    local bounty_deadline = timestamp + 3600
 
     it("should relay dapp address", function()
         local res = machine:advance_state({
@@ -130,7 +129,6 @@ describe("tests on Lua bounty", function()
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -170,7 +168,6 @@ describe("tests on Lua bounty", function()
                             value = "1000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -218,7 +215,6 @@ describe("tests on Lua bounty", function()
                             value = "2000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -319,7 +315,6 @@ describe("tests on Lua bounty", function()
                             value = "2000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = true,
                 },
             },
@@ -448,7 +443,6 @@ describe("tests on SQLite bounty", function()
     local sqlite33202_bounty_code = "tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
     local bounty_valid_exploit = readfile("tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql")
     local bounty_index = 1
-    local bounty_started = timestamp
     local bounty_deadline = timestamp + 7200
 
     it("should create bounty", function()
@@ -477,7 +471,6 @@ describe("tests on SQLite bounty", function()
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -518,7 +511,6 @@ describe("tests on SQLite bounty", function()
                             value = "4000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -559,7 +551,6 @@ describe("tests on SQLite bounty", function()
                             value = "9000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -609,7 +600,6 @@ describe("tests on SQLite bounty", function()
                             value = "9000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = true,
                 },
             },
@@ -671,7 +661,6 @@ describe("tests on BusyBox bounty", function()
     local sqlite33202_bounty_code = "tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
     local bounty_valid_exploit = readfile("tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh")
     local bounty_index = 2
-    local bounty_started = timestamp
     local bounty_deadline = timestamp + 7200
 
     it("should create bounty", function()
@@ -701,7 +690,6 @@ describe("tests on BusyBox bounty", function()
                     description = "Try to crash BusyBox 1.36.1",
                     exploit = null,
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -743,7 +731,6 @@ describe("tests on BusyBox bounty", function()
                         },
                     },
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = true,
                 },
             },

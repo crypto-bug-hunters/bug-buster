@@ -5,7 +5,6 @@ export interface BugLessState {
 export interface AppBounty {
     developer: Profile; // Name and ImgLink are related to the App
     description: string;
-    started: number;
     deadline: number;
     sponsorships?: Sponsorship[];
     exploit?: Exploit;
