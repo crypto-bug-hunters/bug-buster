@@ -7,7 +7,6 @@ export interface AppBounty {
     description: string;
     started: number;
     deadline: number;
-    inputIndex: number;
     sponsorships?: Sponsorship[];
     exploit?: Exploit;
     withdrawn: boolean;

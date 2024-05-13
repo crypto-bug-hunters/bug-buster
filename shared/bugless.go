@@ -28,7 +28,6 @@ type AppBounty struct {
 	Description  string         `json:"description"`
 	Started      int64          `json:"started"`  // (unix timestamp)
 	Deadline     int64          `json:"deadline"` // (unix timestamp)
-	InputIndex   int            `json:"inputIndex"`
 	Sponsorships []*Sponsorship `json:"sponsorships"`
 	Exploit      *Exploit       `json:"exploit"`
 	Withdrawn    bool           `json:"withdrawn"`

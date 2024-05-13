@@ -129,7 +129,6 @@ describe("tests on Lua bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
                     sponsorships = null,
                     started = bounty_started,
                     withdrawn = false,
@@ -161,7 +160,6 @@ describe("tests on Lua bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
                     sponsorships = {
                         {
                             sponsor = {
@@ -202,7 +200,6 @@ describe("tests on Lua bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
                     sponsorships = {
                         {
                             sponsor = {
@@ -304,7 +301,6 @@ describe("tests on Lua bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
                     sponsorships = {
                         {
                             sponsor = {
@@ -480,7 +476,6 @@ describe("tests on SQLite bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
-                    inputIndex = 5,
                     sponsorships = null,
                     started = bounty_started,
                     withdrawn = false,
@@ -513,7 +508,6 @@ describe("tests on SQLite bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
-                    inputIndex = 5,
                     sponsorships = {
                         {
                             sponsor = {
@@ -555,7 +549,6 @@ describe("tests on SQLite bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
-                    inputIndex = 5,
                     sponsorships = {
                         {
                             sponsor = {
@@ -606,7 +599,6 @@ describe("tests on SQLite bounty", function()
                             name = "Hacker1",
                         },
                     },
-                    inputIndex = 5,
                     sponsorships = {
                         {
                             sponsor = {
@@ -708,7 +700,6 @@ describe("tests on BusyBox bounty", function()
                     deadline = bounty_deadline,
                     description = "Try to crash BusyBox 1.36.1",
                     exploit = null,
-                    inputIndex = 9,
                     sponsorships = null,
                     started = bounty_started,
                     withdrawn = false,
@@ -751,7 +742,6 @@ describe("tests on BusyBox bounty", function()
                             name = "Hacker1",
                         },
                     },
-                    inputIndex = 9,
                     sponsorships = null,
                     started = bounty_started,
                     withdrawn = true,

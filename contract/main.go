@@ -64,7 +64,6 @@ func (c *BugLessContract) Advance(
 			Description:  inputPayload.Description,
 			Started:      currTime,
 			Deadline:     inputPayload.Deadline,
-			InputIndex:   metadata.InputIndex,
 			Sponsorships: nil,
 			Exploit:      nil,
 			Withdrawn:    false,
