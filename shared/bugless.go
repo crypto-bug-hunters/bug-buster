@@ -77,11 +77,11 @@ type Input struct {
 }
 
 type CreateAppBounty struct {
-	Name          string `json:"name"`
-	ImgLink       string `json:"imgLink"`
-	Description   string `json:"description"`
-	Deadline      int64  `json:"deadline"`      // (unix timestamp)
-	CodeZipBinary string `json:"codeZipBinary"` // base64?
+	Name          string  `json:"name"`
+	ImgLink       string  `json:"imgLink"`
+	Description   string  `json:"description"`
+	Deadline      int64   `json:"deadline"`                // (unix timestamp)
+	CodeZipBinary *string `json:"codeZipBinary,omitempty"` // base64?
 }
 
 func (b *CreateAppBounty) Validate() error {
@@ -94,7 +94,7 @@ func (b *CreateAppBounty) Validate() error {
 	if b.Deadline == 0 {
 		return fmt.Errorf("empty CreateAppBounty.Deadline")
 	}
-	if b.CodeZipBinary == "" {
+	if b.CodeZipBinary == nil || *b.CodeZipBinary == "" {
 		return fmt.Errorf("empty CreateAppBounty.CodeZipBinary")
 	}
 	return nil

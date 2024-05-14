@@ -51,7 +51,7 @@ func (c *BugLessContract) Advance(
 
 		// create new bounty
 		bountyIndex := len(c.state.Bounties)
-		err := DecodeUnzipStore(bountyIndex, inputPayload.CodeZipBinary)
+		err := DecodeUnzipStore(bountyIndex, *inputPayload.CodeZipBinary)
 		if err != nil {
 			return err
 		}

@@ -3,7 +3,7 @@ export interface CreateAppBounty {
     description: string;
     imgLink?: string;
     deadline: number;
-    codeZipBinary: string;
+    codeZipBinary?: string;
 }
 
 export interface AddSponsorship {
