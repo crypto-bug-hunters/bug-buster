@@ -4,6 +4,7 @@ export interface CreateAppBounty {
     imgLink?: string;
     deadline: number;
     codeZipBinary?: string;
+    codeZipPath?: string;
 }
 
 export interface AddSponsorship {

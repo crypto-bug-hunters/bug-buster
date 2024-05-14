@@ -82,6 +82,7 @@ type CreateAppBounty struct {
 	Description   string  `json:"description"`
 	Deadline      int64   `json:"deadline"`                // (unix timestamp)
 	CodeZipBinary *string `json:"codeZipBinary,omitempty"` // base64?
+	CodeZipPath   *string `json:"codeZipPath,omitempty"`
 }
 
 func (b *CreateAppBounty) Validate() error {
@@ -94,8 +95,8 @@ func (b *CreateAppBounty) Validate() error {
 	if b.Deadline == 0 {
 		return fmt.Errorf("empty CreateAppBounty.Deadline")
 	}
-	if b.CodeZipBinary == nil || *b.CodeZipBinary == "" {
-		return fmt.Errorf("empty CreateAppBounty.CodeZipBinary")
+	if b.CodeZipBinary == nil && b.CodeZipPath == nil {
+		return fmt.Errorf("empty CreateAppBounty.{CodeZipBinary, CodeZipPath}")
 	}
 	return nil
 }

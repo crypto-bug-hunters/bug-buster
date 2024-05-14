@@ -8,6 +8,7 @@ import {
     Code,
     Group,
     Stack,
+    Tabs,
     Title,
     TextInput,
     Textarea,
@@ -68,6 +69,7 @@ const CreateBountyPage: FC = () => {
     const [deadline, setDeadline] = useState<Date | null>(null);
 
     const [appFile, setAppFile] = useState<string | null>(null);
+    const [appPath, setAppPath] = useState<string | null>(null);
 
     const readFile = (f: FileWithPath | null) => {
         if (f) {
@@ -91,6 +93,7 @@ const CreateBountyPage: FC = () => {
         imgLink,
         deadline: deadline ? deadline.getTime() / 1000 : null,
         codeZipBinary: appFile,
+        codeZipPath: appPath,
     } as CreateAppBounty;
 
     const config = usePrepareCreateBounty(bounty);
@@ -142,12 +145,32 @@ const CreateBountyPage: FC = () => {
                         onChange={(e) => setDeadline(e)}
                     />
 
-                    <FileDrop
-                        onDrop={(files) => readFile(files[0])}
-                        accept={{ "application/octet-stream": [".tar.xz"] }}
-                    >
-                        <FileDropText filename={filename} />
-                    </FileDrop>
+                    <Tabs defaultValue="file">
+                        <Tabs.List>
+                            <Tabs.Tab value="file">Upload</Tabs.Tab>
+                            <Tabs.Tab value="path">Built-in</Tabs.Tab>
+                        </Tabs.List>
+
+                        <Tabs.Panel value="file">
+                            <FileDrop
+                                onDrop={(files) => readFile(files[0])}
+                                accept={{
+                                    "application/octet-stream": [".tar.xz"],
+                                }}
+                            >
+                                <FileDropText filename={filename} />
+                            </FileDrop>
+                        </Tabs.Panel>
+
+                        <Tabs.Panel value="path">
+                            <TextInput
+                                size="lg"
+                                value={appPath ?? ""}
+                                placeholder="/bounties/some-built-in-bounty.tar.xz"
+                                onChange={(e) => setAppPath(e.target.value)}
+                            />
+                        </Tabs.Panel>
+                    </Tabs>
 
                     <Group justify="center" mt="md">
                         <Button
@@ -156,7 +179,7 @@ const CreateBountyPage: FC = () => {
                             disabled={
                                 !write ||
                                 isLoading ||
-                                !appFile ||
+                                (!appFile && !appPath) ||
                                 !deadline ||
                                 name.trim().length === 0 ||
                                 description.trim().length === 0

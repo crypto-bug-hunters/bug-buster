@@ -51,10 +51,23 @@ func (c *BugLessContract) Advance(
 
 		// create new bounty
 		bountyIndex := len(c.state.Bounties)
-		err := DecodeUnzipStore(bountyIndex, *inputPayload.CodeZipBinary)
-		if err != nil {
-			return err
+
+		// create bounty file
+		if inputPayload.CodeZipBinary != nil {
+			err := DecodeUnzipStore(bountyIndex, *inputPayload.CodeZipBinary)
+			if err != nil {
+				return err
+			}
+		} else if inputPayload.CodeZipPath != nil {
+			err := LinkBounty(bountyIndex, *inputPayload.CodeZipPath)
+			if err != nil {
+				return err
+			}
+		} else {
+			return fmt.Errorf("missing code binary and path")
 		}
+
+		// append bounty to array of bounties
 		bounty := &shared.AppBounty{
 			Name:         inputPayload.Name,
 			ImgLink:      inputPayload.ImgLink,
@@ -285,6 +298,15 @@ func DecodeUnzipStore(bountyIndex int, zipBinary string) error {
 	err = os.WriteFile(path, bytes, 0644)
 	if err != nil {
 		return fmt.Errorf("failed to write file: %v", err)
+	}
+	return nil
+}
+
+func LinkBounty(bountyIndex int, zipPath string) error {
+	path := CodePath(bountyIndex)
+	err := os.Symlink(zipPath, path)
+	if err != nil {
+		return fmt.Errorf("failed to create symlink: %v", err)
 	}
 	return nil
 }
