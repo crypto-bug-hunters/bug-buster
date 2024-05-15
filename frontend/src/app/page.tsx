@@ -14,7 +14,7 @@ import {
     Group,
 } from "@mantine/core";
 import Link from "next/link";
-import { GetLatestState } from "../model/reader";
+import { useLatestState } from "../model/reader";
 import { AppBounty } from "../model/state";
 import { BountyStatusBadgeGroup } from "../components/bountyStatus";
 import { HasConnectedAccount } from "../components/hasConnectedAccount";
@@ -57,30 +57,32 @@ const Bounty: FC<{
 };
 
 const BountyList: FC = () => {
-    const result = GetLatestState();
+    const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
-    switch (result.kind) {
+
+    switch (stateResult.kind) {
         case "loading":
             return <Center>Loading list of bounties...</Center>;
         case "error":
-            return <Center>{result.message}</Center>;
-        case "success":
-            const state = result.response;
-            return (
-                <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
-                    {state.bounties?.map((bounty, index) => {
-                        return (
-                            <Bounty
-                                key={index}
-                                index={index}
-                                bounty={bounty}
-                                blockTimestamp={blockTimestamp!}
-                            />
-                        );
-                    })}
-                </SimpleGrid>
-            );
+            return <Center>{stateResult.message}</Center>;
     }
+
+    const state = stateResult.response;
+
+    return (
+        <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
+            {state.bounties.map((bounty, index) => {
+                return (
+                    <Bounty
+                        key={index}
+                        index={index}
+                        bounty={bounty}
+                        blockTimestamp={blockTimestamp!}
+                    />
+                );
+            })}
+        </SimpleGrid>
+    );
 };
 
 const Home: FC = () => {

@@ -50,13 +50,17 @@ const FileDropText: FC<FileDropTextParams> = ({ filename }) => {
 const CreateBountyPage: FC = () => {
     const theme = useMantineTheme();
 
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [imgLink, setImgLink] = useState("");
-    const [filename, setFilename] = useState<string | undefined>();
-
+    const [name, setName] = useState<string>();
+    const [description, setDescription] = useState<string>();
+    const [imgLink, setImgLink] = useState<string>();
+    const [filename, setFilename] = useState<string>();
     const [minDeadline, setMinDeadline] = useState<Date>();
+    const [deadline, setDeadline] = useState<Date>();
+    const [codeZipBinary, setCodeZipBinary] = useState<string>();
+    const [codeZipPath, setCodeZipPath] = useState<string>();
+
     const blockTimestamp = useBlockTimestamp();
+
     useEffect(() => {
         if (blockTimestamp === undefined) {
             setMinDeadline(undefined);
@@ -66,35 +70,30 @@ const CreateBountyPage: FC = () => {
             setMinDeadline(blockDate);
         }
     }, [blockTimestamp]);
-    const [deadline, setDeadline] = useState<Date | null>(null);
 
-    const [appFile, setAppFile] = useState<string | null>(null);
-    const [appPath, setAppPath] = useState<string | null>(null);
+    const readFile = (fileWithPath: FileWithPath) => {
+        // prettier-ignore
+        fileWithPath
+            .arrayBuffer()
+            .then((buf) => {
+                // prettier-ignore
+                const str = Array.from(new Uint8Array(buf))
+                    .map((b) => String.fromCharCode(b))
+                    .join("");
 
-    const readFile = (f: FileWithPath | null) => {
-        if (f) {
-            f.arrayBuffer().then((buf) => {
-                //setAppFile(bytesToHex(new Uint8Array(buf)));
-                setAppFile(
-                    btoa(
-                        Array.from(new Uint8Array(buf))
-                            .map((b) => String.fromCharCode(b))
-                            .join(""),
-                    ),
-                );
-                setFilename(f.name);
+                setCodeZipBinary(btoa(str));
+                setFilename(fileWithPath.name);
             });
-        }
     };
 
-    const bounty = {
-        name,
-        description,
+    const bounty: CreateAppBounty = {
+        name: name ?? "",
+        description: description ?? "",
         imgLink,
-        deadline: deadline ? deadline.getTime() / 1000 : null,
-        codeZipBinary: appFile,
-        codeZipPath: appPath,
-    } as CreateAppBounty;
+        deadline: (deadline ?? new Date()).getTime() / 1000,
+        codeZipBinary,
+        codeZipPath,
+    };
 
     const config = usePrepareCreateBounty(bounty);
 
@@ -102,10 +101,6 @@ const CreateBountyPage: FC = () => {
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
     });
-
-    function submit() {
-        if (write) write();
-    }
 
     return (
         <Center>
@@ -142,7 +137,11 @@ const CreateBountyPage: FC = () => {
                         label="Deadline"
                         value={deadline}
                         minDate={minDeadline}
-                        onChange={(e) => setDeadline(e)}
+                        onChange={(e) => {
+                            if (e !== null) {
+                                setDeadline(e);
+                            }
+                        }}
                     />
 
                     <Tabs defaultValue="file">
@@ -153,7 +152,12 @@ const CreateBountyPage: FC = () => {
 
                         <Tabs.Panel value="file">
                             <FileDrop
-                                onDrop={(files) => readFile(files[0])}
+                                onDrop={(files) => {
+                                    const file = files.at(0);
+                                    if (file !== undefined) {
+                                        readFile(file);
+                                    }
+                                }}
                                 accept={{
                                     "application/octet-stream": [".tar.xz"],
                                 }}
@@ -165,9 +169,9 @@ const CreateBountyPage: FC = () => {
                         <Tabs.Panel value="path">
                             <TextInput
                                 size="lg"
-                                value={appPath ?? ""}
+                                value={codeZipPath}
                                 placeholder="/bounties/some-built-in-bounty.tar.xz"
-                                onChange={(e) => setAppPath(e.target.value)}
+                                onChange={(e) => setCodeZipPath(e.target.value)}
                             />
                         </Tabs.Panel>
                     </Tabs>
@@ -176,15 +180,17 @@ const CreateBountyPage: FC = () => {
                         <Button
                             size="lg"
                             type="submit"
+                            onClick={() => write && write()}
                             disabled={
                                 !write ||
                                 isLoading ||
-                                (!appFile && !appPath) ||
+                                (!codeZipBinary && !codeZipPath) ||
                                 !deadline ||
+                                !name ||
                                 name.trim().length === 0 ||
+                                !description ||
                                 description.trim().length === 0
                             }
-                            onClick={submit}
                         >
                             {isLoading ? "Creating Bounty..." : "Create Bounty"}
                         </Button>

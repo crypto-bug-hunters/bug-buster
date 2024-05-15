@@ -18,8 +18,8 @@ import { usePrepareAddSponsorship } from "../../../../hooks/bug-buster";
 import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 
-import { BountyParams, InvalidBountyId } from "../utils.tsx";
-import { GetBounty } from "../../../../model/reader";
+import { BountyParams } from "../utils.tsx";
+import { useBounty } from "../../../../model/reader";
 
 const toWei = (input: string | number) => {
     if (typeof input == "number") {
@@ -51,26 +51,29 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         hash: data?.hash,
     });
 
-    if (isNaN(bountyIndex)) {
-        return <InvalidBountyId />;
-    }
-
     function wrapSetter(setter: any) {
         return (e: any) => setter(e.target.value);
     }
 
-    const result = GetBounty(bountyIndex);
+    const bountyResult = useBounty(bountyIndex);
+
+    switch (bountyResult.kind) {
+        case "loading":
+            return <Center>Loading bounty info...</Center>;
+        case "error":
+            return <Center>{bountyResult.message}</Center>;
+    }
+
+    const bounty = bountyResult.response;
 
     return (
         <Center>
             <Box p={20} mt={50} bg={theme.colors.dark[7]}>
                 <Stack w={600}>
                     <Title>Sponsor bounty</Title>
-                    {result.kind == "success" && (
-                        <Text size="lg" fw={700} c="dimmed">
-                            {result.response.name}
-                        </Text>
-                    )}
+                    <Text size="lg" fw={700} c="dimmed">
+                        {bounty.name}
+                    </Text>
                     <TextInput
                         withAsterisk
                         size="lg"
