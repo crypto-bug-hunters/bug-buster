@@ -109,7 +109,7 @@ COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/bwrapbox/seccomp-filter.bpf
 
 RUN useradd --home-dir /bounty bounty
-RUN mkdir -p /bounties /bounty
+RUN mkdir -p /bounties /bounties/examples /bounty
 RUN chown bounty:bounty /bounty
 
 ENV PATH="/opt/cartesi/bin:${PATH}"
@@ -118,6 +118,7 @@ WORKDIR /opt/cartesi/dapp
 COPY --from=build-stage /opt/build/dapp .
 COPY --chmod=755 skel/cartesi-init /usr/sbin/cartesi-init
 COPY --chmod=755 skel/bounty-run /usr/bin/bounty-run
+COPY --chmod=644 tests/bounties/**/*.tar.xz /bounties/examples
 
 ENTRYPOINT ["rollup-init"]
 CMD ["/opt/cartesi/dapp/dapp"]
