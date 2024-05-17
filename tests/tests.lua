@@ -85,14 +85,14 @@ machine:run_until_yield_or_halt()
 local timestamp = 1697567000
 local first_bounty_final_state
 local second_bounty_final_state
+local third_bounty_final_state
 
 describe("tests on Lua bounty", function()
     local bounty_code = "tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
     local bounty_valid_exploit = readfile("tests/bounties/lua-bounty/exploit-lua-5.4.3.lua")
     local bounty_invalid_exploit = [[print 'hello world']]
     local bounty_index = 0
-    local bounty_started = timestamp
-    local bounty_deadline = bounty_started + 3600
+    local bounty_deadline = timestamp + 3600
 
     it("should relay dapp address", function()
         local res = machine:advance_state({
@@ -121,17 +121,12 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -153,15 +148,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -172,7 +163,6 @@ describe("tests on Lua bounty", function()
                             value = "1000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -194,15 +184,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -221,7 +207,6 @@ describe("tests on Lua bounty", function()
                             value = "2000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -296,15 +281,11 @@ describe("tests on Lua bounty", function()
         expect.equal(res.state, {
             bounties = {
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "Lua 5.4.3 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash a sandboxed Lua 5.4.3 script",
                     exploit = null,
-                    inputIndex = 1,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -323,7 +304,6 @@ describe("tests on Lua bounty", function()
                             value = "2000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = true,
                 },
             },
@@ -452,7 +432,6 @@ describe("tests on SQLite bounty", function()
     local sqlite33202_bounty_code = "tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
     local bounty_valid_exploit = readfile("tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql")
     local bounty_index = 1
-    local bounty_started = timestamp
     local bounty_deadline = timestamp + 7200
 
     it("should create bounty", function()
@@ -472,17 +451,12 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
-                    inputIndex = 5,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -505,15 +479,11 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
-                    inputIndex = 5,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -524,7 +494,6 @@ describe("tests on SQLite bounty", function()
                             value = "4000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -547,15 +516,11 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = null,
-                    inputIndex = 5,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -566,7 +531,6 @@ describe("tests on SQLite bounty", function()
                             value = "9000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -591,11 +555,6 @@ describe("tests on SQLite bounty", function()
             bounties = {
                 first_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "SQLite3 3.32.2 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash SQLite 3.32.2 with a SQL query",
                     exploit = {
@@ -606,7 +565,8 @@ describe("tests on SQLite bounty", function()
                             name = "Hacker1",
                         },
                     },
-                    inputIndex = 5,
+                    imgLink = "",
+                    name = "SQLite3 3.32.2 Bounty",
                     sponsorships = {
                         {
                             sponsor = {
@@ -617,7 +577,6 @@ describe("tests on SQLite bounty", function()
                             value = "9000",
                         },
                     },
-                    started = bounty_started,
                     withdrawn = true,
                 },
             },
@@ -679,7 +638,6 @@ describe("tests on BusyBox bounty", function()
     local sqlite33202_bounty_code = "tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
     local bounty_valid_exploit = readfile("tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh")
     local bounty_index = 2
-    local bounty_started = timestamp
     local bounty_deadline = timestamp + 7200
 
     it("should create bounty", function()
@@ -700,17 +658,12 @@ describe("tests on BusyBox bounty", function()
                 first_bounty_final_state,
                 second_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "BusyBox 1.36.1 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash BusyBox 1.36.1",
                     exploit = null,
-                    inputIndex = 9,
+                    imgLink = "",
+                    name = "BusyBox 1.36.1 Bounty",
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = false,
                 },
             },
@@ -736,11 +689,6 @@ describe("tests on BusyBox bounty", function()
                 first_bounty_final_state,
                 second_bounty_final_state,
                 {
-                    developer = {
-                        address = DEVELOPER1_WALLET,
-                        imgLink = "",
-                        name = "BusyBox 1.36.1 Bounty",
-                    },
                     deadline = bounty_deadline,
                     description = "Try to crash BusyBox 1.36.1",
                     exploit = {
@@ -751,13 +699,14 @@ describe("tests on BusyBox bounty", function()
                             name = "Hacker1",
                         },
                     },
-                    inputIndex = 9,
+                    imgLink = "",
+                    name = "BusyBox 1.36.1 Bounty",
                     sponsorships = null,
-                    started = bounty_started,
                     withdrawn = true,
                 },
             },
         })
+        third_bounty_final_state = res.state.bounties[bounty_index + 1]
         expect.equal(res.vouchers, {
             {
                 address = fromhex(config.DAPP_ADDRESS),
@@ -767,6 +716,133 @@ describe("tests on BusyBox bounty", function()
                 }),
             },
         })
+    end)
+end)
+
+describe("tests on (linked) Lua bounty", function()
+    local bounty_path = "/bounties/0.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/lua-bounty/exploit-lua-5.4.3.lua")
+    local bounty_invalid_exploit = [[print 'hello world']]
+    local bounty_index = 3
+    local bounty_deadline = timestamp + 3600
+
+    it("should create bounty from built-in file", function()
+        local res = advance_input(machine, {
+            sender = DEVELOPER1_WALLET,
+            kind = "CreateAppBounty",
+            timestamp = timestamp,
+            data = {
+                name = "Lua 5.4.3 Bounty (linked)",
+                description = "Try to crash a sandboxed Lua 5.4.3 script, again!",
+                deadline = bounty_deadline,
+                codeZipPath = bounty_path,
+            },
+        })
+        expect.equal(res.status, "accepted")
+        expect.equal(res.state, {
+            bounties = {
+                first_bounty_final_state,
+                second_bounty_final_state,
+                third_bounty_final_state,
+                {
+                    deadline = bounty_deadline,
+                    description = "Try to crash a sandboxed Lua 5.4.3 script, again!",
+                    exploit = null,
+                    imgLink = "",
+                    name = "Lua 5.4.3 Bounty (linked)",
+                    sponsorships = null,
+                    withdrawn = false,
+                },
+            },
+        })
+    end)
+
+    -- advance to just before deadline
+    timestamp = bounty_deadline - 1
+
+    it("should accept inspect of a exploit that succeeded", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
+            },
+        })
+        expect.equal(res.status, "accepted")
+    end)
+
+    it("should reject inspect of a exploit that failed", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_invalid_exploit),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject inspect of a bounty that consumes too much RAM", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[s=string.rep('x',4096) while true do s=s..s end]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject inspect of a bounty that consumes too much disk", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[
+s=string.rep('x',4096)
+f=assert(io.open('/tmp/test', 'wb'))
+while true do
+    s=s..s
+    assert(f:write(s))
+    assert(f:flush())
+end
+]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject inspect of a bounty that consumes too much CPU", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[while true do end]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject inspect of a bounty that waits IO for too long", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                name = "Hacker1",
+                bountyIndex = bounty_index,
+                exploit = tobase64([[io.stdin:read('a')]]),
+            },
+        })
+        expect.equal(res.status, "rejected")
     end)
 end)
 

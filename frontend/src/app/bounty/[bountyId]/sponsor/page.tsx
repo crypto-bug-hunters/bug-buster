@@ -68,7 +68,7 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
                     <Title>Sponsor bounty</Title>
                     {result.kind == "success" && (
                         <Text size="lg" fw={700} c="dimmed">
-                            {result.response.developer.name}
+                            {result.response.name}
                         </Text>
                     )}
                     <TextInput

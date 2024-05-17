@@ -36,14 +36,14 @@ const Bounty: FC<{
                         p={6}
                         fit="contain"
                         alt="Bounty Image"
-                        src={bounty.developer.imgLink}
+                        src={bounty.imgLink}
                         fallbackSrc="/static/default_app.webp"
                     />
                 </Card.Section>
                 <Box w={400} mt="md">
                     <Group mb={10}>
                         <Text truncate="end" fw={700} size="lg">
-                            {bounty.developer.name}
+                            {bounty.name}
                         </Text>
                         <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
                     </Group>

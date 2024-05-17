@@ -24,11 +24,10 @@ func (s *BugLessState) GetBounty(bountyIndex int) *AppBounty {
 }
 
 type AppBounty struct {
-	Developer    Profile        `json:"developer"`
+	Name         string         `json:"name"`
+	ImgLink      string         `json:"imgLink"` // optional
 	Description  string         `json:"description"`
-	Started      int64          `json:"started"`  // (unix timestamp)
 	Deadline     int64          `json:"deadline"` // (unix timestamp)
-	InputIndex   int            `json:"inputIndex"`
 	Sponsorships []*Sponsorship `json:"sponsorships"`
 	Exploit      *Exploit       `json:"exploit"`
 	Withdrawn    bool           `json:"withdrawn"`
@@ -78,11 +77,12 @@ type Input struct {
 }
 
 type CreateAppBounty struct {
-	Name          string `json:"name"`
-	ImgLink       string `json:"imgLink"`
-	Description   string `json:"description"`
-	Deadline      int64  `json:"deadline"`      // (unix timestamp)
-	CodeZipBinary string `json:"codeZipBinary"` // base64?
+	Name          string  `json:"name"`
+	ImgLink       string  `json:"imgLink"`
+	Description   string  `json:"description"`
+	Deadline      int64   `json:"deadline"`                // (unix timestamp)
+	CodeZipBinary *string `json:"codeZipBinary,omitempty"` // base64?
+	CodeZipPath   *string `json:"codeZipPath,omitempty"`
 }
 
 func (b *CreateAppBounty) Validate() error {
@@ -95,8 +95,8 @@ func (b *CreateAppBounty) Validate() error {
 	if b.Deadline == 0 {
 		return fmt.Errorf("empty CreateAppBounty.Deadline")
 	}
-	if b.CodeZipBinary == "" {
-		return fmt.Errorf("empty CreateAppBounty.CodeZipBinary")
+	if b.CodeZipBinary == nil && b.CodeZipPath == nil {
+		return fmt.Errorf("empty CreateAppBounty.{CodeZipBinary, CodeZipPath}")
 	}
 	return nil
 }
