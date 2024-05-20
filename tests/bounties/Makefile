@@ -7,7 +7,7 @@ all:
 
 	$(MAKE) -C busybox-bounty riscv64 VERSION=1.36.1
 
-	$(MAKE) -C solidity-bounty riscv64 VERSION=0.8.24
+	$(MAKE) -C solidity-bounty riscv64 VERSION=0.8.26
 
 clean:
 	$(MAKE) -C lua-bounty clean

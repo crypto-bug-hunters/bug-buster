@@ -1,5 +1,5 @@
 {
-    "name": "Solidity 0.8.24",
+    "name": "Solidity 0.8.26",
     "description": "Solidity is a programming language for implementing smart contracts on various blockchain platforms, most notably, Ethereum.",
-    "imgLink": "https://upload.wikimedia.org/wikipedia/commons/9/98/Solidity_logo.svg"
+    "imgLink": "https://docs.soliditylang.org/en/v0.8.26/_static/img/logo-dark.svg"
 }
