@@ -57,6 +57,7 @@ WORKDIR /opt/build
 # install bubblewrap (for sanboxing)
 ARG BUBBLEWRAP_VER=0.8.0
 RUN <<EOF
+set -eu
 apt-get install -y libseccomp-dev libcap-dev
 wget -O bubblewrap-${BUBBLEWRAP_VER}.tar.xz https://github.com/containers/bubblewrap/releases/download/v${BUBBLEWRAP_VER}/bubblewrap-${BUBBLEWRAP_VER}.tar.xz
 tar xf bubblewrap-${BUBBLEWRAP_VER}.tar.xz
@@ -69,6 +70,7 @@ EOF
 # install bwrapbox (for sanboxing)
 ARG BWRAPBOX_VER=0.2.1
 RUN <<EOF
+set -eu
 wget -O bwrapbox-${BWRAPBOX_VER}.tar.gz https://github.com/edubart/bwrapbox/archive/refs/tags/v${BWRAPBOX_VER}.tar.gz
 tar xf bwrapbox-${BWRAPBOX_VER}.tar.gz
 mv bwrapbox-${BWRAPBOX_VER} bwrapbox
@@ -88,7 +90,7 @@ ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
 ARG MACHINE_EMULATOR_TOOLS_DEB=machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
-set -e
+set -eu
 apt-get update
 apt-get upgrade -y
 apt-get install -y --no-install-recommends \
