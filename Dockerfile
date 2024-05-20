@@ -47,6 +47,7 @@ set -e
 apt update
 apt upgrade -y
 apt install -y --no-install-recommends \
+    lua5.4 \
     build-essential \
     ca-certificates \
     wget
@@ -68,13 +69,16 @@ make LDFLAGS=-static
 EOF
 
 # install bwrapbox (for sanboxing)
-ARG BWRAPBOX_VER=0.2.1
+ARG BWRAPBOX_VER=0.2.2
+COPY --chmod=466 bwrapbox/generate-rules.lua /tmp
 RUN <<EOF
 set -eu
 wget -O bwrapbox-${BWRAPBOX_VER}.tar.gz https://github.com/edubart/bwrapbox/archive/refs/tags/v${BWRAPBOX_VER}.tar.gz
 tar xf bwrapbox-${BWRAPBOX_VER}.tar.gz
 mv bwrapbox-${BWRAPBOX_VER} bwrapbox
 cd bwrapbox
+cp /tmp/generate-rules.lua .
+make generate-seccomp-rules seccomp-filter.bpf
 make LDFLAGS=-static
 EOF
 
