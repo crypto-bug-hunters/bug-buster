@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bugless/shared"
+	"bug-buster/shared"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -32,7 +32,7 @@ func stateRun(cmd *cobra.Command, args []string) {
 
 	state := findLastState(inputs)
 	if state == nil {
-		state = new(shared.BugLessState)
+		state = new(shared.BugBusterState)
 		state.Bounties = make([]*shared.AppBounty, 0)
 	}
 
@@ -43,7 +43,7 @@ func stateRun(cmd *cobra.Command, args []string) {
 	fmt.Println(string(stateJson))
 }
 
-func findLastState(inputs []readerclient.Input) *shared.BugLessState {
+func findLastState(inputs []readerclient.Input) *shared.BugBusterState {
 	for i := len(inputs) - 1; i >= 0; i-- {
 		if len(inputs[i].Reports) == 0 {
 			continue
@@ -60,7 +60,7 @@ func findLastState(inputs []readerclient.Input) *shared.BugLessState {
 			log.Fatal(err)
 		}
 
-		var state shared.BugLessState
+		var state shared.BugBusterState
 		err = json.Unmarshal(payload, &state)
 
 		if err != nil {

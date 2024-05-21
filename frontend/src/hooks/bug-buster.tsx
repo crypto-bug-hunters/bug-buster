@@ -16,7 +16,7 @@ function encodeInput(input: Input): Hex {
     return toHex(new TextEncoder().encode(JSON.stringify(input)));
 }
 
-function usePrepareBuglessInput(input: Input) {
+function usePrepareBugBusterInput(input: Input) {
     const { config } = usePrepareInputBoxAddInput({
         args: [getDAppAddress(), encodeInput(input)],
         enabled: true,
@@ -25,7 +25,7 @@ function usePrepareBuglessInput(input: Input) {
     return config;
 }
 
-function usePrepareBuglessETHDeposit(input: Input, valueInWei: bigint) {
+function usePrepareBugBusterETHDeposit(input: Input, valueInWei: bigint) {
     const { config } = usePrepareEtherPortalDepositEther({
         args: [getDAppAddress(), encodeInput(input)],
         value: valueInWei,
@@ -36,27 +36,27 @@ function usePrepareBuglessETHDeposit(input: Input, valueInWei: bigint) {
 }
 
 export function usePrepareCreateBounty(bounty: CreateAppBounty) {
-    return usePrepareBuglessInput({ kind: "CreateAppBounty", payload: bounty });
+    return usePrepareBugBusterInput({ kind: "CreateAppBounty", payload: bounty });
 }
 
 export function usePrepareAddSponsorship(
     sponsorship: AddSponsorship,
     value: bigint,
 ) {
-    return usePrepareBuglessETHDeposit(
+    return usePrepareBugBusterETHDeposit(
         { kind: "AddSponsorship", payload: sponsorship },
         value,
     );
 }
 
 export function usePrepareSendExploit(exploit: SendExploit) {
-    return usePrepareBuglessInput({ kind: "SendExploit", payload: exploit });
+    return usePrepareBugBusterInput({ kind: "SendExploit", payload: exploit });
 }
 
 export function usePrepareWithdrawSponsorship(
     withdrawSponsorship: WithdrawSponsorship,
 ) {
-    return usePrepareBuglessInput({
+    return usePrepareBugBusterInput({
         kind: "WithdrawSponsorship",
         payload: withdrawSponsorship,
     });

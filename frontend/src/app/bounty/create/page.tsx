@@ -21,7 +21,7 @@ import { FileWithPath } from "@mantine/dropzone";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 import { CreateAppBounty } from "../../../model/inputs";
-import { usePrepareCreateBounty } from "../../../hooks/bugless";
+import { usePrepareCreateBounty } from "../../../hooks/bug-buster";
 import { FileDrop } from "../../../components/filedrop";
 import { useBlockTimestamp } from "../../../hooks/block";
 

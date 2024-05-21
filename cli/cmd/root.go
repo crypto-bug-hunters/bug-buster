@@ -7,8 +7,8 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "bugless-cli",
-	Short: "Command-line tool for the BugLess DApp",
+	Use:   "bug-buster-cli",
+	Short: "Command-line tool for the Bug Buster App",
 }
 
 func Execute() {

@@ -12,11 +12,11 @@ import (
 // Application state
 //
 
-type BugLessState struct {
+type BugBusterState struct {
 	Bounties []*AppBounty `json:"bounties"`
 }
 
-func (s *BugLessState) GetBounty(bountyIndex int) *AppBounty {
+func (s *BugBusterState) GetBounty(bountyIndex int) *AppBounty {
 	if bountyIndex >= len(s.Bounties) {
 		return nil
 	}

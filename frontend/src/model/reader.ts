@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { CompletionStatus } from "./__generated__/graphql";
-import { BugLessState, AppBounty, Voucher } from "./state";
+import { BugBusterState, AppBounty, Voucher } from "./state";
 import { TaggedInput, SendExploit } from "./inputs";
 
 type ReaderLoadingResult = {
@@ -82,7 +82,7 @@ const GET_VOUCHERS = gql(/* GraphQL */ `
 `);
 
 // Get the latest bug less state from the GraphQL API polling the API every 500 ms.
-function GetLatestState(): ReaderResult<BugLessState> {
+function GetLatestState(): ReaderResult<BugBusterState> {
     const { data, loading, error } = useQuery(GET_LAST_REPORTS, {
         pollInterval: 500, // ms
     });
@@ -97,7 +97,7 @@ function GetLatestState(): ReaderResult<BugLessState> {
     let stateJson = null;
     if (stateBytes !== undefined) {
         let stateText = new TextDecoder().decode(stateBytes);
-        stateJson = JSON.parse(stateText) as BugLessState;
+        stateJson = JSON.parse(stateText) as BugBusterState;
     } else {
         stateJson = { bounties: [] };
     }
@@ -118,7 +118,7 @@ function GetBounty(bountyIndex: number): ReaderResult<AppBounty> {
     let stateJson = null;
     if (stateBytes !== undefined) {
         let stateText = new TextDecoder().decode(stateBytes);
-        stateJson = JSON.parse(stateText) as BugLessState;
+        stateJson = JSON.parse(stateText) as BugBusterState;
     }
     let bounty = stateJson?.bounties.at(bountyIndex);
     let exploit = bounty?.exploit;

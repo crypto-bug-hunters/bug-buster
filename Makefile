@@ -7,10 +7,10 @@ bounties:
 	$(MAKE) -C tests/bounties
 
 test-image:
-	docker build --tag bugless-test-image --file tests/Dockerfile --progress plain .
+	docker build --tag bug-buster-test-image --file tests/Dockerfile --progress plain .
 
 test:
-	docker run -v $(shell pwd):/mnt --rm -it bugless-test-image lua5.4 tests/tests.lua
+	docker run -v $(shell pwd):/mnt --rm -it bug-buster-test-image lua5.4 tests/tests.lua
 
 run:
 	cartesi run

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bugless/shared"
+	"bug-buster/shared"
 	"log"
 	"math/big"
 

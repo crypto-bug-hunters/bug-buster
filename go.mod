@@ -1,4 +1,4 @@
-module bugless
+module bug-buster
 
 go 1.22.0
 

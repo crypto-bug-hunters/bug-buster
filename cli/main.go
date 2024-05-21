@@ -1,6 +1,6 @@
 package main
 
-import "bugless/cli/cmd"
+import "bug-buster/cli/cmd"
 
 func main() {
 	cmd.Execute()

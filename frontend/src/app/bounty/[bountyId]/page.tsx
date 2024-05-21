@@ -16,7 +16,7 @@ import { formatEther } from "viem";
 
 import { GetBounty } from "../../../model/reader";
 import { Exploit, getBountyTotalPrize, AppBounty } from "../../../model/state";
-import { usePrepareWithdrawSponsorship } from "../../../hooks/bugless";
+import { usePrepareWithdrawSponsorship } from "../../../hooks/bug-buster";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, InvalidBountyId } from "./utils";

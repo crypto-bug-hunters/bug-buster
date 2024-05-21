@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bugless/shared"
+	"bug-buster/shared"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -15,11 +15,11 @@ import (
 	"github.com/rollmelette/rollmelette"
 )
 
-type BugLessContract struct {
-	state shared.BugLessState
+type BugBusterContract struct {
+	state shared.BugBusterState
 }
 
-func (c *BugLessContract) Advance(
+func (c *BugBusterContract) Advance(
 	env rollmelette.Env,
 	metadata rollmelette.Metadata,
 	deposit rollmelette.Deposit,
@@ -260,7 +260,7 @@ func (c *BugLessContract) Advance(
 	return nil
 }
 
-func (c *BugLessContract) Inspect(env rollmelette.EnvInspector, payload []byte) error {
+func (c *BugBusterContract) Inspect(env rollmelette.EnvInspector, payload []byte) error {
 	var input shared.TestExploit
 	err := json.Unmarshal(payload, &input)
 	if err != nil {
@@ -358,7 +358,7 @@ func RunExploit(env rollmelette.EnvInspector, bountyIndex int, exploit string, c
 func main() {
 	ctx := context.Background()
 	opts := rollmelette.NewRunOpts()
-	app := new(BugLessContract)
+	app := new(BugBusterContract)
 	err := rollmelette.Run(ctx, opts, app)
 	if err != nil {
 		slog.Error("application error", "error", err)
