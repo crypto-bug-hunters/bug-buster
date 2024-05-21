@@ -37,7 +37,7 @@ func bountyRun(cmd *cobra.Command, args []string) {
 		ImgLink:       bountyImgLink,
 		Description:   bountyDescription,
 		Deadline:      deadline,
-		CodeZipBinary: code,
+		CodeZipBinary: &code,
 	}
 	sendInput(shared.CreateAppBountyInputKind, payload)
 }
