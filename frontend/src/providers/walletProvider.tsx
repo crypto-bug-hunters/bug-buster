@@ -70,9 +70,9 @@ const wagmiConfig = defaultWagmiConfig({
     chains,
     projectId,
     metadata: {
-        name: "Bugless",
+        name: "Bug Buster",
         description: "Trustless bug bounties",
-        url: "https://github.com/crypto-bug-hunters/bugless",
+        url: "https://github.com/crypto-bug-hunters/bug-buster",
     },
 });
 

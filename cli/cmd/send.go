@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bugless/shared"
+	"bug-buster/shared"
 	"context"
 	"encoding/json"
 	"log"

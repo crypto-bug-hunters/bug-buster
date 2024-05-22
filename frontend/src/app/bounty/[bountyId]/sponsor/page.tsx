@@ -14,7 +14,7 @@ import {
 import { FC, useState } from "react";
 import { parseEther } from "viem";
 import { AddSponsorship } from "../../../../model/inputs";
-import { usePrepareAddSponsorship } from "../../../../hooks/bugless";
+import { usePrepareAddSponsorship } from "../../../../hooks/bug-buster";
 import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 

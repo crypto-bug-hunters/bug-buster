@@ -1,4 +1,4 @@
-export interface BugLessState {
+export interface BugBusterState {
     bounties: AppBounty[];
 }
 

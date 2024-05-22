@@ -30,7 +30,7 @@
         <mxCell id="6vjLHSTCWr16vqxmGMeG-2" value="Hacker" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
           <mxGeometry x="80" y="280" width="30" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="6vjLHSTCWr16vqxmGMeG-7" value="Bugless" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+        <mxCell id="6vjLHSTCWr16vqxmGMeG-7" value="Bug Buster" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="270" y="190" width="80" height="80" as="geometry" />
         </mxCell>
         <mxCell id="6vjLHSTCWr16vqxmGMeG-32" value="&lt;div&gt;# code/start.sh&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;lua start.lua&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;# code/start.lua&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;_G.os = nil&lt;/div&gt;&lt;div&gt;input = io.read()&lt;/div&gt;&lt;div&gt;exec(input)&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;align=left;fontFamily=Courier New;" parent="1" vertex="1">
@@ -95,7 +95,7 @@
             <mxPoint x="28" y="-10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="6vjLHSTCWr16vqxmGMeG-71" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Bugless State&lt;br&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&amp;nbsp;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;" parent="1" vertex="1">
+        <mxCell id="6vjLHSTCWr16vqxmGMeG-71" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Bug Buster State&lt;br&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&amp;nbsp;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="40" y="520" width="160" height="110" as="geometry" />
         </mxCell>
         <mxCell id="hhckV3p7YOsD2mqn5yDh-1" value="Atores" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=30;" vertex="1" parent="1">

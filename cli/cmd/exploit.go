@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bugless/shared"
+	"bug-buster/shared"
 
 	"github.com/spf13/cobra"
 )

@@ -15,7 +15,7 @@ Find bugs in Lua, a powerful, efficient, lightweight, embeddable scripting langu
 Submitted Lua code will run inside a sanboxed Lua environment, to win the bounty the code must crash its interpreter or escape the sandbox and exit with segmentation fault status (code 139).
 
 The source code of the bounty can be inspected at:
-https://github.com/crypto-bug-hunters/bugless/tree/main/tests/bounties/lua-bounty
+https://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/lua-bounty
 END
 )
 
@@ -26,7 +26,7 @@ Find bugs in SQLite, the most used database engine in the world!
 Submitted SQL code will run inside a SQLite safe shell open on an empty database, to win the bounty the SQL code must crash the SQLite shell.
 
 The source code of the bounty can be inspected at:
-https://github.com/crypto-bug-hunters/bugless/tree/main/tests/bounties/sqlite-bounty
+https://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/sqlite-bounty
 END
 )
 
@@ -39,7 +39,7 @@ Did you know it is one of the most downloaded software in Docker Hub, with more 
 Submitted shell code will run inside a BusyBox with only ash utility enabled, to win this bounty the shell code must crash it.
 
 The source code of the bounty can be inspected at:
-https://github.com/crypto-bug-hunters/bugless/tree/main/tests/bounties/busybox-bounty
+https://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/busybox-bounty
 END
 )
 
