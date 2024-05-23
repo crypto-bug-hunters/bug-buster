@@ -38,21 +38,7 @@ To build the slides, run the following command:
 make slides
 ```
 
-## Back-end
-
-### Building the machine image
-
-```sh
-cartesi build
-```
-
-### Running the Cartesi Node
-
-```
-cartesi run
-```
-
-## Building bounties
+## Building example bounties
 
 Before testing, you need to compile bounties binaries.
 
@@ -76,6 +62,20 @@ Along with following exploits:
 ./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh
 ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
 ./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql
+```
+
+## Back-end
+
+### Building the machine image
+
+```sh
+cartesi build
+```
+
+### Running the Cartesi Node
+
+```
+cartesi run
 ```
 
 ## Tests
