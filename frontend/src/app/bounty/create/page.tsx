@@ -2,11 +2,10 @@
 import { FC, useState, useEffect } from "react";
 
 import {
+    Anchor,
     Box,
     Button,
     Center,
-    Code,
-    Group,
     Stack,
     Tabs,
     Title,
@@ -17,82 +16,54 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { FileWithPath } from "@mantine/dropzone";
+import { isNotEmpty, useForm } from "@mantine/form";
 
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 import { CreateAppBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bug-buster";
-import { FileDrop } from "../../../components/filedrop";
 import { useBlockTimestamp } from "../../../hooks/block";
+import { DISCORD_CHANNEL_URL, X_ACCOUNT_URL } from "../../../utils/links";
 
-interface FileDropTextParams {
-    filename?: string;
+interface CreateBountyFormValues {
+    name: string;
+    description: string;
+    imgLink?: string;
+    deadline?: Date;
+    codeZipBinary?: string;
+    codeZipPath?: string;
 }
 
-const FileDropText: FC<FileDropTextParams> = ({ filename }) => {
-    if (filename) {
-        return (
-            <Box>
-                <Text size="lg">Bundle uploaded!</Text>
-                <Code>{filename}</Code>
-            </Box>
-        );
-    } else {
-        return (
-            <Box>
-                <Text size="lg">Drop your bounty bundle here!</Text>
-                <Code>*.tar.xz</Code>
-            </Box>
-        );
-    }
-};
-
-const CreateBountyPage: FC = () => {
-    const theme = useMantineTheme();
-
-    const [name, setName] = useState<string>();
-    const [description, setDescription] = useState<string>();
-    const [imgLink, setImgLink] = useState<string>();
-    const [filename, setFilename] = useState<string>();
+const CreateBountyForm: FC = () => {
     const [minDeadline, setMinDeadline] = useState<Date>();
-    const [deadline, setDeadline] = useState<Date>();
-    const [codeZipBinary, setCodeZipBinary] = useState<string>();
-    const [codeZipPath, setCodeZipPath] = useState<string>();
-
     const blockTimestamp = useBlockTimestamp();
 
     useEffect(() => {
         if (blockTimestamp === undefined) {
             setMinDeadline(undefined);
         } else {
-            const blockDate = new Date(Number(blockTimestamp) * 1000);
+            const blockDate = new Date(Number(blockTimestamp * 1000n));
             blockDate.setDate(blockDate.getDate() + 1);
             setMinDeadline(blockDate);
         }
     }, [blockTimestamp]);
 
-    const readFile = (fileWithPath: FileWithPath) => {
-        // prettier-ignore
-        fileWithPath
-            .arrayBuffer()
-            .then((buf) => {
-                // prettier-ignore
-                const str = Array.from(new Uint8Array(buf))
-                    .map((b) => String.fromCharCode(b))
-                    .join("");
-
-                setCodeZipBinary(btoa(str));
-                setFilename(fileWithPath.name);
-            });
-    };
+    const form = useForm<CreateBountyFormValues>({
+        initialValues: {
+            name: "",
+            description: "",
+        },
+        validate: {
+            name: isNotEmpty("A name is required"),
+            description: isNotEmpty("A description is required"),
+            deadline: isNotEmpty("A deadline is required"),
+            codeZipPath: isNotEmpty("A code path is required"),
+        },
+    });
 
     const bounty: CreateAppBounty = {
-        name: name ?? "",
-        description: description ?? "",
-        imgLink,
-        deadline: (deadline ?? new Date()).getTime() / 1000,
-        codeZipBinary,
-        codeZipPath,
+        ...form.values,
+        deadline: (form.values.deadline ?? new Date()).getTime() / 1000,
     };
 
     const config = usePrepareCreateBounty(bounty);
@@ -103,109 +74,84 @@ const CreateBountyPage: FC = () => {
     });
 
     return (
+        <form onSubmit={form.onSubmit(() => write && write())}>
+            <Stack w={800}>
+                <Title>Create bounty</Title>
+                <TextInput
+                    withAsterisk
+                    size="lg"
+                    label="Name"
+                    placeholder="Hello World 1.0.0"
+                    {...form.getInputProps("name")}
+                />
+                <Textarea
+                    withAsterisk
+                    size="lg"
+                    label="Description"
+                    placeholder="Describe the application, exploit format, assertion script, etc"
+                    {...form.getInputProps("description")}
+                />
+                <TextInput
+                    size="lg"
+                    label="Image URL"
+                    placeholder="https://"
+                    {...form.getInputProps("imgLink")}
+                />
+                <DateInput
+                    withAsterisk
+                    size="lg"
+                    label="Deadline"
+                    minDate={minDeadline}
+                    {...form.getInputProps("deadline")}
+                />
+                <Tabs defaultValue="path">
+                    <Tabs.List>
+                        <Tabs.Tab value="path">Built-in</Tabs.Tab>
+                        <Tabs.Tab value="file">Upload</Tabs.Tab>
+                    </Tabs.List>
+                    <Tabs.Panel value="file">
+                        <Text m="md">
+                            Due to base layer constraints, only built-in
+                            bounties are well supported.
+                            <br />
+                            If you would like to have your bounty available on
+                            Bug Buster, please send us a message on our{" "}
+                            <Anchor href={DISCORD_CHANNEL_URL}>
+                                Discord channel
+                            </Anchor>{" "}
+                            or to our{" "}
+                            <Anchor href={X_ACCOUNT_URL} underline="never">
+                                X account
+                            </Anchor>
+                            .
+                        </Text>
+                    </Tabs.Panel>
+                    <Tabs.Panel value="path">
+                        <TextInput
+                            size="lg"
+                            placeholder="/bounties/some-built-in-bounty.tar.xz"
+                            {...form.getInputProps("codeZipPath")}
+                        />
+                    </Tabs.Panel>
+                </Tabs>
+                <Button
+                    size="lg"
+                    type="submit"
+                    disabled={!write || isLoading || isSuccess}
+                >
+                    {isSuccess ? "Sent!" : isLoading ? "Sending..." : "Send"}
+                </Button>
+            </Stack>
+        </form>
+    );
+};
+
+const CreateBountyPage: FC = () => {
+    const theme = useMantineTheme();
+    return (
         <Center>
             <Box p={20} mt={50} bg={theme.colors.dark[7]}>
-                <Stack w={600}>
-                    <Title>Submit a bounty</Title>
-                    <TextInput
-                        withAsterisk
-                        size="lg"
-                        label="Title"
-                        value={name}
-                        placeholder="Hello World 1.0.0"
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <Textarea
-                        withAsterisk
-                        size="lg"
-                        label="Description"
-                        value={description}
-                        placeholder="Describe your application in a few words"
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                    <TextInput
-                        size="lg"
-                        label="Image URL"
-                        value={imgLink}
-                        placeholder="https://"
-                        onChange={(e) => setImgLink(e.target.value)}
-                    />
-
-                    <DateInput
-                        withAsterisk
-                        size="lg"
-                        label="Deadline"
-                        value={deadline}
-                        minDate={minDeadline}
-                        onChange={(e) => {
-                            if (e !== null) {
-                                setDeadline(e);
-                            }
-                        }}
-                    />
-
-                    <Tabs defaultValue="file">
-                        <Tabs.List>
-                            <Tabs.Tab value="file">Upload</Tabs.Tab>
-                            <Tabs.Tab value="path">Built-in</Tabs.Tab>
-                        </Tabs.List>
-
-                        <Tabs.Panel value="file">
-                            <FileDrop
-                                onDrop={(files) => {
-                                    const file = files.at(0);
-                                    if (file !== undefined) {
-                                        readFile(file);
-                                    }
-                                }}
-                                accept={{
-                                    "application/octet-stream": [".tar.xz"],
-                                }}
-                            >
-                                <FileDropText filename={filename} />
-                            </FileDrop>
-                        </Tabs.Panel>
-
-                        <Tabs.Panel value="path">
-                            <TextInput
-                                size="lg"
-                                value={codeZipPath}
-                                placeholder="/bounties/some-built-in-bounty.tar.xz"
-                                onChange={(e) => setCodeZipPath(e.target.value)}
-                            />
-                        </Tabs.Panel>
-                    </Tabs>
-
-                    <Group justify="center" mt="md">
-                        <Button
-                            size="lg"
-                            type="submit"
-                            onClick={() => write && write()}
-                            disabled={
-                                !write ||
-                                isLoading ||
-                                (!codeZipBinary && !codeZipPath) ||
-                                !deadline ||
-                                !name ||
-                                name.trim().length === 0 ||
-                                !description ||
-                                description.trim().length === 0
-                            }
-                        >
-                            {isLoading ? "Creating Bounty..." : "Create Bounty"}
-                        </Button>
-                    </Group>
-
-                    {isSuccess && (
-                        <>
-                            <Group justify="center">
-                                <Text size="lg">
-                                    Bounty transaction successful!
-                                </Text>
-                            </Group>
-                        </>
-                    )}
-                </Stack>
+                <CreateBountyForm />
             </Box>
         </Center>
     );
