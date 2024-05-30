@@ -6,10 +6,13 @@ import {
     ActionIcon,
     Divider,
     Tooltip,
+    Stack,
 } from "@mantine/core";
 import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { HasConnectedAccount } from "../components/hasConnectedAccount";
+import { withTimeout } from "viem/_types/utils/promise/withTimeout";
+import { colorResolver } from "@mantine/core/lib/core/Box/style-props/resolvers/color-resolver/color-resolver";
 
 export default function ConnectButton() {
     return <w3m-button />;
@@ -32,7 +35,17 @@ const VoucherNotification: FC = () => {
 
 export const Header: FC = () => {
     return (
-        <Group h="100%" px={20}>
+        <Stack
+        align="stretch"
+        justify="flex-start"
+        gap="xs"
+        >
+            <Group bg="gray">
+                <Center w="100%">
+                <Anchor href="/notification" underline="never">We are in Alpha stage, read more.</Anchor>
+                </Center>
+            </Group>
+            <Group h="100%" px={20}>
             <Center>
                 <Anchor href="/" underline="never">
                     <Title>🪲 Bug Buster</Title>
@@ -45,6 +58,7 @@ export const Header: FC = () => {
                 <Divider orientation="vertical" />
                 <ConnectButton />
             </Group>
-        </Group>
+            </Group>
+        </Stack>
     );
 };
