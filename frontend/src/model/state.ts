@@ -1,3 +1,5 @@
+import { Address, Hex } from "viem";
+
 export interface BugBusterState {
     bounties: AppBounty[];
 }
@@ -7,8 +9,8 @@ export interface AppBounty {
     imgLink?: string;
     description: string;
     deadline: number;
-    sponsorships?: Sponsorship[];
-    exploit?: Exploit;
+    sponsorships: Sponsorship[] | null;
+    exploit: Exploit | null;
     withdrawn: boolean;
 }
 
@@ -24,7 +26,7 @@ export const getBountyTotalPrize = (bounty: AppBounty) => {
 };
 
 export interface Profile {
-    address: string;
+    address: Address;
     name: string;
     imgLink?: string;
 }
@@ -32,30 +34,9 @@ export interface Profile {
 export interface Exploit {
     hacker: Profile;
     inputIndex: number;
-    code: string;
 }
 
 export interface Sponsorship {
     sponsor: Profile;
-    value: string; // number encoded as hex string
-}
-
-export interface Voucher {
-    index: number;
-    input: { index: number };
-    destination: string;
-    payload: string;
-    proof?: {
-        context: string;
-        validity: {
-            inputIndexWithinEpoch: number;
-            outputIndexWithinInput: number;
-            outputHashesRootHash: string;
-            vouchersEpochRootHash: string;
-            noticesEpochRootHash: string;
-            machineStateHash: string;
-            outputHashInOutputHashesSiblings: string[];
-            outputHashesInEpochSiblings: string[];
-        };
-    };
+    value: Hex;
 }

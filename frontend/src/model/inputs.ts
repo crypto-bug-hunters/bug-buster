@@ -1,3 +1,7 @@
+import { Hex } from "viem";
+
+import { CompletionStatus } from "./__generated__/graphql";
+
 export interface CreateAppBounty {
     name: string;
     description: string;
@@ -34,3 +38,8 @@ export type Input =
     | TaggedInput<"AddSponsorship", AddSponsorship>
     | TaggedInput<"SendExploit", SendExploit>
     | TaggedInput<"WithdrawSponsorship", WithdrawSponsorship>;
+
+export interface InputInfo {
+    payload: Hex;
+    status: CompletionStatus;
+}

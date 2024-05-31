@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import {
     Badge,
     Button,
@@ -11,129 +11,137 @@ import {
     Stack,
     Text,
 } from "@mantine/core";
-import { GetVouchers } from "../../model/reader";
-import { Voucher } from "../../model/state";
-import { decodePayload, getVouchersByUser } from "../../utils/voucher";
+import { useVouchers } from "../../model/reader";
+import { Voucher } from "../../utils/voucher";
+import { decodeVoucher, filterVouchersByReceiver } from "../../utils/voucher";
 import { useAccount, useContractRead, useContractWrite } from "wagmi";
 import { getDAppAddress } from "../../utils/address";
-import {
-    getExecuteVoucherABI,
-    getWasVoucherExecutedABI,
-} from "../../utils/voucher";
+import { voucherExecutionAbi, dummyProof } from "../../utils/voucher";
+import { Address, formatEther } from "viem";
 
 const WithdrawButton: FC<{ voucher: Voucher }> = ({ voucher }) => {
-    const [isExecuted, setIsExecuted] = useState(false);
-    const [isWaitingProof, setIsWaitingProof] = useState(true);
-
-    const { data, isLoading } = useContractRead({
+    const { data: wasExecuted, error: wasExecutedError } = useContractRead({
         address: getDAppAddress(),
-        abi: getWasVoucherExecutedABI(),
+        abi: voucherExecutionAbi,
         functionName: "wasVoucherExecuted",
-        args: [voucher.input.index, voucher.index],
+        args: [BigInt(voucher.input.index), BigInt(voucher.index)],
     });
 
-    const { write } = useContractWrite({
+    const proof = voucher.proof ?? dummyProof;
+    const { validity } = proof;
+    const { inputIndexWithinEpoch, outputIndexWithinInput } = validity;
+
+    const { write: executeVoucher } = useContractWrite({
         address: getDAppAddress(),
-        abi: getExecuteVoucherABI(),
+        abi: voucherExecutionAbi,
         functionName: "executeVoucher",
-        args: [voucher.destination, voucher.payload, voucher.proof],
+        args: [
+            voucher.destination,
+            voucher.payload,
+            {
+                ...proof,
+                validity: {
+                    ...validity,
+                    inputIndexWithinEpoch: BigInt(inputIndexWithinEpoch),
+                    outputIndexWithinInput: BigInt(outputIndexWithinInput),
+                },
+            },
+        ],
     });
 
-    useEffect(() => {
-        if (!!voucher.proof) {
-            setIsWaitingProof(false);
-
-            if (!isLoading && data == true) {
-                setIsExecuted(true);
-            } else {
-                setIsExecuted(false);
-            }
-        } else {
-            setIsWaitingProof(true);
-            setIsExecuted(false);
-        }
-    }, [voucher.proof, data, isLoading]);
-
-    if (isWaitingProof) {
-        return <Badge color="orange">Waiting proof...</Badge>;
-    } else {
-        if (isExecuted) {
-            return <Badge color="green">Executed!</Badge>;
-        } else {
-            return <Button onClick={() => write && write()}>Withdraw</Button>;
-        }
+    if (wasExecutedError !== null) {
+        return <Badge color="red">{wasExecutedError.message}</Badge>;
     }
+
+    if (wasExecuted === undefined) {
+        return <Badge color="orange">Checking execution status...</Badge>;
+    }
+
+    if (wasExecuted) {
+        return <Badge color="green">Executed!</Badge>;
+    }
+
+    if (voucher.proof === null) {
+        return <Badge color="orange">Waiting for proof...</Badge>;
+    }
+
+    if (executeVoucher === undefined) {
+        return <Badge color="orange">Preparing transaction...</Badge>;
+    }
+
+    return <Button onClick={() => executeVoucher()}>Execute</Button>;
 };
 
 const VoucherInfo: FC<{ voucher: Voucher }> = ({ voucher }) => {
-    const { voucherAmount } = decodePayload(voucher.payload) || {
-        voucherAmount: null,
-    };
+    const { value } = decodeVoucher(voucher);
 
     return (
         <Center>
             <Card w="400px" shadow="sm" radius="md" withBorder>
                 <Flex justify="space-between">
-                    <Text size="lg"> {voucherAmount} ETH</Text>
+                    <Text size="lg">{formatEther(value)} ETH</Text>
                     <WithdrawButton voucher={voucher} />
                 </Flex>
                 <Divider />
                 <Group pt="20px">
-                    <Text size="xs">Voucher:{voucher.index}</Text>
-                    <Text size="xs">/</Text>
-                    <Text size="xs">Input:{voucher.input.index}</Text>
+                    <Text size="xs">
+                        Input {voucher.input.index} / Voucher {voucher.index}
+                    </Text>
                 </Group>
             </Card>
         </Center>
     );
 };
 
-const VoucherList: FC<{ allVouchers: Voucher[]; connectedAccount: string }> = ({
-    allVouchers,
-    connectedAccount,
+const VoucherList: FC<{ vouchers: Voucher[]; account: Address }> = ({
+    vouchers,
+    account,
 }) => {
-    const accountVouchers = getVouchersByUser(allVouchers, connectedAccount);
+    const vouchersForAccount = filterVouchersByReceiver(vouchers, account);
+
+    if (vouchersForAccount.length == 0) {
+        return (
+            <Center mt="xl">
+                <Text size="xl">No vouchers available for {account}!</Text>
+            </Center>
+        );
+    }
+
     return (
         <Stack>
             <Center mt="xl">
-                {accountVouchers.length > 0 ? (
-                    <Text size="xl">Available vouchers:</Text>
-                ) : (
-                    <Text size="xl">No vouchers available!</Text>
-                )}
+                <Text size="xl">Available vouchers:</Text>
             </Center>
-            {accountVouchers.length > 0 &&
-                accountVouchers.map((voucher) => {
-                    const key = voucher.index + voucher.input.index;
-                    return <VoucherInfo key={key} voucher={voucher} />;
-                })}
+            {vouchersForAccount.map((voucher) => {
+                const key = `voucher_${voucher.input.index}_${voucher.index}`;
+                return <VoucherInfo key={key} voucher={voucher} />;
+            })}
         </Stack>
     );
 };
 
+const ErrorMessage: FC<{ message: string }> = ({ message }) => {
+    return <Center h="200px">{message}</Center>;
+};
+
 const VoucherHome: FC = () => {
-    const { address } = useAccount();
-    const result = GetVouchers();
-    switch (result.kind) {
+    const { address: account } = useAccount();
+    const vouchersResult = useVouchers();
+
+    switch (vouchersResult.kind) {
         case "loading":
-            return <Center h="200px">Checking for vouchers...</Center>;
+            return <ErrorMessage message={"Loading vouchers..."} />;
         case "error":
-            return <Center h="200px">{result.message}</Center>;
-        case "success":
-            const allVouchers = result.response;
-            {
-                if (allVouchers.length > 0) {
-                    return (
-                        <VoucherList
-                            allVouchers={allVouchers}
-                            connectedAccount={address || ""}
-                        />
-                    );
-                } else {
-                    return <Center h="200px">No vouchers available!</Center>;
-                }
-            }
+            return <ErrorMessage message={vouchersResult.message} />;
     }
+
+    const vouchers = vouchersResult.response;
+
+    if (vouchers.length == 0) {
+        return <ErrorMessage message={"No vouchers available!"} />;
+    }
+
+    return <VoucherList vouchers={vouchers} account={account ?? "0x"} />;
 };
 
 export default VoucherHome;

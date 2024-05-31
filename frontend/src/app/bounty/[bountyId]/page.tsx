@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 import {
     Button,
@@ -14,12 +14,18 @@ import {
 
 import { formatEther } from "viem";
 
-import { GetBounty } from "../../../model/reader";
-import { Exploit, getBountyTotalPrize, AppBounty } from "../../../model/state";
+import {
+    parseHexAsJson,
+    useBounty,
+    useInput,
+    isInput,
+} from "../../../model/reader";
+import { getBountyTotalPrize, AppBounty } from "../../../model/state";
+import { SendExploit } from "../../../model/inputs";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bug-buster";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
-import { BountyParams, InvalidBountyId } from "./utils";
+import { BountyParams } from "./utils";
 import { useBlockTimestamp } from "../../../hooks/block";
 import { BountyStatus } from "../../../model/bountyStatus";
 import { getBountyStatus } from "../../../utils/bounty";
@@ -105,14 +111,12 @@ const BountyBox: FC<{
     );
 };
 
-const ExploitCodeBox: FC<{
-    exploit: Exploit | undefined;
-}> = ({ exploit }) => {
-    if (!!exploit) {
+const ExploitCodeBox: FC<{ exploitCode?: string }> = ({ exploitCode }) => {
+    if (exploitCode !== undefined) {
         return (
             <Stack align="center">
                 <Title order={2}>Exploit Code</Title>
-                <Code block>{exploit.code}</Code>
+                <Code block>{exploitCode}</Code>
             </Stack>
         );
     }
@@ -148,29 +152,68 @@ const ParticipantsBox: FC<{
     );
 };
 
+const isSendExploit = (payload: any): payload is SendExploit => {
+    return payload !== undefined && "exploit" in payload;
+};
+
 const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const bountyIndex = Number(bountyId);
-    if (isNaN(bountyIndex)) {
-        return <InvalidBountyId />;
-    }
-    const result = GetBounty(bountyIndex);
-    switch (result.kind) {
+
+    const [exploitInputIndex, setExploitInputIndex] = useState<number>();
+    const [exploitCode, setExploitCode] = useState<string>();
+
+    const bountyResult = useBounty(bountyIndex);
+    const inputResult = useInput(exploitInputIndex);
+
+    useEffect(() => {
+        if (bountyResult.kind == "success") {
+            const bounty = bountyResult.response;
+            const exploit = bounty.exploit;
+            if (exploit !== null) {
+                setExploitInputIndex(exploit.inputIndex);
+            }
+        }
+    }, [bountyResult]);
+
+    useEffect(() => {
+        if (inputResult.kind == "success") {
+            const input = parseHexAsJson(inputResult.response.payload);
+            if (isInput(input)) {
+                const payload = input.payload;
+                if (isSendExploit(payload)) {
+                    setExploitCode(atob(payload.exploit));
+                }
+            }
+        }
+    }, [inputResult]);
+
+    switch (bountyResult.kind) {
         case "loading":
             return <Center>Loading bounty info...</Center>;
         case "error":
-            return <Center>{result.message}</Center>;
-        case "success":
-            const bounty = result.response;
-            return (
-                <Center p={20} mt={20}>
-                    <Stack w={800} gap={50} align="center" justify="center">
-                        <BountyBox bountyId={bountyId} bounty={bounty} />
-                        <ExploitCodeBox exploit={bounty.exploit} />
-                        <ParticipantsBox bounty={bounty} />
-                    </Stack>
-                </Center>
-            );
+            return <Center>{bountyResult.message}</Center>;
     }
+
+    if (exploitInputIndex !== undefined) {
+        switch (inputResult.kind) {
+            case "loading":
+                return <Center>Loading exploit input...</Center>;
+            case "error":
+                return <Center>{inputResult.message}</Center>;
+        }
+    }
+
+    const bounty = bountyResult.response;
+
+    return (
+        <Center p={20} mt={20}>
+            <Stack w={800} gap={50} align="center" justify="center">
+                <BountyBox bountyId={bountyId} bounty={bounty} />
+                <ExploitCodeBox exploitCode={exploitCode} />
+                <ParticipantsBox bounty={bounty} />
+            </Stack>
+        </Center>
+    );
 };
 
 export default BountyInfoPage;

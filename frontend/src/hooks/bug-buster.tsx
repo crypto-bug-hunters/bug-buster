@@ -36,7 +36,10 @@ function usePrepareBugBusterETHDeposit(input: Input, valueInWei: bigint) {
 }
 
 export function usePrepareCreateBounty(bounty: CreateAppBounty) {
-    return usePrepareBugBusterInput({ kind: "CreateAppBounty", payload: bounty });
+    return usePrepareBugBusterInput({
+        kind: "CreateAppBounty",
+        payload: bounty,
+    });
 }
 
 export function usePrepareAddSponsorship(
