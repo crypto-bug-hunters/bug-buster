@@ -11,8 +11,6 @@ import {
 import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { HasConnectedAccount } from "../components/hasConnectedAccount";
-import { withTimeout } from "viem/_types/utils/promise/withTimeout";
-import { colorResolver } from "@mantine/core/lib/core/Box/style-props/resolvers/color-resolver/color-resolver";
 
 export default function ConnectButton() {
     return <w3m-button />;
