@@ -25,7 +25,7 @@ const WordsOfCaution: FC = () => {
                 </Text>
                 <Text>
                     Nevertheless, this is an exciting phase of development and
-                    your feedback really matters! Together, let's build an
+                    your feedback really matters! Together, let&apos;s build an
                     innovative, safer, and user-friendly open-source bug bounty
                     platform for the Web3 industry.🌟
                 </Text>
