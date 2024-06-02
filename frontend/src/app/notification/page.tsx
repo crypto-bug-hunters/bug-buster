@@ -1,34 +1,33 @@
-import { Anchor, Center, Group, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Group, Stack, Text, Title } from "@mantine/core";
 import { FC } from "react";
 
 const WordsOfCaution: FC = () => {
     return (
         <Group justify="center">
             <Stack align="center" w="60%">
-                <Title mt="lg">
-                    🚨Words of caution to our early user adopters🚨
-                </Title>
+                <Title mt="lg">🚨 Considerations for early user adopters 🚨</Title>
                 <Text>
-                    Bug Buster is in alpha stage and this means that its
-                    development is heavily active thus changes (new features,
-                    improvements and fixes) can come anytime.
+                    Bug Buster is in alpha stage, which means its development is
+                    heavily active, and changes (such as fixes and improvements)
+                    can come at any time.
                 </Text>
                 <Text>
-                    In regards to security, althought Bug Buster is built on top
-                    of Cartesi Rollups SDK and its development has been done
-                    with care, we cannot guarantee that the platform is free of
-                    bugs or vulnerabilities at this stage.
+                    Regarding security, Bug Buster is built on top of the
+                    Cartesi Rollups SDK and developed with meticulous care and
+                    attention to detail. However, we cannot guarantee that the
+                    platform is entirely free of bugs or vulnerabilities at this
+                    stage.
                 </Text>
                 <Text>
                     To avoid any potential loss of funds, we recommend that you
-                    use the platform with scaution, and avoid using it with
-                    large amounts of funds.
+                    use the platform with caution, and avoid depositing large
+                    amounts of funds.
                 </Text>
                 <Text>
-                    Finally, this is an exciting phase of development and your
-                    feedback really matters! Let’s build together a innovative,
-                    safer and user-friendly open source bug bounty platform for
-                    the web3 industry? 🌟
+                    Nevertheless, this is an exciting phase of development and
+                    your feedback really matters! Together, let's build an
+                    innovative, safer, and user-friendly open-source bug bounty
+                    platform for the Web3 industry.🌟
                 </Text>
                 <Text>
                     Feel free to explore, ask questions, and provide feedback on
@@ -39,7 +38,7 @@ const WordsOfCaution: FC = () => {
                     >
                         Discord channel
                     </Anchor>{" "}
-                    or mention our{" "}
+                    or message us on our{" "}
                     <Anchor href="https://x.com/BugBusterApp" underline="never">
                         X account
                     </Anchor>
