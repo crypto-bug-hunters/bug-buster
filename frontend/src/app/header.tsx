@@ -33,29 +33,27 @@ const VoucherNotification: FC = () => {
 
 export const Header: FC = () => {
     return (
-        <Stack
-        align="stretch"
-        justify="flex-start"
-        gap="xs"
-        >
+        <Stack align="stretch" justify="flex-start" gap="xs">
             <Group bg="gray">
                 <Center w="100%">
-                <Anchor href="/notification" underline="never">We are in Alpha stage, read more.</Anchor>
+                    <Anchor href="/notification" underline="never">
+                        We are in Alpha stage, read more.
+                    </Anchor>
                 </Center>
             </Group>
             <Group h="100%" px={20}>
-            <Center>
-                <Anchor href="/" underline="never">
-                    <Title>🪲 Bug Buster</Title>
-                </Anchor>
-            </Center>
-            <Group justify="flex-end" style={{ flex: 1 }}>
-                <HasConnectedAccount>
-                    <VoucherNotification />
-                </HasConnectedAccount>
-                <Divider orientation="vertical" />
-                <ConnectButton />
-            </Group>
+                <Center>
+                    <Anchor href="/" underline="never">
+                        <Title>🪲 Bug Buster</Title>
+                    </Anchor>
+                </Center>
+                <Group justify="flex-end" style={{ flex: 1 }}>
+                    <HasConnectedAccount>
+                        <VoucherNotification />
+                    </HasConnectedAccount>
+                    <Divider orientation="vertical" />
+                    <ConnectButton />
+                </Group>
             </Group>
         </Stack>
     );
