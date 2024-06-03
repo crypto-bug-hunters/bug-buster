@@ -1,103 +1,42 @@
 "use client";
 import { FC } from "react";
 import {
-    Box,
     Button,
-    Center,
     Stack,
-    Image,
     Card,
-    Flex,
     Text,
-    Anchor,
-    SimpleGrid,
     Group,
 } from "@mantine/core";
 import Link from "next/link";
-import { useLatestState } from "../model/reader";
-import { AppBounty } from "../model/state";
-import { BountyStatusBadgeGroup } from "../components/bountyStatus";
-import { HasConnectedAccount } from "../components/hasConnectedAccount";
-import { useBlockTimestamp } from "../hooks/block";
-import { getBountyStatus } from "../utils/bounty";
-
-const Bounty: FC<{
-    index: number;
-    bounty: AppBounty;
-    blockTimestamp: bigint;
-}> = ({ index, bounty, blockTimestamp }) => {
-    const bountyStatus = getBountyStatus(bounty, blockTimestamp);
-    return (
-        <Anchor href={"/bounty/" + index} underline="never">
-            <Card>
-                <Card.Section>
-                    <Image
-                        h={200}
-                        p={6}
-                        fit="contain"
-                        alt="Bounty Image"
-                        src={bounty.imgLink}
-                        fallbackSrc="/static/default_app.webp"
-                    />
-                </Card.Section>
-                <Box w={400} mt="md">
-                    <Group mb={10}>
-                        <Text truncate="end" fw={700} size="lg">
-                            {bounty.name}
-                        </Text>
-                        <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
-                    </Group>
-                    <Text truncate="end" size="xs" c="dimmend">
-                        {bounty.description}
-                    </Text>
-                </Box>
-            </Card>
-        </Anchor>
-    );
-};
-
-const BountyList: FC = () => {
-    const stateResult = useLatestState();
-    const blockTimestamp = useBlockTimestamp();
-
-    switch (stateResult.kind) {
-        case "loading":
-            return <Center>Loading list of bounties...</Center>;
-        case "error":
-            return <Center>{stateResult.message}</Center>;
-    }
-
-    const state = stateResult.response;
-
-    return (
-        <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
-            {state.bounties.map((bounty, index) => {
-                return (
-                    <Bounty
-                        key={index}
-                        index={index}
-                        bounty={bounty}
-                        blockTimestamp={blockTimestamp!}
-                    />
-                );
-            })}
-        </SimpleGrid>
-    );
-};
 
 const Home: FC = () => {
     return (
-        <Stack>
-            <HasConnectedAccount>
-                <Flex mt={20} mr={20} justify="flex-end">
-                    <Link href={"/bounty/create"}>
-                        <Button size="lg">Submit bounty</Button>
+        <Stack align="center">
+            <Card mt={20} ml={20} mr={20} withBorder>
+
+                <Stack mt="md" mb="md" align="center">
+                    <Text size="40px">A Trustless</Text>
+                    <Text size="40px">Bug Bounty Platform</Text>
+                </Stack>
+
+                <Text c="dimmed" w={720} mb="md">
+                Bug Buster accepts software written in any major programming language.
+                Through a friendly web interface, hackers can test their exploits right 
+                on the browser, without even having to sign Web3 transactions! 
+                Once the hacker finds a valid exploit, they can finally send a transaction 
+                requesting the reward to be transferred to their account. 
+                All major wallets are supported!
+                </Text>
+
+                <Group justify="space-between">
+                    <Link href={"/explore"}>
+                        <Button size="lg">Explore Bounties</Button>
                     </Link>
-                </Flex>
-            </HasConnectedAccount>
-            <Center>
-                <BountyList />
-            </Center>
+                    <Link style={{ textDecoration: "none", color: "white"}} href={"https://github.com/crypto-bug-hunters/bugless/blob/main/README.md"}>
+                        <Text size="lg">Learn More</Text>
+                    </Link>
+                </Group>
+            </Card>
         </Stack>
     );
 };
