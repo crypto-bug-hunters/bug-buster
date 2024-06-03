@@ -6,6 +6,7 @@ import {
     ActionIcon,
     Divider,
     Tooltip,
+    Stack,
 } from "@mantine/core";
 import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -32,19 +33,28 @@ const VoucherNotification: FC = () => {
 
 export const Header: FC = () => {
     return (
-        <Group h="100%" px={20}>
-            <Center>
-                <Anchor href="/" underline="never">
-                    <Title>🪲 Bug Buster</Title>
-                </Anchor>
-            </Center>
-            <Group justify="flex-end" style={{ flex: 1 }}>
-                <HasConnectedAccount>
-                    <VoucherNotification />
-                </HasConnectedAccount>
-                <Divider orientation="vertical" />
-                <ConnectButton />
+        <Stack align="stretch" justify="flex-start" gap="5px">
+            <Group bg="gray">
+                <Center w="100%">
+                    <Anchor href="/notification" underline="never">
+                        We are in Alpha stage, read more.
+                    </Anchor>
+                </Center>
             </Group>
-        </Group>
+            <Group h="100%" px={20}>
+                <Group justify="flex-end">
+                    <Anchor href="/" underline="never">
+                        <Title>🪲 Bug Buster</Title>
+                    </Anchor>
+                </Group>
+                <Group justify="flex-end" style={{ flex: 1 }}>
+                    <HasConnectedAccount>
+                        <VoucherNotification />
+                    </HasConnectedAccount>
+                    <Divider orientation="vertical" />
+                    <ConnectButton />
+                </Group>
+            </Group>
+        </Stack>
     );
 };
