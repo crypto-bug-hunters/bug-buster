@@ -5,7 +5,9 @@ const WordsOfCaution: FC = () => {
     return (
         <Group justify="center">
             <Stack align="center" w="60%">
-                <Title mt="lg">🚨 Considerations for early user adopters 🚨</Title>
+                <Title mt="lg">
+                    🚨 Considerations for early user adopters 🚨
+                </Title>
                 <Text>
                     Bug Buster is in alpha stage, which means its development is
                     heavily active, and changes (such as fixes and improvements)
