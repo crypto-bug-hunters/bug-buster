@@ -15,7 +15,6 @@ import {
     Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { FileWithPath } from "@mantine/dropzone";
 import { isNotEmpty, useForm } from "@mantine/form";
 
 import { useInputBoxAddInput } from "../../../hooks/contracts";
