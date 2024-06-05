@@ -1,6 +1,6 @@
-import { toHex, Hex } from "viem";
+import { toHex, Hex, Address } from "viem";
 import {
-    usePrepareEtherPortalDepositEther,
+    usePrepareErc20PortalDepositErc20Tokens,
     usePrepareInputBoxAddInput,
 } from "./contracts";
 import {
@@ -17,25 +17,24 @@ function encodeAdvanceRequest(advanceRequest: AdvanceRequest): Hex {
 }
 
 function usePrepareBugBusterInput(advanceRequest: AdvanceRequest) {
-    const { config } = usePrepareInputBoxAddInput({
+    return usePrepareInputBoxAddInput({
         args: [getDAppAddress(), encodeAdvanceRequest(advanceRequest)],
-        enabled: true,
     });
-
-    return config;
 }
 
-function usePrepareBugBusterETHDeposit(
+function usePrepareBugBusterErc20Deposit(
     advanceRequest: AdvanceRequest,
-    valueInWei: bigint,
+    token: Address,
+    value: bigint,
 ) {
-    const { config } = usePrepareEtherPortalDepositEther({
-        args: [getDAppAddress(), encodeAdvanceRequest(advanceRequest)],
-        value: valueInWei,
-        enabled: true,
+    return usePrepareErc20PortalDepositErc20Tokens({
+        args: [
+            token,
+            getDAppAddress(),
+            value,
+            encodeAdvanceRequest(advanceRequest),
+        ],
     });
-
-    return config;
 }
 
 export function usePrepareCreateBounty(bounty: CreateAppBounty) {
@@ -47,10 +46,12 @@ export function usePrepareCreateBounty(bounty: CreateAppBounty) {
 
 export function usePrepareAddSponsorship(
     sponsorship: AddSponsorship,
+    token: Address,
     value: bigint,
 ) {
-    return usePrepareBugBusterETHDeposit(
+    return usePrepareBugBusterErc20Deposit(
         { kind: "AddSponsorship", payload: sponsorship },
+        token,
         value,
     );
 }

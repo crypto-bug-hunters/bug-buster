@@ -1,4 +1,4 @@
-import { Hex } from "viem";
+import { Address, Hex } from "viem";
 
 import { CompletionStatus } from "./__generated__/graphql";
 
@@ -9,6 +9,7 @@ export interface CreateAppBounty {
     deadline: number;
     codeZipBinary?: string;
     codeZipPath?: string;
+    token: Address;
 }
 
 export interface AddSponsorship {

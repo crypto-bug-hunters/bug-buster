@@ -9,6 +9,7 @@ export interface AppBounty {
     imgLink?: string;
     description: string;
     deadline: number;
+    token: Address;
     sponsorships: Sponsorship[] | null;
     exploit: Exploit | null;
     withdrawn: boolean;

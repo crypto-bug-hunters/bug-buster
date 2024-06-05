@@ -2,35 +2,34 @@
 import { FC, useState, useEffect } from "react";
 
 import {
-    Anchor,
     Box,
     Button,
     Center,
     Stack,
-    Tabs,
     Title,
     TextInput,
     Textarea,
     useMantineTheme,
-    Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { isNotEmpty, useForm } from "@mantine/form";
+import { isAddress, zeroAddress } from "viem";
 
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 import { CreateAppBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bug-buster";
 import { useBlockTimestamp } from "../../../hooks/block";
-import { DISCORD_CHANNEL_URL, X_ACCOUNT_URL } from "../../../utils/links";
+import { transactionStatus } from "../../../utils/transactionStatus";
 
 interface CreateBountyFormValues {
-    name: string;
-    description: string;
+    name?: string;
+    description?: string;
     imgLink?: string;
     deadline?: Date;
     codeZipBinary?: string;
     codeZipPath?: string;
+    token?: string;
 }
 
 const CreateBountyForm: FC = () => {
@@ -47,39 +46,71 @@ const CreateBountyForm: FC = () => {
         }
     }, [blockTimestamp]);
 
-    const form = useForm<CreateBountyFormValues>({
-        initialValues: {
-            name: "",
-            description: "",
+    const form = useForm({
+        initialValues: {} as CreateBountyFormValues,
+        transformValues: (values) => {
+            const { deadline, token } = values;
+            return {
+                ...values,
+                token:
+                    token !== undefined && isAddress(token) ? token : undefined,
+                deadline:
+                    deadline !== undefined
+                        ? deadline.getTime() / 1000
+                        : undefined,
+            };
         },
+        validateInputOnChange: true,
+        validateInputOnBlur: true,
         validate: {
             name: isNotEmpty("A name is required"),
             description: isNotEmpty("A description is required"),
             deadline: isNotEmpty("A deadline is required"),
             codeZipPath: isNotEmpty("A code path is required"),
+            token: (token) => {
+                if (token === undefined) {
+                    return "A token address is required";
+                } else {
+                    if (isAddress(token)) {
+                        return null;
+                    } else {
+                        return "Invalid token address";
+                    }
+                }
+            },
         },
     });
 
+    const { name, description, deadline, token } = form.getTransformedValues();
+
     const bounty: CreateAppBounty = {
         ...form.values,
-        deadline: (form.values.deadline ?? new Date()).getTime() / 1000,
+        name: name ?? "",
+        description: description ?? "",
+        deadline: deadline ?? 0,
+        token: token ?? zeroAddress,
     };
 
-    const config = usePrepareCreateBounty(bounty);
+    const addInputPrepare = usePrepareCreateBounty(bounty);
 
-    const { data, write } = useInputBoxAddInput(config);
-    const { isLoading, isSuccess } = useWaitForTransaction({
-        hash: data?.hash,
+    const addInputWrite = useInputBoxAddInput(addInputPrepare.config);
+
+    const addInputWait = useWaitForTransaction({
+        hash: addInputWrite.data?.hash,
     });
 
+    const { disabled: addInputDisabled, loading: addInputLoading } =
+        transactionStatus(addInputPrepare, addInputWrite, addInputWait);
+
     return (
-        <form onSubmit={form.onSubmit(() => write && write())}>
+        <form>
             <Stack w={800}>
                 <Title>Create bounty</Title>
                 <TextInput
                     withAsterisk
                     size="lg"
                     label="Name"
+                    description="If applicable, add the version"
                     placeholder="Hello World 1.0.0"
                     {...form.getInputProps("name")}
                 />
@@ -87,58 +118,50 @@ const CreateBountyForm: FC = () => {
                     withAsterisk
                     size="lg"
                     label="Description"
-                    placeholder="Describe the application, exploit format, assertion script, etc"
+                    description="Describe the application, exploit format, assertion script, etc"
                     {...form.getInputProps("description")}
                 />
                 <TextInput
                     size="lg"
                     label="Image URL"
+                    description="An image that visually represents your application (optional)"
                     placeholder="https://"
                     {...form.getInputProps("imgLink")}
+                />
+                <TextInput
+                    withAsterisk
+                    size="lg"
+                    label="Token address"
+                    description="Your bounty will be sponsored with this ERC-20 token"
+                    placeholder="0x"
+                    {...form.getInputProps("token")}
                 />
                 <DateInput
                     withAsterisk
                     size="lg"
                     label="Deadline"
+                    description="Past this date, if no exploit has been found, sponsors will be able to request a refund"
                     minDate={minDeadline}
                     {...form.getInputProps("deadline")}
                 />
-                <Tabs defaultValue="path">
-                    <Tabs.List>
-                        <Tabs.Tab value="path">Built-in</Tabs.Tab>
-                        <Tabs.Tab value="file">Upload</Tabs.Tab>
-                    </Tabs.List>
-                    <Tabs.Panel value="file">
-                        <Text m="md">
-                            Due to base layer constraints, only built-in
-                            bounties are well supported.
-                            <br />
-                            If you would like to have your bounty available on
-                            Bug Buster, please send us a message on our{" "}
-                            <Anchor href={DISCORD_CHANNEL_URL}>
-                                Discord channel
-                            </Anchor>{" "}
-                            or to our{" "}
-                            <Anchor href={X_ACCOUNT_URL} underline="never">
-                                X account
-                            </Anchor>
-                            .
-                        </Text>
-                    </Tabs.Panel>
-                    <Tabs.Panel value="path">
-                        <TextInput
-                            size="lg"
-                            placeholder="/bounties/some-built-in-bounty.tar.xz"
-                            {...form.getInputProps("codeZipPath")}
-                        />
-                    </Tabs.Panel>
-                </Tabs>
+                <TextInput
+                    size="lg"
+                    label="Bundle path"
+                    placeholder="/path/to/bundle.tar.xz"
+                    description="Path to the bounty bundle in the machine filesystem"
+                    {...form.getInputProps("codeZipPath")}
+                />
                 <Button
                     size="lg"
-                    type="submit"
-                    disabled={!write || isLoading || isSuccess}
+                    disabled={
+                        addInputDisabled ||
+                        !form.isValid() ||
+                        addInputWait.isSuccess
+                    }
+                    loading={addInputLoading}
+                    onClick={() => addInputWrite.write && addInputWrite.write()}
                 >
-                    {isSuccess ? "Sent!" : isLoading ? "Sending..." : "Send"}
+                    Create
                 </Button>
             </Stack>
         </form>

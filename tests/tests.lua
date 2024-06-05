@@ -20,10 +20,14 @@ local SPONSOR1_WALLET = "0x0000000000000000000000000000000000000101"
 local HACKER1_WALLET = "0x0000000000000000000000000000000000000201"
 local HACKER2_WALLET = "0x0000000000000000000000000000000000000202"
 
+local CTSI_ADDRESS = "0x491604c0fdf08347dd1fa4ee062a822a5dd06b5d"
+local USDC_ADDRESS = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+local WETH_ADDRESS = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+
 local config = {
-    ETHER_PORTAL_ADDRESS = "0xffdbe43d4c855bf7e0f105c400a50857f53ab044",
+    ERC20_PORTAL_ADDRESS = "0x9c21aeb2093c32ddbc53eef24b873bdcd1ada1db",
     DAPP_ADDRESS_RELAY_ADDRESS = "0xf5de34d6bbc0446e2a45719e718efebaae179dae",
-    DAPP_ADDRESS = "0x7122cd1221c20892234186facfe8615e6743ab02",
+    DAPP_ADDRESS = "0xab7528bb862fb57e8a2bcd567a2e929a0be56a5e",
 }
 
 local machine_config = ".cartesi/image"
@@ -58,10 +62,11 @@ local function inspect_input(machine, opts)
     }, true))
 end
 
-local function advance_ether_deposit(machine, opts)
+local function advance_erc20_deposit(machine, opts)
     return decode_response_jsons(machine:advance_state({
-        metadata = { msg_sender = fromhex(config.ETHER_PORTAL_ADDRESS), timestamp = opts.timestamp },
-        payload = cartesix_encoder.encode_ether_deposit({
+        metadata = { msg_sender = fromhex(config.ERC20_PORTAL_ADDRESS), timestamp = opts.timestamp },
+        payload = cartesix_encoder.encode_erc20_deposit({
+            contract_address = fromhex(opts.token),
             sender_address = fromhex(opts.sender),
             amount = tobe256(opts.amount),
             extra_data = tojson{ kind = opts.kind, payload = opts.data },
@@ -114,6 +119,7 @@ describe("tests on Lua bounty", function()
                 name = "Lua 5.4.3 Bounty",
                 description = "Try to crash a sandboxed Lua 5.4.3 script",
                 deadline = bounty_deadline,
+                token = CTSI_ADDRESS,
                 codeZipBinary = tobase64(readfile(bounty_code)),
             },
         })
@@ -127,6 +133,7 @@ describe("tests on Lua bounty", function()
                     imgLink = "",
                     name = "Lua 5.4.3 Bounty",
                     sponsorships = null,
+                    token = CTSI_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -134,7 +141,8 @@ describe("tests on Lua bounty", function()
     end)
 
     it("should add sponsorship from developer itself", function()
-        local res = advance_ether_deposit(machine, {
+        local res = advance_erc20_deposit(machine, {
+            token = CTSI_ADDRESS,
             sender = DEVELOPER1_WALLET,
             amount = 1000,
             kind = "AddSponsorship",
@@ -163,6 +171,7 @@ describe("tests on Lua bounty", function()
                             value = "1000",
                         },
                     },
+                    token = CTSI_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -170,7 +179,8 @@ describe("tests on Lua bounty", function()
     end)
 
     it("should add sponsorship from an external sponsor", function()
-        local res = advance_ether_deposit(machine, {
+        local res = advance_erc20_deposit(machine, {
+            token = CTSI_ADDRESS,
             sender = SPONSOR1_WALLET,
             amount = 2000,
             kind = "AddSponsorship",
@@ -207,6 +217,7 @@ describe("tests on Lua bounty", function()
                             value = "2000",
                         },
                     },
+                    token = CTSI_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -223,6 +234,21 @@ describe("tests on Lua bounty", function()
             timestamp = timestamp,
             data = {
                 bountyIndex = 9999,
+            },
+        })
+        expect.equal(res.status, "rejected")
+    end)
+
+    it("should reject sponsorship with the wrong token", function()
+        local res = advance_erc20_deposit(machine, {
+            token = USDC_ADDRESS,
+            sender = DEVELOPER1_WALLET,
+            amount = 1000,
+            kind = "AddSponsorship",
+            timestamp = timestamp,
+            data = {
+                name = "Developer1",
+                bountyIndex = bounty_index,
             },
         })
         expect.equal(res.status, "rejected")
@@ -304,21 +330,22 @@ describe("tests on Lua bounty", function()
                             value = "2000",
                         },
                     },
+                    token = CTSI_ADDRESS,
                     withdrawn = true,
                 },
             },
         })
         expect.equal(res.vouchers, {
             {
-                address = fromhex(config.DAPP_ADDRESS),
-                payload = cartesix_encoder.encode_ether_transfer_voucher({
+                address = fromhex(CTSI_ADDRESS),
+                payload = cartesix_encoder.encode_erc20_transfer_voucher({
                     destination_address = DEVELOPER1_WALLET,
                     amount = tobe256(1000),
                 }),
             },
             {
-                address = fromhex(config.DAPP_ADDRESS),
-                payload = cartesix_encoder.encode_ether_transfer_voucher({
+                address = fromhex(CTSI_ADDRESS),
+                payload = cartesix_encoder.encode_erc20_transfer_voucher({
                     destination_address = SPONSOR1_WALLET,
                     amount = tobe256(2000),
                 }),
@@ -354,7 +381,8 @@ describe("tests on Lua bounty", function()
     end)
 
     it("should reject sponsorship after deadline", function()
-        local res = advance_ether_deposit(machine, {
+        local res = advance_erc20_deposit(machine, {
+            token = CTSI_ADDRESS,
             sender = SPONSOR1_WALLET,
             amount = 1000,
             kind = "AddSponsorship",
@@ -443,6 +471,7 @@ describe("tests on SQLite bounty", function()
                 name = "SQLite3 3.32.2 Bounty",
                 description = "Try to crash SQLite 3.32.2 with a SQL query",
                 deadline = bounty_deadline,
+                token = WETH_ADDRESS,
                 codeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
             },
         })
@@ -457,6 +486,7 @@ describe("tests on SQLite bounty", function()
                     imgLink = "",
                     name = "SQLite3 3.32.2 Bounty",
                     sponsorships = null,
+                    token = WETH_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -464,7 +494,8 @@ describe("tests on SQLite bounty", function()
     end)
 
     it("should add sponsorship from an external sponsor", function()
-        local res = advance_ether_deposit(machine, {
+        local res = advance_erc20_deposit(machine, {
+            token = WETH_ADDRESS,
             sender = SPONSOR1_WALLET,
             amount = 4000,
             kind = "AddSponsorship",
@@ -494,6 +525,7 @@ describe("tests on SQLite bounty", function()
                             value = "4000",
                         },
                     },
+                    token = WETH_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -501,7 +533,8 @@ describe("tests on SQLite bounty", function()
     end)
 
     it("should raise an sponsorship", function()
-        local res = advance_ether_deposit(machine, {
+        local res = advance_erc20_deposit(machine, {
+            token = WETH_ADDRESS,
             sender = SPONSOR1_WALLET,
             amount = 5000,
             kind = "AddSponsorship",
@@ -531,6 +564,7 @@ describe("tests on SQLite bounty", function()
                             value = "9000",
                         },
                     },
+                    token = WETH_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -577,6 +611,7 @@ describe("tests on SQLite bounty", function()
                             value = "9000",
                         },
                     },
+                    token = WETH_ADDRESS,
                     withdrawn = true,
                 },
             },
@@ -584,8 +619,8 @@ describe("tests on SQLite bounty", function()
         second_bounty_final_state = res.state.bounties[bounty_index + 1]
         expect.equal(res.vouchers, {
             {
-                address = fromhex(config.DAPP_ADDRESS),
-                payload = cartesix_encoder.encode_ether_transfer_voucher({
+                address = fromhex(WETH_ADDRESS),
+                payload = cartesix_encoder.encode_erc20_transfer_voucher({
                     destination_address = HACKER1_WALLET,
                     amount = tobe256(9000),
                 }),
@@ -620,7 +655,8 @@ describe("tests on SQLite bounty", function()
     end)
 
     it("should reject sponsorship after a previous exploit succeeded", function()
-        local res = advance_ether_deposit(machine, {
+        local res = advance_erc20_deposit(machine, {
+            token = WETH_ADDRESS,
             sender = SPONSOR1_WALLET,
             amount = 1000,
             kind = "AddSponsorship",
@@ -649,6 +685,7 @@ describe("tests on BusyBox bounty", function()
                 name = "BusyBox 1.36.1 Bounty",
                 description = "Try to crash BusyBox 1.36.1",
                 deadline = bounty_deadline,
+                token = USDC_ADDRESS,
                 codeZipBinary = tobase64(readfile(sqlite33202_bounty_code)),
             },
         })
@@ -664,6 +701,7 @@ describe("tests on BusyBox bounty", function()
                     imgLink = "",
                     name = "BusyBox 1.36.1 Bounty",
                     sponsorships = null,
+                    token = USDC_ADDRESS,
                     withdrawn = false,
                 },
             },
@@ -702,6 +740,7 @@ describe("tests on BusyBox bounty", function()
                     imgLink = "",
                     name = "BusyBox 1.36.1 Bounty",
                     sponsorships = null,
+                    token = USDC_ADDRESS,
                     withdrawn = true,
                 },
             },
@@ -709,8 +748,8 @@ describe("tests on BusyBox bounty", function()
         third_bounty_final_state = res.state.bounties[bounty_index + 1]
         expect.equal(res.vouchers, {
             {
-                address = fromhex(config.DAPP_ADDRESS),
-                payload = cartesix_encoder.encode_ether_transfer_voucher({
+                address = fromhex(USDC_ADDRESS),
+                payload = cartesix_encoder.encode_erc20_transfer_voucher({
                     destination_address = HACKER1_WALLET,
                     amount = tobe256(0),
                 }),
@@ -735,6 +774,7 @@ describe("tests on (linked) Lua bounty", function()
                 name = "Lua 5.4.3 Bounty (linked)",
                 description = "Try to crash a sandboxed Lua 5.4.3 script, again!",
                 deadline = bounty_deadline,
+                token = WETH_ADDRESS,
                 codeZipPath = bounty_path,
             },
         })
@@ -751,6 +791,7 @@ describe("tests on (linked) Lua bounty", function()
                     imgLink = "",
                     name = "Lua 5.4.3 Bounty (linked)",
                     sponsorships = null,
+                    token = WETH_ADDRESS,
                     withdrawn = false,
                 },
             },

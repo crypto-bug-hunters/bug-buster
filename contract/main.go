@@ -73,6 +73,7 @@ func (c *BugBusterContract) Advance(
 			ImgLink:      inputPayload.ImgLink,
 			Description:  inputPayload.Description,
 			Deadline:     inputPayload.Deadline,
+			Token:        inputPayload.Token,
 			Sponsorships: nil,
 			Exploit:      nil,
 			Withdrawn:    false,
@@ -108,21 +109,24 @@ func (c *BugBusterContract) Advance(
 			return fmt.Errorf("can't add sponsorship after deadline")
 		}
 
-		var etherDepositSender common.Address
-		var etherDepositValue *uint256.Int
+		var erc20DepositSender common.Address
+		var erc20DepositValue *uint256.Int
 
 		switch deposit := deposit.(type) {
-		case *rollmelette.EtherDeposit:
-			etherDepositSender = deposit.Sender
-			etherDepositValue, _ = uint256.FromBig(deposit.Value)
+		case *rollmelette.ERC20Deposit:
+			if deposit.Token != bounty.Token {
+				return fmt.Errorf("wrong token: %v", bounty.Token)
+			}
+			erc20DepositSender = deposit.Sender
+			erc20DepositValue, _ = uint256.FromBig(deposit.Amount)
 		default:
 			return fmt.Errorf("unsupported deposit: %T", deposit)
 		}
 
-		sponsorship := bounty.GetSponsorship(etherDepositSender)
+		sponsorship := bounty.GetSponsorship(erc20DepositSender)
 		if sponsorship != nil {
 			// Add to existing sponsorship
-			newValue := new(uint256.Int).Add(sponsorship.Value, etherDepositValue)
+			newValue := new(uint256.Int).Add(sponsorship.Value, erc20DepositValue)
 			sponsorship.Value = newValue
 			// Update profile
 			sponsorship.Sponsor.Name = inputPayload.Name
@@ -131,11 +135,11 @@ func (c *BugBusterContract) Advance(
 			// Create new sponsorship
 			sponsorship := &shared.Sponsorship{
 				Sponsor: shared.Profile{
-					Address: etherDepositSender,
+					Address: erc20DepositSender,
 					Name:    inputPayload.Name,
 					ImgLink: inputPayload.ImgLink,
 				},
-				Value: etherDepositValue,
+				Value: erc20DepositValue,
 			}
 			bounty.Sponsorships = append(bounty.Sponsorships, sponsorship)
 		}
@@ -171,7 +175,7 @@ func (c *BugBusterContract) Advance(
 
 		// generate voucher for each sponsor
 		for _, sponsorship := range bounty.Sponsorships {
-			_, err := env.EtherWithdraw(sponsorship.Sponsor.Address, sponsorship.Value.ToBig())
+			_, err := env.ERC20Withdraw(bounty.Token, sponsorship.Sponsor.Address, sponsorship.Value.ToBig())
 			if err != nil {
 				return fmt.Errorf("failed to withdraw: %v", err)
 			}
@@ -224,7 +228,7 @@ func (c *BugBusterContract) Advance(
 			if sponsor == hacker {
 				continue
 			}
-			err := env.EtherTransfer(sponsor, hacker, sponsorship.Value.ToBig())
+			err := env.ERC20Transfer(bounty.Token, sponsor, hacker, sponsorship.Value.ToBig())
 			if err != nil {
 				// this should be impossible
 				return fmt.Errorf("failed to transfer asset: %v", err)
@@ -232,7 +236,7 @@ func (c *BugBusterContract) Advance(
 		}
 
 		// generate voucher
-		_, err := env.EtherWithdraw(hacker, accBounty.ToBig())
+		_, err := env.ERC20Withdraw(bounty.Token, hacker, accBounty.ToBig())
 		if err != nil {
 			return fmt.Errorf("failed to generate voucher: %v", err)
 		}

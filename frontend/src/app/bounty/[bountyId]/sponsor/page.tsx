@@ -3,53 +3,95 @@ import {
     Box,
     Button,
     Center,
-    NumberInput,
+    Group,
     Stack,
-    TextInput,
-    useMantineTheme,
-    Title,
     Text,
+    TextInput,
+    Title,
+    useMantineTheme,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { FC } from "react";
-import { parseEther } from "viem";
-import { AddSponsorship } from "../../../../model/inputs";
-import { usePrepareAddSponsorship } from "../../../../hooks/bug-buster";
-import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
-import { useWaitForTransaction } from "wagmi";
+import { FC, useEffect } from "react";
+import { useWaitForTransaction, useAccount } from "wagmi";
+import { parseUnits } from "viem";
 
 import { BountyParams, ConcreteBountyParams } from "../utils.tsx";
+import { usePrepareAddSponsorship } from "../../../../hooks/bug-buster";
+import {
+    erc20PortalAddress,
+    useErc20PortalDepositErc20Tokens,
+    usePrepareErc20Approve,
+    useErc20Approve,
+} from "../../../../hooks/contracts";
+import { AddSponsorship } from "../../../../model/inputs";
 import { useBounty } from "../../../../model/reader";
-
-const toWei = (input: string | number) => {
-    if (typeof input == "number") {
-        return BigInt(input * 1e18);
-    } else {
-        return parseEther(input);
-    }
-};
-
-interface AddSponsorshipFormValues {
-    name: string;
-    imgLink?: string;
-    value: number | string;
-}
+import { isPositiveNumber } from "../../../../utils/form";
+import { transactionStatus } from "../../../../utils/transactionStatus";
+import { useErc20Metadata, useErc20UserData } from "../../../../utils/erc20";
 
 const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
     bountyIndex,
     bounty,
 }) => {
-    const form = useForm<AddSponsorshipFormValues>({
+    const { token } = bounty;
+
+    const { address: sponsorAddress } = useAccount();
+
+    const { decimals, symbol } = useErc20Metadata(token);
+
+    const { balance, allowance } = useErc20UserData(token, {
+        user: sponsorAddress,
+        spender: erc20PortalAddress,
+        watch: true,
+    });
+
+    const form = useForm({
+        validateInputOnChange: true,
         initialValues: {
             name: "",
-            value: 0,
+            imgLink: "",
+            amount: "",
         },
         validate: {
             name: isNotEmpty("A sponsor name is required"),
+            amount: isPositiveNumber("A valid amount is required"),
         },
+        transformValues: (values) => ({
+            name: values.name,
+            imgLink: values.imgLink !== "" ? values.imgLink : undefined,
+            amount:
+                values.amount !== "" && decimals !== undefined
+                    ? parseUnits(values.amount, decimals)
+                    : undefined,
+        }),
     });
 
-    const { name, imgLink, value } = form.values;
+    const { name, imgLink, amount } = form.getTransformedValues();
+
+    // Approve
+
+    const approvePrepare = usePrepareErc20Approve({
+        address: token,
+        args: [erc20PortalAddress, amount ?? 0n],
+        enabled: amount !== undefined,
+    });
+
+    const approveWrite = useErc20Approve(approvePrepare.config);
+
+    const approveWait = useWaitForTransaction({
+        hash: approveWrite.data?.hash,
+    });
+
+    const { disabled: approveDisabled, loading: approveLoading } =
+        transactionStatus(approvePrepare, approveWrite, approveWait);
+
+    const needApproval =
+        allowance !== undefined &&
+        decimals !== undefined &&
+        amount !== undefined &&
+        allowance < amount;
+
+    // Deposit
 
     const addSponsorship: AddSponsorship = {
         name,
@@ -57,15 +99,42 @@ const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
         bountyIndex,
     };
 
-    const config = usePrepareAddSponsorship(addSponsorship, toWei(value));
+    const depositPrepare = usePrepareAddSponsorship(
+        addSponsorship,
+        token,
+        amount ?? 0n,
+    );
 
-    const { data, write } = useEtherPortalDepositEther(config);
-    const { isLoading, isSuccess } = useWaitForTransaction({
-        hash: data?.hash,
+    const depositWrite = useErc20PortalDepositErc20Tokens(
+        depositPrepare.config,
+    );
+
+    const depositWait = useWaitForTransaction({
+        hash: depositWrite.data?.hash,
     });
 
+    const { disabled: depositDisabled, loading: depositLoading } =
+        transactionStatus(depositPrepare, depositWrite, depositWait);
+
+    const canDeposit =
+        allowance !== undefined &&
+        balance !== undefined &&
+        decimals !== undefined &&
+        amount !== undefined &&
+        amount > 0 &&
+        amount <= allowance &&
+        amount <= balance;
+
+    const { refetch } = depositPrepare;
+
+    // May need to refetch deposit configuration if allowance or balance change,
+    // because they may influence the outcome of the function call.
+    useEffect(() => {
+        refetch();
+    }, [balance, allowance, refetch]);
+
     return (
-        <form onSubmit={form.onSubmit(() => write && write())}>
+        <form>
             <Stack w={600}>
                 <Title>Sponsor bounty</Title>
                 <Text size="lg" fw={700} c="dimmed">
@@ -84,22 +153,48 @@ const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
                     placeholder="https://"
                     {...form.getInputProps("imgLink")}
                 />
-                <NumberInput
+                <TextInput
+                    disabled
+                    size="lg"
+                    label="Token address"
+                    value={token}
+                />
+                <TextInput
                     withAsterisk
                     size="lg"
-                    label="Value"
-                    suffix=" ETH"
-                    allowNegative={false}
-                    decimalScale={18}
-                    {...form.getInputProps("value")}
+                    type="number"
+                    min={0}
+                    step={1}
+                    label="Amount"
+                    rightSection={symbol ? <Text>{symbol}</Text> : undefined}
+                    rightSectionWidth={60}
+                    placeholder="0"
+                    {...form.getInputProps("amount")}
                 />
-                <Button
-                    size="lg"
-                    type="submit"
-                    disabled={!write || isLoading || isSuccess}
-                >
-                    {isSuccess ? "Sent!" : isLoading ? "Sending..." : "Send"}
-                </Button>
+                <Group justify="center">
+                    <Button
+                        disabled={approveDisabled || !needApproval}
+                        loading={approveLoading}
+                        onClick={() =>
+                            approveWrite.write && approveWrite.write()
+                        }
+                        size="lg"
+                    >
+                        Approve
+                    </Button>
+                    <Button
+                        disabled={
+                            depositDisabled || !canDeposit || !form.isValid()
+                        }
+                        loading={depositLoading}
+                        onClick={() =>
+                            depositWrite.write && depositWrite.write()
+                        }
+                        size="lg"
+                    >
+                        Deposit
+                    </Button>
+                </Group>
             </Stack>
         </form>
     );
