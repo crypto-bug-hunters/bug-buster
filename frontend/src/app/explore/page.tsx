@@ -90,8 +90,8 @@ const Explore: FC = () => {
         <Stack>
             <HasConnectedAccount>
                 <Flex mt={20} mr={20} justify="flex-end">
-                    <Link href={"/bounty/create"}>
-                        <Button size="lg">Submit bounty</Button>
+                    <Link href={"https://forms.gle/h4EePFXG41Zwv48a7"}>
+                        <Button size="lg">Create bounty</Button>
                     </Link>
                 </Flex>
             </HasConnectedAccount>
