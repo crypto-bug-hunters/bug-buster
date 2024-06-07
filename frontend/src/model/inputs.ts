@@ -33,7 +33,7 @@ export interface TaggedInput<K, T> {
     payload: T;
 }
 
-export type Input =
+export type AdvanceRequest =
     | TaggedInput<"CreateAppBounty", CreateAppBounty>
     | TaggedInput<"AddSponsorship", AddSponsorship>
     | TaggedInput<"SendExploit", SendExploit>
@@ -43,3 +43,10 @@ export interface InputInfo {
     payload: Hex;
     status: CompletionStatus;
 }
+
+export interface TestExploit {
+    bountyIndex: number;
+    exploit: string;
+}
+
+export type InspectRequest = TestExploit;

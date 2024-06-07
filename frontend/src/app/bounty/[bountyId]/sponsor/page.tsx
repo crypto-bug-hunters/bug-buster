@@ -3,7 +3,6 @@ import {
     Box,
     Button,
     Center,
-    Group,
     NumberInput,
     Stack,
     TextInput,
@@ -11,14 +10,15 @@ import {
     Title,
     Text,
 } from "@mantine/core";
-import { FC, useState } from "react";
+import { isNotEmpty, useForm } from "@mantine/form";
+import { FC } from "react";
 import { parseEther } from "viem";
 import { AddSponsorship } from "../../../../model/inputs";
 import { usePrepareAddSponsorship } from "../../../../hooks/bug-buster";
 import { useEtherPortalDepositEther } from "../../../../hooks/contracts";
 import { useWaitForTransaction } from "wagmi";
 
-import { BountyParams } from "../utils.tsx";
+import { BountyParams, ConcreteBountyParams } from "../utils.tsx";
 import { useBounty } from "../../../../model/reader";
 
 const toWei = (input: string | number) => {
@@ -29,20 +29,33 @@ const toWei = (input: string | number) => {
     }
 };
 
-const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
-    const theme = useMantineTheme();
+interface AddSponsorshipFormValues {
+    name: string;
+    imgLink?: string;
+    value: number | string;
+}
 
-    const [name, setName] = useState("");
-    const [imgLink, setImgLink] = useState("");
-    const [value, setValue] = useState(0);
+const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
+    bountyIndex,
+    bounty,
+}) => {
+    const form = useForm<AddSponsorshipFormValues>({
+        initialValues: {
+            name: "",
+            value: 0,
+        },
+        validate: {
+            name: isNotEmpty("A sponsor name is required"),
+        },
+    });
 
-    const bountyIndex = Number(bountyId);
+    const { name, imgLink, value } = form.values;
 
-    const addSponsorship = {
+    const addSponsorship: AddSponsorship = {
         name,
         imgLink,
         bountyIndex,
-    } as AddSponsorship;
+    };
 
     const config = usePrepareAddSponsorship(addSponsorship, toWei(value));
 
@@ -51,82 +64,70 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
         hash: data?.hash,
     });
 
-    function wrapSetter(setter: any) {
-        return (e: any) => setter(e.target.value);
-    }
+    return (
+        <form onSubmit={form.onSubmit(() => write && write())}>
+            <Stack w={600}>
+                <Title>Sponsor bounty</Title>
+                <Text size="lg" fw={700} c="dimmed">
+                    {bounty.name}
+                </Text>
+                <TextInput
+                    withAsterisk
+                    size="lg"
+                    label="Name"
+                    placeholder="Satoshi Nakamoto"
+                    {...form.getInputProps("name")}
+                />
+                <TextInput
+                    size="lg"
+                    label="Avatar URL"
+                    placeholder="https://"
+                    {...form.getInputProps("imgLink")}
+                />
+                <NumberInput
+                    withAsterisk
+                    size="lg"
+                    label="Value"
+                    suffix=" ETH"
+                    allowNegative={false}
+                    decimalScale={18}
+                    {...form.getInputProps("value")}
+                />
+                <Button
+                    size="lg"
+                    type="submit"
+                    disabled={!write || isLoading || isSuccess}
+                >
+                    {isSuccess ? "Sent!" : isLoading ? "Sending..." : "Send"}
+                </Button>
+            </Stack>
+        </form>
+    );
+};
 
+const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
+    const bountyIndex = Number(bountyId);
     const bountyResult = useBounty(bountyIndex);
+
+    const theme = useMantineTheme();
 
     switch (bountyResult.kind) {
         case "loading":
             return <Center>Loading bounty info...</Center>;
         case "error":
             return <Center>{bountyResult.message}</Center>;
+        case "success":
+            return (
+                <Center>
+                    <Box p={20} mt={50} bg={theme.colors.dark[7]}>
+                        <AddSponsorshipForm
+                            bountyIndex={bountyIndex}
+                            bounty={bountyResult.response}
+                        />
+                    </Box>
+                </Center>
+            );
     }
-
-    const bounty = bountyResult.response;
-
-    return (
-        <Center>
-            <Box p={20} mt={50} bg={theme.colors.dark[7]}>
-                <Stack w={600}>
-                    <Title>Sponsor bounty</Title>
-                    <Text size="lg" fw={700} c="dimmed">
-                        {bounty.name}
-                    </Text>
-                    <TextInput
-                        withAsterisk
-                        size="lg"
-                        label="Name"
-                        value={name}
-                        placeholder="Satoshi Nakamoto"
-                        onChange={wrapSetter(setName)}
-                    />
-                    <TextInput
-                        size="lg"
-                        label="Avatar URL"
-                        value={imgLink}
-                        placeholder="https://"
-                        onChange={wrapSetter(setImgLink)}
-                    />
-                    <NumberInput
-                        withAsterisk
-                        size="lg"
-                        label="Value"
-                        suffix=" ETH"
-                        allowNegative={false}
-                        decimalScale={18}
-                        value={value}
-                        onChange={(e: any) => setValue(e)}
-                    />
-
-                    <Group justify="center" mt="md">
-                        <Button
-                            size="lg"
-                            type="submit"
-                            disabled={
-                                !write || isLoading || name.trim().length === 0
-                            }
-                            onClick={write}
-                        >
-                            {isLoading
-                                ? "Adding Sponsorship..."
-                                : "Add Sponsorship"}
-                        </Button>
-                    </Group>
-                    {isSuccess && (
-                        <>
-                            <Group justify="center">
-                                <Text size="lg">
-                                    Add Sponsorship transaction successful!
-                                </Text>
-                            </Group>
-                        </>
-                    )}
-                </Stack>
-            </Box>
-        </Center>
-    );
 };
 
 export default AddSponsorshipPage;

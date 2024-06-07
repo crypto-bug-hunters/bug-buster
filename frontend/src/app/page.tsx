@@ -2,6 +2,7 @@
 import { FC } from "react";
 import { Button, Stack, Card, Text, Group } from "@mantine/core";
 import Link from "next/link";
+import { GH_README_URL } from "../utils/links";
 
 const Home: FC = () => {
     return (
@@ -26,11 +27,7 @@ const Home: FC = () => {
                     <Link href={"/explore"}>
                         <Button size="lg">Explore Bounties</Button>
                     </Link>
-                    <Link
-                        href={
-                            "https://github.com/crypto-bug-hunters/bug-buster/blob/main/README.md"
-                        }
-                    >
+                    <Link href={GH_README_URL}>
                         <Button variant="outline" size="lg">
                             Learn more
                         </Button>
