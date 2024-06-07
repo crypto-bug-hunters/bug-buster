@@ -8,26 +8,29 @@ import {
     CreateAppBounty,
     SendExploit,
     WithdrawSponsorship,
-    Input,
+    AdvanceRequest,
 } from "../model/inputs";
 import { getDAppAddress } from "../utils/address";
 
-function encodeInput(input: Input): Hex {
-    return toHex(new TextEncoder().encode(JSON.stringify(input)));
+function encodeAdvanceRequest(advanceRequest: AdvanceRequest): Hex {
+    return toHex(new TextEncoder().encode(JSON.stringify(advanceRequest)));
 }
 
-function usePrepareBugBusterInput(input: Input) {
+function usePrepareBugBusterInput(advanceRequest: AdvanceRequest) {
     const { config } = usePrepareInputBoxAddInput({
-        args: [getDAppAddress(), encodeInput(input)],
+        args: [getDAppAddress(), encodeAdvanceRequest(advanceRequest)],
         enabled: true,
     });
 
     return config;
 }
 
-function usePrepareBugBusterETHDeposit(input: Input, valueInWei: bigint) {
+function usePrepareBugBusterETHDeposit(
+    advanceRequest: AdvanceRequest,
+    valueInWei: bigint,
+) {
     const { config } = usePrepareEtherPortalDepositEther({
-        args: [getDAppAddress(), encodeInput(input)],
+        args: [getDAppAddress(), encodeAdvanceRequest(advanceRequest)],
         value: valueInWei,
         enabled: true,
     });

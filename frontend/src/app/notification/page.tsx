@@ -1,5 +1,6 @@
 import { Anchor, Group, Stack, Text, Title } from "@mantine/core";
 import { FC } from "react";
+import { DISCORD_CHANNEL_URL, X_ACCOUNT_URL } from "../../utils/links";
 
 const WordsOfCaution: FC = () => {
     return (
@@ -34,14 +35,11 @@ const WordsOfCaution: FC = () => {
                 <Text>
                     Feel free to explore, ask questions, and provide feedback on
                     our{" "}
-                    <Anchor
-                        href="https://discord.com/channels/600597137524391947/1166042819782258788"
-                        underline="never"
-                    >
+                    <Anchor href={DISCORD_CHANNEL_URL} underline="never">
                         Discord channel
                     </Anchor>{" "}
                     or message us on our{" "}
-                    <Anchor href="https://x.com/BugBusterApp" underline="never">
+                    <Anchor href={X_ACCOUNT_URL} underline="never">
                         X account
                     </Anchor>
                     .
