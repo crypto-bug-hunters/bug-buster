@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/rollmelette/rollmelette"
 	"github.com/spf13/cobra"
@@ -52,15 +53,14 @@ func sendDo(inputKind shared.InputKind, payload any, send func(string, context.C
 	log.Printf("input added\n%s", output)
 }
 
-func sendEther(txValue *big.Int, inputKind shared.InputKind, payload any) {
+func sendERC20(token common.Address, value *big.Int, inputKind shared.InputKind, payload any) {
 	sendDo(inputKind, payload, func(inputJsonStr string, ctx context.Context) ([]byte, error) {
 		cmd := exec.CommandContext(ctx,
 			"cast", "send",
 			"--unlocked", "--from", sendArgs.fromAddress,
-			"--value", txValue.String(),
-			addressBook.EtherPortal.String(), // TO
-			"depositEther(address,bytes)",    // SIG
-			dappAddress, inputJsonStr,        // ARGS
+			addressBook.ERC20Portal.String(),                    // TO
+			"depositERC20Tokens(address,address,uint256,bytes)", // SIG
+			token.String(), dappAddress, value.String(), inputJsonStr, // ARGS
 		)
 		return cmd.CombinedOutput()
 	})

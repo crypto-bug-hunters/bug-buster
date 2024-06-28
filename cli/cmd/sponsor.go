@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/spf13/cobra"
 )
 
@@ -18,24 +19,23 @@ var (
 	sponsorBountyIndex int
 	sponsorName        string
 	sponsorImgLink     string
+	sponsorToken       string
 	sponsorValue       string
 )
 
 func sponsorRun(cmd *cobra.Command, args []string) {
-	etherValue, ok := new(big.Float).SetString(sponsorValue)
+	value, ok := new(big.Int).SetString(sponsorValue, 10)
 	if !ok {
 		log.Fatalf("failed to parse value")
+		return
 	}
-	tenToEighteen := new(big.Float).SetFloat64(1e18)
-	weiValue := new(big.Float).Mul(etherValue, tenToEighteen)
-	value := new(big.Int)
-	weiValue.Int(value)
+	token := common.HexToAddress(sponsorToken)
 	payload := &shared.AddSponsorship{
 		BountyIndex: sponsorBountyIndex,
 		Name:        sponsorName,
 		ImgLink:     sponsorImgLink,
 	}
-	sendEther(value, shared.AddSponsorshipInputKind, payload)
+	sendERC20(token, value, shared.AddSponsorshipInputKind, payload)
 }
 
 func init() {
@@ -53,6 +53,10 @@ func init() {
 		&sponsorImgLink, "image", "i", "", "Sponsor image")
 
 	sponsorCmd.Flags().StringVarP(
-		&sponsorValue, "value", "v", "", "Value to sponsor in Ether")
+		&sponsorToken, "token", "t", "", "Address of ERC-20 token")
+	sponsorCmd.MarkFlagRequired("token")
+
+	sponsorCmd.Flags().StringVarP(
+		&sponsorValue, "value", "v", "", "Amount of tokens to sponsor")
 	sponsorCmd.MarkFlagRequired("value")
 }

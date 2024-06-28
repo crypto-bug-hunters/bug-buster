@@ -48,8 +48,8 @@ export interface Voucher {
     proof?: Proof;
 }
 
-const withdrawEtherAbi = parseAbi([
-    "function withdrawEther(address receiver, uint256 value)",
+const erc20TransferAbi = parseAbi([
+    "function transfer(address to, uint256 value) public returns (bool success)",
 ]);
 
 export const voucherExecutionAbi = parseAbi([
@@ -60,14 +60,17 @@ export const voucherExecutionAbi = parseAbi([
 ]);
 
 export function decodeVoucher(voucher: Voucher) {
+    const { destination, payload } = voucher;
+
     const { args } = decodeFunctionData({
-        abi: withdrawEtherAbi,
-        data: voucher.payload,
+        abi: erc20TransferAbi,
+        data: payload,
     });
 
     const [receiver, value] = args;
 
     return {
+        token: destination,
         receiver,
         value,
     };

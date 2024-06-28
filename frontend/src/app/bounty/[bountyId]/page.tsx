@@ -12,7 +12,7 @@ import {
     Text,
 } from "@mantine/core";
 
-import { formatEther } from "viem";
+import { useWaitForTransaction } from "wagmi";
 
 import {
     parseHexAsJson,
@@ -25,69 +25,80 @@ import { SendExploit } from "../../../model/inputs";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bug-buster";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
-import { BountyParams } from "./utils";
+import { BountyParams, ConcreteBountyParams } from "./utils";
 import { useBlockTimestamp } from "../../../hooks/block";
 import { BountyStatus } from "../../../model/bountyStatus";
 import { getBountyStatus } from "../../../utils/bounty";
+import { useErc20Metadata, formatErc20Amount } from "../../../utils/erc20";
 import { BountyStatusBadgeGroup } from "../../../components/bountyStatus";
-import { useWaitForTransaction } from "wagmi";
 import { ProfileCard } from "../../../components/profileCard";
 import { LinkButton } from "../../../components/linkbtn";
 import { HasConnectedAccount } from "../../../components/hasConnectedAccount";
+import { transactionStatus } from "../../../utils/transactionStatus";
 
 const WithdrawButton: FC<{
-    bountyId: string;
-    disabled: boolean;
-}> = ({ bountyId, disabled }) => {
-    const bountyIndex = Number(bountyId);
-    const config = usePrepareWithdrawSponsorship({ bountyIndex });
-    const { data, write } = useInputBoxAddInput(config);
-    const { isLoading, isSuccess } = useWaitForTransaction({
-        hash: data?.hash,
+    bountyIndex: number;
+    canWithdraw: boolean;
+}> = ({ bountyIndex, canWithdraw }) => {
+    const addInputPrepare = usePrepareWithdrawSponsorship({ bountyIndex });
+
+    const addInputWrite = useInputBoxAddInput(addInputPrepare.config);
+
+    const addInputWait = useWaitForTransaction({
+        hash: addInputWrite.data?.hash,
     });
+
+    const { disabled: addInputDisabled, loading: addInputLoading } =
+        transactionStatus(addInputPrepare, addInputWrite, addInputWait);
+
     return (
-        <Group>
-            <Button disabled={disabled || !write || isLoading} onClick={write}>
-                {isLoading ? "Withdrawing..." : "Withdraw"}
-            </Button>
-            <Group justify="center">
-                {isSuccess && (
-                    <>
-                        <Text size="lg">Withdraw transaction successful!</Text>
-                    </>
-                )}
-            </Group>
-        </Group>
+        <Button
+            disabled={
+                addInputDisabled || !canWithdraw || addInputWait.isSuccess
+            }
+            loading={addInputLoading}
+            onClick={() => addInputWrite.write && addInputWrite.write()}
+        >
+            Withdraw
+        </Button>
     );
 };
 
 const ButtonsBox: FC<{
-    bountyId: string;
+    bountyIndex: number;
     bountyStatus: BountyStatus;
-}> = ({ bountyId, bountyStatus }) => {
+}> = ({ bountyIndex, bountyStatus }) => {
     const isOpen = bountyStatus.kind == "open";
-    const enableWithdrawals =
-        bountyStatus.kind == "expired" && !bountyStatus.withdrawn;
+    const canWithdraw =
+        bountyStatus.kind === "expired" && !bountyStatus.withdrawn;
     return (
         <Group justify="left">
-            <LinkButton href={`/bounty/${bountyId}/sponsor`} disabled={!isOpen}>
+            <LinkButton
+                href={`/bounty/${bountyIndex}/sponsor`}
+                disabled={!isOpen}
+            >
                 Sponsor
             </LinkButton>
-            <LinkButton href={`/bounty/${bountyId}/exploit`} disabled={!isOpen}>
+            <LinkButton
+                href={`/bounty/${bountyIndex}/exploit`}
+                disabled={!isOpen}
+            >
                 Submit exploit
             </LinkButton>
-            <WithdrawButton bountyId={bountyId} disabled={!enableWithdrawals} />
+            <WithdrawButton
+                bountyIndex={bountyIndex}
+                canWithdraw={canWithdraw}
+            />
         </Group>
     );
 };
 
-const BountyBox: FC<{
-    bountyId: string;
-    bounty: AppBounty;
-}> = ({ bountyId, bounty }) => {
+const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
     const blockTimestamp = useBlockTimestamp();
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
     const totalPrize = getBountyTotalPrize(bounty);
+    const { token } = bounty;
+    const erc20Metadata = useErc20Metadata(token);
     return (
         <Stack align="center">
             <Group>
@@ -103,9 +114,15 @@ const BountyBox: FC<{
             <Text styles={{ root: { whiteSpace: "pre-wrap" } }}>
                 {bounty.description}
             </Text>
-            <Title order={3}>Total Prize: {formatEther(totalPrize)} ETH</Title>
+            <Title order={3}>
+                Total Prize:{" "}
+                {formatErc20Amount(token, totalPrize, erc20Metadata)}
+            </Title>
             <HasConnectedAccount>
-                <ButtonsBox bountyId={bountyId} bountyStatus={bountyStatus} />
+                <ButtonsBox
+                    bountyIndex={bountyIndex}
+                    bountyStatus={bountyStatus}
+                />
             </HasConnectedAccount>
         </Stack>
     );
@@ -126,6 +143,24 @@ const ExploitCodeBox: FC<{ exploitCode?: string }> = ({ exploitCode }) => {
 const ParticipantsBox: FC<{
     bounty: AppBounty;
 }> = ({ bounty }) => {
+    const { token } = bounty;
+    const erc20Metadata = useErc20Metadata(token);
+
+    const sponsorships = bounty.sponsorships?.map(
+        ({ sponsor, value: amount }, index) => {
+            return (
+                <ProfileCard
+                    key={index}
+                    profile={sponsor}
+                    badge="Sponsor"
+                    badgeColor="purple"
+                >
+                    {formatErc20Amount(token, BigInt(amount), erc20Metadata)}
+                </ProfileCard>
+            );
+        },
+    );
+
     return (
         <Stack align="center">
             <Title order={2}>Participants</Title>
@@ -135,19 +170,7 @@ const ParticipantsBox: FC<{
                     badge="Exploiter"
                 />
             )}
-            {bounty.sponsorships &&
-                bounty.sponsorships.map((sponsorship, index) => {
-                    return (
-                        <ProfileCard
-                            key={index}
-                            profile={sponsorship.sponsor}
-                            badge="Sponsor"
-                            badgeColor="purple"
-                        >
-                            {formatEther(BigInt(sponsorship.value))} ETH
-                        </ProfileCard>
-                    );
-                })}
+            {sponsorships}
         </Stack>
     );
 };
@@ -208,7 +231,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     return (
         <Center p={20} mt={20}>
             <Stack w={800} gap={50} align="center" justify="center">
-                <BountyBox bountyId={bountyId} bounty={bounty} />
+                <BountyBox bountyIndex={bountyIndex} bounty={bounty} />
                 <ExploitCodeBox exploitCode={exploitCode} />
                 <ParticipantsBox bounty={bounty} />
             </Stack>

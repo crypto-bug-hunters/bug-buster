@@ -25,9 +25,10 @@ func (s *BugBusterState) GetBounty(bountyIndex int) *AppBounty {
 
 type AppBounty struct {
 	Name         string         `json:"name"`
-	ImgLink      string         `json:"imgLink"` // optional
+	ImgLink      string         `json:"imgLink"`      // optional
 	Description  string         `json:"description"`
-	Deadline     int64          `json:"deadline"` // (unix timestamp)
+	Deadline     int64          `json:"deadline"`     // (unix timestamp)
+	Token        common.Address `json:"token"`        // ERC-20
 	Sponsorships []*Sponsorship `json:"sponsorships"`
 	Exploit      *Exploit       `json:"exploit"`
 	Withdrawn    bool           `json:"withdrawn"`
@@ -77,12 +78,13 @@ type Input struct {
 }
 
 type CreateAppBounty struct {
-	Name          string  `json:"name"`
-	ImgLink       string  `json:"imgLink"`
-	Description   string  `json:"description"`
-	Deadline      int64   `json:"deadline"`                // (unix timestamp)
-	CodeZipBinary *string `json:"codeZipBinary,omitempty"` // base64?
-	CodeZipPath   *string `json:"codeZipPath,omitempty"`
+	Name          string         `json:"name"`
+	ImgLink       string         `json:"imgLink"`
+	Description   string         `json:"description"`
+	Deadline      int64          `json:"deadline"`                // (unix timestamp)
+	CodeZipBinary *string        `json:"codeZipBinary,omitempty"` // base64?
+	CodeZipPath   *string        `json:"codeZipPath,omitempty"`
+	Token         common.Address `json:"token"`                   // ERC-20
 }
 
 func (b *CreateAppBounty) Validate() error {
@@ -101,7 +103,7 @@ func (b *CreateAppBounty) Validate() error {
 	return nil
 }
 
-// From portal (Ether)
+// From portal (ERC-20)
 type AddSponsorship struct {
 	BountyIndex int    `json:"bountyIndex"`
 	Name        string `json:"name"`
