@@ -1,6 +1,6 @@
 import { Anchor, Group, Stack, Text, Title } from "@mantine/core";
 import { FC } from "react";
-import { DISCORD_CHANNEL_URL, X_ACCOUNT_URL } from "../../utils/links";
+import { TELEGRAM_CHANNEL_URL, X_ACCOUNT_URL } from "../../utils/links";
 
 const WordsOfCaution: FC = () => {
     return (
@@ -35,8 +35,8 @@ const WordsOfCaution: FC = () => {
                 <Text>
                     Feel free to explore, ask questions, and provide feedback on
                     our{" "}
-                    <Anchor href={DISCORD_CHANNEL_URL} underline="never">
-                        Discord channel
+                    <Anchor href={TELEGRAM_CHANNEL_URL} underline="never">
+                        Telegram group
                     </Anchor>{" "}
                     or message us on our{" "}
                     <Anchor href={X_ACCOUNT_URL} underline="never">
