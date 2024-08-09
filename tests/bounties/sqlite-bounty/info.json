@@ -1,5 +1,4 @@
 {
-    "name": "SQLite 3.32.2",
-    "description": "SQLite is a C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine. SQLite is the most used database engine in the world. SQLite is built into all mobile phones and most computers and comes bundled inside countless other applications that people use every day.",
-    "imgLink": "https://www.sqlite.org/images/sqlite370_banner.gif"
+    "description": "Find bugs in SQLite, the most used database engine in the world!\n\nSubmitted SQL code will run inside a SQLite safe shell open on an empty database, to win the bounty the SQL code must crash the SQLite shell.\n\nThe source code of the bounty can be inspected at:\nhttps://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/sqlite-bounty",
+    "imgLink": "https://www.svgrepo.com/show/374094/sqlite.svg"
 }
