@@ -27,7 +27,7 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `go` | 1.21.1 | | | | | ☑️ | ☑️ | |
 | `jq` | 1.6 | | | | | ☑️ | | |
 | `pnpm` | 8.15.6 | | | | | | | ☑️ |
-| `cartesi` | 0.14.0 | | ☑️ | | ☑️ | | | |
+| `cartesi` | 0.16.0 | | ☑️ | | ☑️ | | | |
 
 ## Presentation
 
