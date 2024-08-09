@@ -15,8 +15,8 @@ jobs:
       PNPM_VERSION: 9
       NODE_VERSION: 18
       CARTESI_CLI_VERSION: 0.16.0
-      MACHINE_IMAGE_NAME: bug-buster-machine
-      NODE_IMAGE_NAME: bug-buster-machine
+      CARTESI_MACHINE_IMAGE_NAME: bug-buster-machine
+      CARTESI_NODE_IMAGE_NAME: bug-buster-node
       REGISTRY: ghcr.io/${{ github.repository_owner }}
     steps:
       - name: Check out repository
@@ -37,7 +37,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.MACHINE_IMAGE_NAME }}
+            ${{ env.REGISTRY }}/${{ env.CARTESI_MACHINE_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
@@ -89,9 +89,9 @@ jobs:
         run: |
           echo "${{ steps.extract_metadata.outputs.json }}" | \
             jq -r '.tags[]' | \
-            sed "s/${{ env.MACHINE_IMAGE_NAME }}/${{ env.NODE_IMAGE_NAME }}/" | \
-            xargs -n1 docker tag "${{ steps.build_node.outputs.image }}"
+            sed "s/${{ env.CARTESI_MACHINE_IMAGE_NAME }}/${{ env.CARTESI_NODE_IMAGE_NAME }}/" | \
+            xargs -n1 docker image tag "${{ steps.build_node.outputs.image }}"
 
       - name: Push Cartesi Node image
         run: |
-          docker push --all-tags "${{ env.REGISTRY }}/${{ env.NODE_IMAGE_NAME }}"
+          docker image push --all-tags "${{ env.REGISTRY }}/${{ env.CARTESI_NODE_IMAGE_NAME }}"
