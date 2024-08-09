@@ -51,6 +51,6 @@ jobs:
           push: true
           builder: ${{ steps.setup_buildx.outputs.name }}
           tags: ${{ steps.extract_metadata.outputs.tags }}
-          labels: ${{ steps.extract_metadata.lables.labels }}
+          labels: ${{ steps.extract_metadata.outputs.labels }}
           cache-from: type=gha,scope=ubuntu
           cache-to: type=gha,mode=max,scope=ubuntu
