@@ -40,7 +40,7 @@ make slides
 
 ## Building example bounties
 
-Before testing, you need to compile bounties binaries.
+Before building the machine image and testing, you need to compile the bounties binaries.
 
 ```sh
 make bounties
@@ -66,10 +66,27 @@ Along with following exploits:
 
 ## Back-end
 
-### Building the machine image
+### Building the Cartesi Machine image
+
+#### From source
 
 ```sh
 cartesi build
+```
+
+#### From a tagged image
+
+Every release, the machine image is built and published to GitHub Container Registry.
+You can retrieve any given version using the `docker pull` command.
+
+```sh
+docker pull --platform linux/riscv64 ghcr.io/crypto-bug-hunters/bug-buster-machine:$VERSION
+```
+
+Then, you can build the Cartesi Machine image like so.
+
+```sh
+cartesi build --from-image ghcr.io/crypto-bug-hunters/bug-buster-machine:$VERSION
 ```
 
 ### Running the Cartesi Node
