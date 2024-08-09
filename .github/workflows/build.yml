@@ -12,7 +12,11 @@ jobs:
       packages: write
       contents: read
     env:
+      PNPM_VERSION: 9
+      NODE_VERSION: 18
+      CARTESI_CLI_VERSION: 0.16.0
       MACHINE_IMAGE_NAME: bug-buster-machine
+      NODE_IMAGE_NAME: bug-buster-machine
       REGISTRY: ghcr.io/${{ github.repository_owner }}
     steps:
       - name: Check out repository
@@ -46,6 +50,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build machine image and push it to GitHub Container Registry
+        id: build_machine
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -56,3 +61,37 @@ jobs:
           annotations: ${{ steps.extract_metadata.outputs.annotations }}
           cache-from: type=gha,scope=ubuntu
           cache-to: type=gha,mode=max,scope=ubuntu
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install Cartesi CLI
+        run: pnpm add -g @cartesi/cli@${{ env.CARTESI_CLI_VERSION }}
+
+      - name: Build Cartesi Machine image
+        run: cartesi build --from-image "${{ steps.build_machine.outputs.imageid }}"
+
+      - name: Build Cartesi Node image
+        id: build_node
+        run: |
+          cartesi deploy build --json | \
+            jq -r '"image=\(.image)"' >> "$GITHUB_OUTPUT"
+
+      - name: Create tags for Cartesi Node image
+        run: |
+          echo "${{ steps.extract_metadata.outputs.json }}" | \
+            jq -r '.tags[]' | \
+            sed "s/${{ env.MACHINE_IMAGE_NAME }}/${{ env.NODE_IMAGE_NAME }}/" | \
+            xargs -n1 docker tag "${{ steps.build_node.outputs.image }}"
+
+      - name: Push Cartesi Node image
+        run: |
+          docker push --all-tags "${{ env.REGISTRY }}/${{ env.NODE_IMAGE_NAME }}"
