@@ -26,7 +26,7 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `docker` | 26.1 | ☑️ | ☑️ | ☑️ | ☑️ | | | |
 | `go` | 1.21.1 | | | | | ☑️ | ☑️ | |
 | `jq` | 1.6 | | | | | ☑️ | | |
-| `pnpm` | 8.15.6 | | | | | | | ☑️ |
+| `pnpm` | 9.x | | | | | | | ☑️ |
 | `cartesi` | 0.14.0 | | ☑️ | | ☑️ | | | |
 
 ## Presentation
