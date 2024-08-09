@@ -7,6 +7,7 @@ import {
     Divider,
     Tooltip,
     Stack,
+    Flex,
 } from "@mantine/core";
 import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -41,20 +42,23 @@ export const Header: FC = () => {
                     </Anchor>
                 </Center>
             </Group>
-            <Group h="100%" px={20}>
-                <Group justify="flex-end">
-                    <Anchor href="/" underline="never">
-                        <Title>🪲 Bug Buster</Title>
-                    </Anchor>
-                </Group>
-                <Group justify="flex-end" style={{ flex: 1 }}>
+            <Flex px={20}>
+                <Anchor href="/" underline="never">
+                    <Title>🪲 Bug Buster</Title>
+                </Anchor>
+
+                <Group
+                    justify="flex-end"
+                    style={{ flex: 1 }}
+                    visibleFrom={"sm"}
+                >
                     <HasConnectedAccount>
                         <VoucherNotification />
                     </HasConnectedAccount>
                     <Divider orientation="vertical" />
                     <ConnectButton />
                 </Group>
-            </Group>
+            </Flex>
         </Stack>
     );
 };
