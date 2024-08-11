@@ -12,7 +12,7 @@ const Home: FC = () => {
                 ml={20}
                 mr={20}
                 withBorder
-                w={{ base: "300px", sm: "720px" }}
+                w={{ base: "100%", sm: "720px" }}
             >
                 <Flex mt="md" mb="md" direction={"column"} align={"center"}>
                     <Title>A Trustless Bug Bounty Platform</Title>
