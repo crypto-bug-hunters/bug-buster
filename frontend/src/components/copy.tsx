@@ -13,8 +13,13 @@ import { IconCopy, IconCheck } from "@tabler/icons-react";
 
 export const CodeWithCopyButton: FC<{ value: string }> = ({ value }) => {
     return (
-        <Group>
-            <Code>{value}</Code>
+        <Group gap="xs">
+            <Code
+                w="80%"
+                style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+            >
+                {value}
+            </Code>
             <CopyButtonWithIcon value={value} />
         </Group>
     );

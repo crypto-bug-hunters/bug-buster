@@ -33,19 +33,25 @@ const Home: FC = () => {
                     gap="md"
                     justify={"space-between"}
                 >
-                    <Link
+                    <Button
+                        component={Link}
+                        fullWidth
+                        variant="outline"
+                        size="lg"
                         href={GH_README_URL}
                         style={{ textDecoration: "none" }}
                     >
-                        <Button fullWidth variant="outline" size="lg">
-                            Learn more
-                        </Button>
-                    </Link>
-                    <Link href={"/explore"} style={{ textDecoration: "none" }}>
-                        <Button fullWidth size="lg">
-                            Explore Bounties
-                        </Button>
-                    </Link>
+                        Learn more
+                    </Button>
+                    <Button
+                        component={Link}
+                        fullWidth
+                        size="lg"
+                        href={"/explore"}
+                        style={{ textDecoration: "none" }}
+                    >
+                        Explore Bounties
+                    </Button>
                 </Flex>
             </Card>
         </Flex>
