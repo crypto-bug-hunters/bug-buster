@@ -12,6 +12,7 @@ export const Footer: FC = () => {
                         component="a"
                         href="https://x.com/BugBusterApp"
                         size="xl"
+                        variant="transparent"
                     >
                         <IconBrandX color="white" />
                     </ActionIcon>
@@ -20,6 +21,7 @@ export const Footer: FC = () => {
                         component="a"
                         href="https://t.me/+G_CPMEhCHC04MzA5"
                         size="xl"
+                        variant="transparent"
                     >
                         <IconBrandTelegram color="white" />
                     </ActionIcon>
