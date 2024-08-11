@@ -104,7 +104,7 @@ const CreateBountyForm: FC = () => {
 
     return (
         <form>
-            <Stack w={800}>
+            <Stack style={{ maxWidth: 800 }}>
                 <Title>Create bounty</Title>
                 <TextInput
                     withAsterisk
