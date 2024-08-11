@@ -30,7 +30,7 @@ const Bounty: FC<{
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
     return (
         <Anchor href={"/bounty/" + index} underline="never">
-            <Card>
+            <Card h="100%">
                 <Card.Section>
                     <Image
                         h="100%"
