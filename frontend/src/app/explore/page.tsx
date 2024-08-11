@@ -33,16 +33,16 @@ const Bounty: FC<{
             <Card>
                 <Card.Section>
                     <Image
-                        h={200}
-                        p={6}
+                        h="100%"
+                        p="sm"
                         fit="contain"
                         alt="Bounty Image"
                         src={bounty.imgLink}
                         fallbackSrc="/static/default_app.webp"
                     />
                 </Card.Section>
-                <Box w={400} mt="md">
-                    <Group mb={10}>
+                <Box>
+                    <Group mb="sm">
                         <Text truncate="end" fw={700} size="lg">
                             {bounty.name}
                         </Text>
@@ -71,7 +71,13 @@ const BountyList: FC = () => {
     const state = stateResult.response;
 
     return (
-        <SimpleGrid m="sm" cols={{ base: 1, sm: 2, lg: 3 }}>
+        <SimpleGrid
+            m={{ base: "xs", md: "lg" }}
+            cols={{ base: 1, sm: 2, lg: 3 }}
+            spacing="xl"
+            verticalSpacing="lg"
+            style={{ maxWidth: 1024 }}
+        >
             {state.bounties.map((bounty, index) => {
                 return (
                     <Bounty
@@ -90,7 +96,7 @@ const Explore: FC = () => {
     return (
         <Stack>
             <HasConnectedAccount>
-                <Flex mt={20} mr={20} justify="flex-end">
+                <Flex mt="lg" mr={{ base: "xs", md: "lg" }} justify="flex-end">
                     <Link href={GOOGLE_BOUNTY_CREATION_FORM_URL}>
                         <Button size="lg">Create bounty</Button>
                     </Link>
