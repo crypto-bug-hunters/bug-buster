@@ -119,7 +119,7 @@ const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
             </Group>
             <Image
                 w="100%"
-                style={{ maxWidth: 420 }}
+                style={{ maxWidth: 365 }}
                 fit="cover"
                 src={bounty.imgLink}
                 alt="Bounty Image"
@@ -147,7 +147,9 @@ const ExploitCodeBox: FC<{ exploitCode?: string }> = ({ exploitCode }) => {
         return (
             <Stack align="center">
                 <Title order={2}>Exploit Code</Title>
-                <Code block>{exploitCode}</Code>
+                <Code w="100%" block>
+                    {exploitCode}
+                </Code>
             </Stack>
         );
     }
@@ -176,8 +178,10 @@ const ParticipantsBox: FC<{
     );
 
     return (
-        <Stack align="center">
-            <Title order={2}>Participants</Title>
+        <Stack>
+            <Center>
+                <Title order={2}>Participants</Title>
+            </Center>
             {bounty.exploit && (
                 <ProfileCard
                     profile={bounty.exploit.hacker}
@@ -243,18 +247,15 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const bounty = bountyResult.response;
 
     return (
-        <Center>
-            <Stack
-                w="100%"
-                style={{ maxWidth: 540 }}
-                m={{ base: "xs", md: "lg" }}
-                gap="xl"
-            >
-                <BountyBox bountyIndex={bountyIndex} bounty={bounty} />
-                <ExploitCodeBox exploitCode={exploitCode} />
-                <ParticipantsBox bounty={bounty} />
-            </Stack>
-        </Center>
+        <Stack
+            style={{ maxWidth: 768, marginLeft: "auto", marginRight: "auto" }}
+            p={{ base: "xs", md: "lg" }}
+            gap="xl"
+        >
+            <BountyBox bountyIndex={bountyIndex} bounty={bounty} />
+            <ExploitCodeBox exploitCode={exploitCode} />
+            <ParticipantsBox bounty={bounty} />
+        </Stack>
     );
 };
 
