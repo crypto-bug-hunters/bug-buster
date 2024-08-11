@@ -11,9 +11,7 @@ export const Footer: FC = () => {
                     <ActionIcon
                         component="a"
                         href="https://x.com/BugBusterApp"
-                        data-disabled
                         size="xl"
-                        onClick={(event) => event.preventDefault()}
                     >
                         <IconBrandX color="white" />
                     </ActionIcon>
@@ -21,9 +19,7 @@ export const Footer: FC = () => {
                     <ActionIcon
                         component="a"
                         href="https://t.me/+G_CPMEhCHC04MzA5"
-                        data-disabled
                         size="xl"
-                        onClick={(event) => event.preventDefault()}
                     >
                         <IconBrandTelegram color="white" />
                     </ActionIcon>
