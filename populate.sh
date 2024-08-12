@@ -2,174 +2,202 @@
 
 set -euo pipefail
 
-BUSYBOX_ACCOUNT=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
-LUA_ACCOUNT=0x90F79bf6EB2c4f870365E785982E1f101E93b906
-SQLITE_ACCOUNT=0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65
-RICH_SPONSOR_ACCOUNT=0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc
+TOKEN_ADDRESS=$(cartesi address-book --json | jq -r .TestToken)
+TOKEN_DECIMALS=$(cast call "$TOKEN_ADDRESS" 'decimals()(uint8)')
+
+DEV_ACCOUNT=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+SPONSOR_ACCOUNT=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 HACKER_ACCOUNT=0x976EA74026E726554dB657fA54763abd0C3a0aa9
 
-LUA_LOGO="https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg"
-LUA_BOUNTY_DESC=$(cat <<-END
-Find bugs in Lua, a powerful, efficient, lightweight, embeddable scripting language!
+ONE_DAY=$((60*60*24))
+SPONSORSHIP_AMOUNT=$((10**"$TOKEN_DECIMALS"))
 
-Submitted Lua code will run inside a sanboxed Lua environment, to win the bounty the code must crash its interpreter or escape the sandbox and exit with segmentation fault status (code 139).
+# Approve ERC-20 token transfers through the ERC-20 portal
 
-The source code of the bounty can be inspected at:
-https://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/lua-bounty
-END
-)
+ERC20_PORTAL_ADDRESS=$(cartesi address-book --json | jq -r .ERC20Portal)
+TOKEN_ALLOWANCE=$(cast max-uint)
 
-SQLITE_LOGO="https://www.svgrepo.com/show/374094/sqlite.svg"
-SQLITE_BOUNTY_DESC=$(cat <<-END
-Find bugs in SQLite, the most used database engine in the world!
+cast send \
+    --unlocked \
+    --from "$SPONSOR_ACCOUNT" \
+    "$TOKEN_ADDRESS" \
+    'approve(address,uint256)' \
+    "$ERC20_PORTAL_ADDRESS" \
+    "$TOKEN_ALLOWANCE"
 
-Submitted SQL code will run inside a SQLite safe shell open on an empty database, to win the bounty the SQL code must crash the SQLite shell.
+#=====#
+# Lua #
+#=====#
 
-The source code of the bounty can be inspected at:
-https://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/sqlite-bounty
-END
-)
+LUA_INFO_FILE=tests/bounties/lua-bounty/info.json
+LUA_DESCRIPTION=$(jq -r '.description' "$LUA_INFO_FILE")
+LUA_IMG_LINK=$(jq -r '.imgLink' "$LUA_INFO_FILE")
+LUA_SPONSOR_NAME="Spencer Lunatik"
+LUA_HACKER_NAME="Hackett Rock"
 
-BUSYBOX_LOGO="https://uawartifacts.blob.core.windows.net/upload-files/Busy_Box_c74c024d34.svg"
-BUSYBOX_BOUNTY_DESC=$(cat <<-END
-Find bugs in BusyBox, a software suite that provides several Unix utilities!
+# 5.4.3
 
-Did you know it is one of the most downloaded software in Docker Hub, with more than one billion downloads?
+bounty_index=$(go run ./cli state | jq '.bounties | length')
 
-Submitted shell code will run inside a BusyBox with only ash utility enabled, to win this bounty the shell code must crash it.
-
-The source code of the bounty can be inspected at:
-https://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/busybox-bounty
-END
-)
-
-# send DApp address so we can generate vouchers later
-go run ./cli send dapp-address
-
-# Busybox 1.36.1
-CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
 go run ./cli send bounty \
-    -f $BUSYBOX_ACCOUNT \
-    -n "BusyBox 1.36.1" \
-    -i "$BUSYBOX_LOGO" \
-    -d "$BUSYBOX_BOUNTY_DESC" \
-    --duration $((14*86400)) \
-    -c "./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
+    -f "$DEV_ACCOUNT" \
+    -n "Lua 5.4.3" \
+    -i "$LUA_IMG_LINK" \
+    -d "$LUA_DESCRIPTION" \
+    --duration "$ONE_DAY" \
+    -p '/bounties/examples/lua-5.4.3-bounty_riscv64.tar.xz' \
+    -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
-    -f $BUSYBOX_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "BusyBox Sponsor" \
-    -v 0.99
-
-go run ./cli send sponsor \
-    -f $RICH_SPONSOR_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Rich Crypto Person" \
-    -v 1.337
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$LUA_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
 
 go run ./cli send exploit \
-    -f $HACKER_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Hacker" \
-    -e "./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh"
+    -f "$HACKER_ACCOUNT" \
+    -b "$bounty_index" \
+    -e 'tests/bounties/lua-bounty/exploit-lua-5.4.3.lua' \
+    -n "$LUA_HACKER_NAME"
 
-# Lua 5.4.3
-CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
+# 5.4.6
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
 go run ./cli send bounty \
-    -f $LUA_ACCOUNT \
-    -n "Lua 5.4.3" \
-    -i "$LUA_LOGO" \
-    -d "$LUA_BOUNTY_DESC" \
-    --duration $((30*86400)) \
-    -c "./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
-
-go run ./cli send sponsor \
-    -f $LUA_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Lua Sponsor" \
-    -v 0.05
-
-go run ./cli send sponsor \
-    -f $RICH_SPONSOR_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Rich Crypto Person" \
-    -v 1.337
-
-# go run ./cli send exploit \
-#     -f $HACKER_ACCOUNT \
-#     -b $CURR_BOUNTY \
-#     -n "The Hacker" \
-#     -e "./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua"
-
-# Lua 5.4.6
-CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
-go run ./cli send bounty \
-    -f $LUA_ACCOUNT \
+    -f "$DEV_ACCOUNT" \
     -n "Lua 5.4.6" \
-    -i "$LUA_LOGO" \
-    -d "$LUA_BOUNTY_DESC" \
-    --duration $((60*86400)) \
-    -c "./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz"
+    -i "$LUA_IMG_LINK" \
+    -d "$LUA_DESCRIPTION" \
+    --duration "$ONE_DAY" \
+    -p '/bounties/examples/lua-5.4.6-bounty_riscv64.tar.xz' \
+    -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
-    -f $LUA_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Lua Sponsor" \
-    -v 0.05
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$LUA_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
 
-go run ./cli send sponsor \
-    -f $RICH_SPONSOR_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Rich Crypto Person" \
-    -v 1.337
+#========#
+# SQLite #
+#========#
 
-# SQLite 3.32.2
-CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
+SQLITE_INFO_FILE=tests/bounties/sqlite-bounty/info.json
+SQLITE_DESCRIPTION=$(jq -r '.description' "$SQLITE_INFO_FILE")
+SQLITE_IMG_LINK=$(jq -r '.imgLink' "$SQLITE_INFO_FILE")
+SQLITE_SPONSOR_NAME="Spencer D. B. M. S."
+SQLITE_HACKER_NAME="Hackett Query"
+
+# 3.32.2
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
 go run ./cli send bounty \
-    -f $SQLITE_ACCOUNT \
+    -f "$DEV_ACCOUNT" \
     -n "SQLite 3.32.2" \
-    -i "$SQLITE_LOGO" \
-    -d "$SQLITE_BOUNTY_DESC" \
-    --duration $((50*86400)) \
-    -c "./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
+    -i "$SQLITE_IMG_LINK" \
+    -d "$SQLITE_DESCRIPTION" \
+    --duration "$ONE_DAY" \
+    -p '/bounties/examples/sqlite-3.32.2-bounty_riscv64.tar.xz' \
+    -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
-    -f $SQLITE_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "SQLite Sponsor" \
-    -v 0.32
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$SQLITE_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
+
+go run ./cli send exploit \
+    -f "$HACKER_ACCOUNT" \
+    -b "$bounty_index" \
+    -e 'tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql' \
+    -n "$SQLITE_HACKER_NAME"
+
+# 3.43.2
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
+go run ./cli send bounty \
+    -f "$DEV_ACCOUNT" \
+    -n "SQLite 3.43.2" \
+    -i "$SQLITE_IMG_LINK" \
+    -d "$SQLITE_DESCRIPTION" \
+    --duration "$ONE_DAY" \
+    -p '/bounties/examples/sqlite-3.43.2-bounty_riscv64.tar.xz' \
+    -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
-    -f $RICH_SPONSOR_ACCOUNT \
-    -b $CURR_BOUNTY \
-    -n "Rich Crypto Person" \
-    -v 1.337
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$SQLITE_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
 
-# go run ./cli send exploit \
-#     -f $HACKER_ACCOUNT \
-#     -b $CURR_BOUNTY \
-#     -n "The Hacker" \
-#     -e "./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql"
+#=========#
+# BusyBox #
+#=========#
 
-# SQLite 3.43.2
-# CURR_BOUNTY=$(go run ./cli state | jq '.bounties | length')
-# go run ./cli send bounty \
-#     -f $SQLITE_ACCOUNT \
-#     -n "SQLite 3.43.2" \
-#     -i "$SQLITE_LOGO" \
-#     -d "$SQLITE_BOUNTY_DESC" \
-#     --duration $((90*86400)) \
-#     -c "./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz"
-# 
-# go run ./cli send sponsor \
-#     -f $SQLITE_ACCOUNT \
-#     -b $CURR_BOUNTY \
-#     -n "SQLite Sponsor" \
-#     -v 0.43
-# 
-# go run ./cli send sponsor \
-#     -f $RICH_SPONSOR_ACCOUNT \
-#     -b $CURR_BOUNTY \
-#     -n "Rich Crypto Person" \
-#     -v 1.337
+BUSYBOX_INFO_FILE=tests/bounties/busybox-bounty/info.json
+BUSYBOX_DESCRIPTION=$(jq -r '.description' "$BUSYBOX_INFO_FILE")
+BUSYBOX_IMG_LINK=$(jq -r '.imgLink' "$BUSYBOX_INFO_FILE")
+BUSYBOX_SPONSOR_NAME="Spencer Toolchain"
+BUSYBOX_HACKER_NAME="Hackett Linux"
+
+# 1.36.1
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
+go run ./cli send bounty \
+    -f "$DEV_ACCOUNT" \
+    -n "BusyBox 1.36.1" \
+    -i "$BUSYBOX_IMG_LINK" \
+    -d "$BUSYBOX_DESCRIPTION" \
+    --duration "$ONE_DAY" \
+    -p '/bounties/examples/busybox-1.36.1-bounty_riscv64.tar.xz' \
+    -t "$TOKEN_ADDRESS"
+
+go run ./cli send sponsor \
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$BUSYBOX_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
+
+go run ./cli send exploit \
+    -f "$HACKER_ACCOUNT" \
+    -b "$bounty_index" \
+    -e 'tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh' \
+    -n "$BUSYBOX_HACKER_NAME"
+
+#==========#
+# Solidity #
+#==========#
+
+SOLIDITY_INFO_FILE=tests/bounties/solidity-bounty/info.json
+SOLIDITY_DESCRIPTION=$(jq -r '.description' "$SOLIDITY_INFO_FILE")
+SOLIDITY_IMG_LINK=$(jq -r '.imgLink' "$SOLIDITY_INFO_FILE")
+SOLIDITY_SPONSOR_NAME="Spencer Smart"
+
+# 0.8.26
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
+go run ./cli send bounty \
+    -f "$DEV_ACCOUNT" \
+    -n "Solidity 0.8.26" \
+    -i "$SOLIDITY_IMG_LINK" \
+    -d "$SOLIDITY_DESCRIPTION" \
+    --duration "$ONE_DAY" \
+    -p '/bounties/examples/solidity-0.8.26-bounty_riscv64.tar.xz' \
+    -t "$TOKEN_ADDRESS"
+
+go run ./cli send sponsor \
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$SOLIDITY_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
