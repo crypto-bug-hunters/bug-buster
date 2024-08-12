@@ -15,14 +15,10 @@ export const Shell: FC<{ children: React.ReactNode }> = ({ children }) => {
             <AppShell.Header>
                 <Header />
             </AppShell.Header>
-            <AppShell.Main
-                mt={{ base: offset, sm: "7rem" }}
-                pb="8rem"
-                style={{ minHeight: "auto" }}
-            >
+            <AppShell.Main mt={{ base: offset, sm: "7rem" }} pb="8rem">
                 {children}
             </AppShell.Main>
-            <AppShell.Footer style={{ position: "relative" }}>
+            <AppShell.Footer>
                 <Footer />
             </AppShell.Footer>
         </AppShell>
