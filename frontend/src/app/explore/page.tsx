@@ -36,7 +36,6 @@ const Bounty: FC<{
                         style={{ maxWidth: "100%" }}
                         h="300"
                         fit="contain"
-                        p="sm"
                         alt="Bounty Image"
                         src={bounty.imgLink}
                         fallbackSrc="/static/default_app.webp"
