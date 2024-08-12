@@ -31,11 +31,12 @@ const Bounty: FC<{
     return (
         <Anchor href={"/bounty/" + index} underline="never">
             <Card h="100%">
-                <Card.Section>
+                <Card.Section style={{ overflow: "hidden" }}>
                     <Image
-                        h="100%"
+                        w="100%"
+                        h="300"
                         p="sm"
-                        fit="contain"
+                        fit="cover"
                         alt="Bounty Image"
                         src={bounty.imgLink}
                         fallbackSrc="/static/default_app.webp"
