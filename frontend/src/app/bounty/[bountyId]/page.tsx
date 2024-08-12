@@ -6,6 +6,7 @@ import {
     Center,
     Code,
     Group,
+    Flex,
     Stack,
     Image,
     Title,
@@ -33,6 +34,7 @@ import { useErc20Metadata, formatErc20Amount } from "../../../utils/erc20";
 import { BountyStatusBadgeGroup } from "../../../components/bountyStatus";
 import { ProfileCard } from "../../../components/profileCard";
 import { LinkButton } from "../../../components/linkbtn";
+import Link from "next/link";
 import { HasConnectedAccount } from "../../../components/hasConnectedAccount";
 import { transactionStatus } from "../../../utils/transactionStatus";
 
@@ -58,6 +60,7 @@ const WithdrawButton: FC<{
             }
             loading={addInputLoading}
             onClick={() => addInputWrite.write && addInputWrite.write()}
+            fullWidth
         >
             Withdraw
         </Button>
@@ -72,24 +75,34 @@ const ButtonsBox: FC<{
     const canWithdraw =
         bountyStatus.kind === "expired" && !bountyStatus.withdrawn;
     return (
-        <Group justify="left">
-            <LinkButton
+        <Flex
+            direction={{ base: "column", sm: "row" }}
+            gap="md"
+            justify={"space-between"}
+            w="100%"
+        >
+            <Button
+                component={Link}
                 href={`/bounty/${bountyIndex}/sponsor`}
                 disabled={!isOpen}
+                fullWidth
             >
                 Sponsor
-            </LinkButton>
-            <LinkButton
+            </Button>
+            <Button
+                component={Link}
                 href={`/bounty/${bountyIndex}/exploit`}
                 disabled={!isOpen}
+                fullWidth
+                visibleFrom="md"
             >
                 Submit exploit
-            </LinkButton>
+            </Button>
             <WithdrawButton
                 bountyIndex={bountyIndex}
                 canWithdraw={canWithdraw}
             />
-        </Group>
+        </Flex>
     );
 };
 
@@ -106,7 +119,9 @@ const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
                 <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
             </Group>
             <Image
-                w={300}
+                w="100%"
+                style={{ maxWidth: 365 }}
+                fit="cover"
                 src={bounty.imgLink}
                 alt="Bounty Image"
                 fallbackSrc="/static/default_app.webp"
@@ -133,7 +148,9 @@ const ExploitCodeBox: FC<{ exploitCode?: string }> = ({ exploitCode }) => {
         return (
             <Stack align="center">
                 <Title order={2}>Exploit Code</Title>
-                <Code block>{exploitCode}</Code>
+                <Code w="100%" block>
+                    {exploitCode}
+                </Code>
             </Stack>
         );
     }
@@ -162,8 +179,10 @@ const ParticipantsBox: FC<{
     );
 
     return (
-        <Stack align="center">
-            <Title order={2}>Participants</Title>
+        <Stack>
+            <Center>
+                <Title order={2}>Participants</Title>
+            </Center>
             {bounty.exploit && (
                 <ProfileCard
                     profile={bounty.exploit.hacker}
@@ -229,13 +248,15 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const bounty = bountyResult.response;
 
     return (
-        <Center p={20} mt={20}>
-            <Stack w={800} gap={50} align="center" justify="center">
-                <BountyBox bountyIndex={bountyIndex} bounty={bounty} />
-                <ExploitCodeBox exploitCode={exploitCode} />
-                <ParticipantsBox bounty={bounty} />
-            </Stack>
-        </Center>
+        <Stack
+            style={{ maxWidth: 768, marginLeft: "auto", marginRight: "auto" }}
+            p={{ base: "xs", md: "lg" }}
+            gap="xl"
+        >
+            <BountyBox bountyIndex={bountyIndex} bounty={bounty} />
+            <ExploitCodeBox exploitCode={exploitCode} />
+            <ParticipantsBox bounty={bounty} />
+        </Stack>
     );
 };
 

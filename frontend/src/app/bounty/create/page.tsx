@@ -104,7 +104,15 @@ const CreateBountyForm: FC = () => {
 
     return (
         <form>
-            <Stack w={800}>
+            <Stack
+                px={{ base: "xs", md: "lg" }}
+                pt="xl"
+                style={{
+                    maxWidth: 800,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                }}
+            >
                 <Title>Create bounty</Title>
                 <TextInput
                     withAsterisk
@@ -159,6 +167,7 @@ const CreateBountyForm: FC = () => {
                         addInputWait.isSuccess
                     }
                     loading={addInputLoading}
+                    fullWidth
                     onClick={() => addInputWrite.write && addInputWrite.write()}
                 >
                     Create
@@ -170,13 +179,7 @@ const CreateBountyForm: FC = () => {
 
 const CreateBountyPage: FC = () => {
     const theme = useMantineTheme();
-    return (
-        <Center>
-            <Box p={20} mt={50} bg={theme.colors.dark[7]}>
-                <CreateBountyForm />
-            </Box>
-        </Center>
-    );
+    return <CreateBountyForm />;
 };
 
 export default CreateBountyPage;

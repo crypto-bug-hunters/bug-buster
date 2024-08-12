@@ -146,7 +146,7 @@ const VoucherList: FC<{ vouchers: Voucher[]; account: Address }> = ({
     }
 
     return (
-        <Stack>
+        <Stack p={{ base: "xs", md: "lg" }}>
             <Center mt="xl">
                 <Text size="xl">Available vouchers:</Text>
             </Center>

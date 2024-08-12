@@ -3,7 +3,7 @@ import {
     Box,
     Button,
     Center,
-    Group,
+    Flex,
     Stack,
     Text,
     TextInput,
@@ -135,7 +135,15 @@ const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
 
     return (
         <form>
-            <Stack w={600}>
+            <Stack
+                px={{ base: "xs", md: "lg" }}
+                pt="xl"
+                style={{
+                    maxWidth: 800,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                }}
+            >
                 <Title>Sponsor bounty</Title>
                 <Text size="lg" fw={700} c="dimmed">
                     {bounty.name}
@@ -171,7 +179,11 @@ const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
                     placeholder="0"
                     {...form.getInputProps("amount")}
                 />
-                <Group justify="center">
+                <Flex
+                    direction={{ base: "column", sm: "row" }}
+                    gap="md"
+                    justify={"space-between"}
+                >
                     <Button
                         disabled={approveDisabled || !needApproval}
                         loading={approveLoading}
@@ -179,6 +191,7 @@ const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
                             approveWrite.write && approveWrite.write()
                         }
                         size="lg"
+                        fullWidth
                     >
                         Approve
                     </Button>
@@ -191,10 +204,11 @@ const AddSponsorshipForm: FC<ConcreteBountyParams> = ({
                             depositWrite.write && depositWrite.write()
                         }
                         size="lg"
+                        fullWidth
                     >
                         Deposit
                     </Button>
-                </Group>
+                </Flex>
             </Stack>
         </form>
     );
@@ -213,14 +227,10 @@ const AddSponsorshipPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             return <Center>{bountyResult.message}</Center>;
         case "success":
             return (
-                <Center>
-                    <Box p={20} mt={50} bg={theme.colors.dark[7]}>
-                        <AddSponsorshipForm
-                            bountyIndex={bountyIndex}
-                            bounty={bountyResult.response}
-                        />
-                    </Box>
-                </Center>
+                <AddSponsorshipForm
+                    bountyIndex={bountyIndex}
+                    bounty={bountyResult.response}
+                />
             );
     }
 };

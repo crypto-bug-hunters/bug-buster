@@ -37,7 +37,7 @@ export const ProfileCard: FC<{
 }> = ({ profile, badge, badgeColor, children }) => {
     return (
         <Card radius="md" shadow="sm">
-            <Stack p={20}>
+            <Stack>
                 <Group gap="lg">
                     <Avatar
                         src={profile.imgLink || ""}

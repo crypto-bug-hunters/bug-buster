@@ -4,16 +4,20 @@ import {
     Center,
     Title,
     ActionIcon,
-    Divider,
     Tooltip,
     Stack,
+    Box,
 } from "@mantine/core";
 import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { HasConnectedAccount } from "../components/hasConnectedAccount";
+import { useMediaQuery } from "@mantine/hooks";
+
+const breakPoint = "(min-width: 700px)";
 
 export default function ConnectButton() {
-    return <w3m-button />;
+    const matches = useMediaQuery(breakPoint);
+    return <w3m-button label={`${matches ? "Connect Wallet" : "Connect"}`} />;
 }
 
 const VoucherNotification: FC = () => {
@@ -32,28 +36,33 @@ const VoucherNotification: FC = () => {
 };
 
 export const Header: FC = () => {
+    const matches = useMediaQuery(breakPoint);
     return (
-        <Stack align="stretch" justify="flex-start" gap="5px">
+        <Stack align="stretch" justify="flex-start" gap="xs">
             <Group bg="gray">
-                <Center w="100%">
+                <Center w="100%" py="0.3rem">
                     <Anchor href="/notification" underline="never">
                         We are in Alpha stage, read more.
                     </Anchor>
                 </Center>
             </Group>
-            <Group h="100%" px={20}>
-                <Group justify="flex-end">
+            <Group
+                px={{ base: "xs", md: "lg" }}
+                pb="xs"
+                justify="space-between"
+                style={{ minWidth: 360 }}
+            >
+                <Box style={{ flexGrow: 1 }}>
                     <Anchor href="/" underline="never">
                         <Title>🪲 Bug Buster</Title>
                     </Anchor>
-                </Group>
-                <Group justify="flex-end" style={{ flex: 1 }}>
-                    <HasConnectedAccount>
-                        <VoucherNotification />
-                    </HasConnectedAccount>
-                    <Divider orientation="vertical" />
-                    <ConnectButton />
-                </Group>
+                </Box>
+
+                <HasConnectedAccount>
+                    <VoucherNotification />
+                </HasConnectedAccount>
+
+                <ConnectButton />
             </Group>
         </Stack>
     );

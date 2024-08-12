@@ -1,14 +1,19 @@
-import { Anchor, Group, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Group, Stack, Text, Title, Center } from "@mantine/core";
 import { FC } from "react";
 import { TELEGRAM_CHANNEL_URL, X_ACCOUNT_URL } from "../../utils/links";
 
 const WordsOfCaution: FC = () => {
     return (
         <Group justify="center">
-            <Stack align="center" w="60%">
+            <Stack
+                align="center"
+                p={{ base: "xs", md: "lg" }}
+                style={{ maxWidth: 800 }}
+            >
                 <Title mt="lg">
                     🚨 Considerations for early user adopters 🚨
                 </Title>
+
                 <Text>
                     Bug Buster is in alpha stage, which means its development is
                     heavily active, and changes (such as fixes and improvements)
