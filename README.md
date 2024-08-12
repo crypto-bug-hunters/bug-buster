@@ -22,12 +22,12 @@ For your purposes, not all dependencies may be required.
 To help you figure out which dependencies you actually need, here is a table of dependencies for each part of the code base.
 
 | Dependency | Version | Presentation | Back-end | Examples | Tests | Populate | CLI | Front-end |
-| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| `docker` | 26.1 | ☑️ | ☑️ | ☑️ | ☑️ | | | |
-| `go` | 1.21.1 | | | | | ☑️ | ☑️ | |
-| `jq` | 1.6 | | | | | ☑️ | | |
-| `pnpm` | 9.x | | | | | | | ☑️ |
-| `cartesi` | 0.14.0 | | ☑️ | | ☑️ | | | |
+| :-:        | :-:     | :-:          | :-:      | :-:      | :-:   | :-:      | :-: | :-:       |
+| `docker`   | 26.1    | :o:          | :o:      | :o:      | :o:   |          |     |           |
+| `go`       | 1.21.1  |              |          |          |       | :o:      | :o: |           |
+| `foundry`  | nightly |              |          |          |       | :o:      | :o: |           |
+| `jq`       | 1.6     |              |          |          |       | :o:      |     |           |
+| `pnpm`     | 9.x     |              | :o:      |          | :o:   | :o:      |     | :o:       |
 
 ## Presentation
 
@@ -66,12 +66,20 @@ Along with following exploits:
 
 ## Back-end
 
+### Set up
+
+First, you need to install the Cartesi CLI with `pnpm`.
+
+```sh
+pnpm i
+```
+
 ### Building the Cartesi Machine image
 
 #### From source
 
 ```sh
-cartesi build
+pnpm build
 ```
 
 #### From a tagged image
@@ -86,18 +94,25 @@ docker pull --platform linux/riscv64 ghcr.io/crypto-bug-hunters/bug-buster-machi
 Then, you can build the Cartesi Machine image like so.
 
 ```sh
-cartesi build --from-image ghcr.io/crypto-bug-hunters/bug-buster-machine:$VERSION
+pnpm exec cartesi build --from-image ghcr.io/crypto-bug-hunters/bug-buster-machine:$VERSION
 ```
 
 ### Running the Cartesi Node
 
 ```
-cartesi run
+pnpm start
 ```
 
 ## Tests
 
-Before running tests, make sure you built the image and bounties, you can build them with `make all`.
+Make sure you first built the machine image and bounties.
+Then, build the test image.
+
+```sh
+make test-image
+```
+
+Now, you may run the tests.
 
 ```sh
 make test
@@ -130,13 +145,18 @@ go run ./cli send dapp-address
 go run ./cli send bounty \
     -n "Lua Bounty" \
     -d "Description of Lua bounty" \
-    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz
+    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz \
+    -t 0x92C6bcA388E99d6B304f1Af3c3Cd749Ff0b591e2
 ```
 
 ### Sending sponsor
 
 ```sh
-go run ./cli send sponsor -b 0 -n "Sponsor Name" -v 0.05
+go run ./cli send sponsor \
+    -b 0 \
+    -n "Sponsor Name" \
+    -t 0x92C6bcA388E99d6B304f1Af3c3Cd749Ff0b591e2 \
+    -v 5000000
 ```
 
 ### Sending exploit
@@ -190,7 +210,7 @@ With this very tight schedule, some of the features were left out for later impl
 Below are some of those features.
 
 - Support ENS
-- Support other types of assets (ERC-20, ERC-721, and ERC-1155)
+- Support other types of assets (Ether, ERC-721, and ERC-1155)
 - Support syntax highlight on code blocks
 - Add optional one-time setup phase for applications
 - Add option to download bounty bundle

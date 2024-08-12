@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-TOKEN_ADDRESS=$(cartesi address-book --json | jq -r .TestToken)
+TOKEN_ADDRESS=$(pnpm exec cartesi address-book --json | jq -r .TestToken)
 TOKEN_DECIMALS=$(cast call "$TOKEN_ADDRESS" 'decimals()(uint8)')
 
 DEV_ACCOUNT=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
@@ -14,7 +14,7 @@ SPONSORSHIP_AMOUNT=$((10**"$TOKEN_DECIMALS"))
 
 # Approve ERC-20 token transfers through the ERC-20 portal
 
-ERC20_PORTAL_ADDRESS=$(cartesi address-book --json | jq -r .ERC20Portal)
+ERC20_PORTAL_ADDRESS=$(pnpm exec cartesi address-book --json | jq -r .ERC20Portal)
 TOKEN_ALLOWANCE=$(cast max-uint)
 
 cast send \

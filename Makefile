@@ -1,7 +1,4 @@
-all: bounties test-image image
-
-image:
-	cartesi build
+all: bounties test-image
 
 bounties:
 	$(MAKE) -C tests/bounties
@@ -11,9 +8,6 @@ test-image:
 
 test:
 	docker run -v $(shell pwd):/mnt --rm -it bug-buster-test-image lua5.4 tests/tests.lua
-
-run:
-	cartesi run
 
 run-frontend-dev:
 	cd frontend && pnpm dev
