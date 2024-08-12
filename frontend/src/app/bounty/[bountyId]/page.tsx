@@ -94,6 +94,7 @@ const ButtonsBox: FC<{
                 href={`/bounty/${bountyIndex}/exploit`}
                 disabled={!isOpen}
                 fullWidth
+                visibleFrom="md"
             >
                 Submit exploit
             </Button>

@@ -96,7 +96,12 @@ const Explore: FC = () => {
     return (
         <Stack>
             <HasConnectedAccount>
-                <Flex mt="lg" mr={{ base: "xs", md: "lg" }} justify="flex-end">
+                <Flex
+                    mt="lg"
+                    mr={{ base: "xs", md: "lg" }}
+                    justify="flex-end"
+                    visibleFrom="md"
+                >
                     <Link href={GOOGLE_BOUNTY_CREATION_FORM_URL}>
                         <Button size="lg">Create bounty</Button>
                     </Link>
