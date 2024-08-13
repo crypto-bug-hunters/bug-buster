@@ -1,0 +1,12 @@
+{
+    "name": "bug-buster",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "cartesi build",
+        "start": "cartesi run --disable-bundler --disable-paymaster"
+    },
+    "devDependencies": {
+        "@cartesi/cli": "0.16.0"
+    }
+}

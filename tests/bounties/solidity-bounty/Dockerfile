@@ -50,7 +50,7 @@ RUN cmake \
     -DUSE_Z3=OFF \
     -DTESTS=OFF
 
-RUN make -C solidity_${VERSION}/build -j `nproc` solc
+RUN make -C solidity_${VERSION}/build solc
 
 #
 # Create the .tar.xz file
