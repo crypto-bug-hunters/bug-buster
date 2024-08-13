@@ -76,7 +76,9 @@ jobs:
         run: pnpm i
 
       - name: Build Cartesi Machine image
-        run: pnpm exec cartesi build --from-image "${{ steps.build_machine.outputs.imageid }}"
+        run: |
+          pnpm exec cartesi build --from-image \
+            "$(echo ${{ steps.build_machine.outputs.digest }} | sed 's/^[^:]*://')"
 
       - name: Build Cartesi Node image
         id: build_node
