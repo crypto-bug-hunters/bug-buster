@@ -88,6 +88,7 @@ EOF
 FROM --platform=linux/riscv64 riscv64/ubuntu:22.04
 
 LABEL io.cartesi.sdk_version=0.6.0
+LABEL io.cartesi.sdk_version=0.9.0
 LABEL io.cartesi.rollups.ram_size=128Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 
