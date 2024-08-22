@@ -13,7 +13,7 @@ ifdef ACTIONS_RUNTIME_TOKEN
 ifdef ACTIONS_RUNTIME_URL
 ifdef BUILDX_BUILDER
 SCOPE=busybox-$(VERSION)-bounty
-DOCKEROPTIONS=--cache-from type=gha,scope=$(SCOPE) --cache-to type=gha,mode=max,scope=$(SCOPE) --builder $(BUILDX_BUILDER) --load
+DOCKEROPTIONS=--cache-from type=gha,scope=$(SCOPE) --cache-to type=gha,mode=max,scope=$(SCOPE) --load
 endif
 endif
 endif
