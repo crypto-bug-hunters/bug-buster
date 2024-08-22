@@ -2,7 +2,7 @@
 
 ################################################################################
 # cross build stage
-FROM ubuntu:22.04 as build-stage
+FROM ubuntu:24.04 as build-stage
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
@@ -39,7 +39,7 @@ RUN go build -o ./dapp ./contract
 
 ################################################################################
 # riscv64 build stage
-FROM --platform=linux/riscv64 riscv64/ubuntu:22.04 as riscv64-build-stage
+FROM --platform=linux/riscv64 ubuntu:24.04 as riscv64-build-stage
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
@@ -84,9 +84,8 @@ EOF
 
 ################################################################################
 # runtime stage: produces final image that will be executed
-FROM --platform=linux/riscv64 riscv64/ubuntu:22.04
+FROM --platform=linux/riscv64 ubuntu:24.04
 
-LABEL io.cartesi.sdk_version=0.6.0
 LABEL io.cartesi.sdk_version=0.9.0
 LABEL io.cartesi.rollups.ram_size=128Mi
 LABEL io.cartesi.rollups.data_size=128Mb
