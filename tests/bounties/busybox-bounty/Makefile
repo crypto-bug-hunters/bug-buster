@@ -8,6 +8,16 @@ BOUNTY_RISCV64_TAR=busybox-$(VERSION)-bounty_riscv64.tar.xz
 HARDEN_CFLAGS=-Os -D_FORTIFY_SOURCE=2 -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections -Wno-unused-result
 HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections -s
 
+# Use GitHub Actions cache when available
+ifdef ACTIONS_RUNTIME_TOKEN
+ifdef ACTIONS_RUNTIME_URL
+ifdef BUILDX_BUILDER
+SCOPE=busybox-$(VERSION)-bounty
+DOCKEROPTIONS=--cache-from type=gha,scope=$(SCOPE) --cache-to type=gha,mode=max,scope=$(SCOPE) --builder $(BUILDX_BUILDER) --load
+endif
+endif
+endif
+
 all: $(BOUNTY_TAR)
 
 riscv64: $(BOUNTY_RISCV64_TAR)
@@ -33,7 +43,7 @@ $(SOURCE_TAR):
 
 ifneq ($(ARCH), riscv64)
 $(BOUNTY_RISCV64_TAR): Dockerfile start.sh
-	docker build --tag busybox-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) .
+	docker build --tag busybox-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) $(DOCKEROPTIONS) .
 	docker create --platform=linux/riscv64 --name busybox-bounty-cp busybox-bounty-cp
 	docker cp busybox-bounty-cp:/root/$@ $@
 	docker rm busybox-bounty-cp
