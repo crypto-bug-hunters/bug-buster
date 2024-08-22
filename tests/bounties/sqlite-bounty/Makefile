@@ -11,6 +11,16 @@ HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections
 SQLITE_CFLAGS=-DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 SQLITE_LDFLAGS=-lm -s
 
+# Use GitHub Actions cache when available
+ifdef ACTIONS_RUNTIME_TOKEN
+ifdef ACTIONS_RUNTIME_URL
+ifdef BUILDX_BUILDER
+SCOPE=sqlite-$(VERSION)-bounty
+DOCKEROPTIONS=--cache-from type=gha,scope=$(SCOPE) --cache-to type=gha,mode=max,scope=$(SCOPE) --load
+endif
+endif
+endif
+
 all: $(BOUNTY_TAR)
 
 riscv64: $(BOUNTY_RISCV64_TAR)
@@ -37,7 +47,7 @@ $(SOURCE_TAR):
 
 ifneq ($(ARCH), riscv64)
 $(BOUNTY_RISCV64_TAR): Dockerfile start.sh
-	docker build --tag sqlite-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) .
+	docker build --tag sqlite-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) $(DOCKEROPTIONS) .
 	docker create --platform=linux/riscv64 --name sqlite-bounty-cp sqlite-bounty-cp
 	docker cp sqlite-bounty-cp:/root/$@ $@
 	docker rm sqlite-bounty-cp

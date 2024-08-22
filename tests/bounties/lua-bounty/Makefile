@@ -8,6 +8,16 @@ BOUNTY_RISCV64_TAR=lua-$(VERSION)-bounty_riscv64.tar.xz
 HARDEN_CFLAGS=-Os -D_FORTIFY_SOURCE=2 -fexceptions -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections
 HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections -s
 
+# Use GitHub Actions cache when available
+ifdef ACTIONS_RUNTIME_TOKEN
+ifdef ACTIONS_RUNTIME_URL
+ifdef BUILDX_BUILDER
+SCOPE=lua-$(VERSION)-bounty
+DOCKEROPTIONS=--cache-from type=gha,scope=$(SCOPE) --cache-to type=gha,mode=max,scope=$(SCOPE) --load
+endif
+endif
+endif
+
 all: $(BOUNTY_TAR)
 
 riscv64: $(BOUNTY_RISCV64_TAR)
@@ -31,7 +41,7 @@ $(SOURCE_TAR):
 
 ifneq ($(ARCH), riscv64)
 $(BOUNTY_RISCV64_TAR): Dockerfile start.sh bounty.lua
-	docker build --tag lua-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) .
+	docker build --tag lua-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) $(DOCKEROPTIONS) .
 	docker create --platform=linux/riscv64 --name lua-bounty-cp lua-bounty-cp
 	docker cp lua-bounty-cp:/root/$@ $@
 	docker rm lua-bounty-cp
