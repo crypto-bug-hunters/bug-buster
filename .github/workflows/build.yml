@@ -52,18 +52,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build machine image and push it to GitHub Container Registry
+      - name: Build machine image
         id: build_machine
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
+          load: true
           builder: ${{ steps.setup_buildx.outputs.name }}
           tags: ${{ steps.extract_metadata.outputs.tags }}
           labels: ${{ steps.extract_metadata.outputs.labels }}
           annotations: ${{ steps.extract_metadata.outputs.annotations }}
-          cache-from: type=gha,scope=ubuntu
-          cache-to: type=gha,mode=max,scope=ubuntu
+          cache-from: type=gha,scope=cartesi-machine-image
+          cache-to: type=gha,mode=max,scope=cartesi-machine-image
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -74,15 +74,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Install Node.js dependencies
         run: pnpm i
 
       - name: Build Cartesi Machine image
+        env:
+          IMAGE_ID: ${{ steps.build_machine.outputs.imageid }}
         run: |
-          pnpm exec cartesi build --from-image \
-            "$(echo ${{ steps.build_machine.outputs.digest }} | sed 's/^[^:]*://')"
+          pnpm exec cartesi build --from-image "$IMAGE_ID"
 
       - name: Build Cartesi Node image
         id: build_node
@@ -91,11 +92,18 @@ jobs:
             jq -r '"image=\(.image)"' >> "$GITHUB_OUTPUT"
 
       - name: Create tags for Cartesi Node image
+        env:
+          METADATA_JSON: ${{ steps.extract_metadata.outputs.json }}
+          CARTESI_NODE_IMAGE: ${{ steps.build_node.outputs.image }}
         run: |
-          echo "${{ steps.extract_metadata.outputs.json }}" | \
+          echo "$METADATA_JSON" | \
             jq -r '.tags[]' | \
             sed "s/${{ env.CARTESI_MACHINE_IMAGE_NAME }}/${{ env.CARTESI_NODE_IMAGE_NAME }}/" | \
-            xargs -n1 docker image tag "${{ steps.build_node.outputs.image }}"
+            xargs -d '\n' -n1 docker image tag "$CARTESI_NODE_IMAGE"
+
+      - name: Push Cartesi Machine image
+        run: |
+          docker image push --all-tags "${{ env.REGISTRY }}/${{ env.CARTESI_MACHINE_IMAGE_NAME }}"
 
       - name: Push Cartesi Node image
         run: |
