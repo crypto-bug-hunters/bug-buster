@@ -17,6 +17,7 @@ apt install -y --no-install-recommends \
 EOF
 
 ARG GOVERSION=1.21.1
+ARG GOVERSION=1.23.0
 
 WORKDIR /opt/build
 
