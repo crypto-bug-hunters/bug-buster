@@ -1,4 +1,4 @@
-FROM --platform=linux/riscv64 riscv64/ubuntu:22.04
+FROM --platform=linux/riscv64 ubuntu:24.04
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y --no-install-recommends ca-certificates build-essential wget xz-utils
 WORKDIR /root
