@@ -1,8 +1,8 @@
-# syntax=docker.io/docker/dockerfile:1.4
+# syntax=docker.io/docker/dockerfile:1
 
 ################################################################################
 # cross build stage
-FROM ubuntu:24.04 as build-stage
+FROM --platform=linux/amd64 ubuntu:24.04 as build-stage
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
@@ -83,46 +83,64 @@ make LDFLAGS=-static
 EOF
 
 ################################################################################
+# generate chiselled rootfs
+FROM --platform=linux/riscv64 ubuntu:24.04 AS chiselled-rootfs
+WORKDIR /rootfs
+
+ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
+ADD https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb /
+RUN dpkg -x /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb /rootfs
+
+# Get chisel binary
+ARG CHISEL_VERSION=0.10.0
+ADD "https://github.com/canonical/chisel/releases/download/v${CHISEL_VERSION}/chisel_v${CHISEL_VERSION}_linux_riscv64.tar.gz" chisel.tar.gz
+RUN tar -xvf chisel.tar.gz -C /usr/bin/
+
+ADD "https://github.com/cartesi/chisel-releases.git#24.04/bug-buster-dependencies" /chisel-24.04
+RUN chisel cut \
+    --release /chisel-24.04 \
+    --root /rootfs \
+    --arch=riscv64 \
+    # base rootfs dependencies
+    base-files_base \
+    base-files_release-info \
+    base-passwd_data \
+    # machine-emulator-tools dependencies
+    libgcc-s1_libs \
+    busybox-static_bins \
+    # bug-buster
+    libasan6_libs \
+    libasan8_libs \
+    xz-utils_bins
+
+RUN <<EOF
+set -e
+mkdir -p /rootfs/proc
+mkdir -p /rootfs/sys
+mkdir -p /rootfs/dev
+ln -s /usr/bin/busybox bin/sh
+sed -i '/^root/s/bash/sh/g' etc/passwd
+EOF
+
+################################################################################
 # runtime stage: produces final image that will be executed
-FROM --platform=linux/riscv64 ubuntu:24.04
+FROM --platform=linux/riscv64 scratch
 
 LABEL io.cartesi.sdk_version=0.9.0
 LABEL io.cartesi.rollups.ram_size=128Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 
-ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
-ARG MACHINE_EMULATOR_TOOLS_DEB=machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
-ARG DEBIAN_FRONTEND=noninteractive
-RUN <<EOF
-set -eu
-apt-get update
-apt-get upgrade -y
-apt-get install -y --no-install-recommends \
-    busybox-static \
-    ca-certificates \
-    curl \
-    libasan6 \
-    libasan8 \
-    xz-utils
-curl -o ${MACHINE_EMULATOR_TOOLS_DEB} -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/${MACHINE_EMULATOR_TOOLS_DEB}
-dpkg -i ${MACHINE_EMULATOR_TOOLS_DEB}
-rm ${MACHINE_EMULATOR_TOOLS_DEB}
-rm -rf /var/lib/apt/lists/*
-EOF
-
 COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/bwrapbox/seccomp-filter.bpf
 
-RUN useradd --home-dir /bounty bounty
-RUN mkdir -p /bounties /bounties/examples /bounty
-RUN chown bounty:bounty /bounty
-
 ENV PATH="/opt/cartesi/bin:${PATH}"
 
 WORKDIR /opt/cartesi/dapp
+COPY --from=chiselled-rootfs /rootfs /
 COPY --from=build-stage /opt/build/dapp .
 COPY --chmod=755 skel/cartesi-init /usr/sbin/cartesi-init
+COPY --chmod=755 skel/bounty-home /usr/sbin/cartesi-init.d/bounty-home
 COPY --chmod=755 skel/bounty-run /usr/bin/bounty-run
 COPY --chmod=644 tests/bounties/**/*-bounty_riscv64.tar.xz /bounties/examples
 

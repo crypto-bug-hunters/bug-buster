@@ -1,0 +1,5 @@
+#!/bin/busybox sh
+
+busybox adduser -h /bounty bounty
+busybox mkdir -p /bounties /bounties/examples /bounty
+busybox chown bounty:bounty /bounty
