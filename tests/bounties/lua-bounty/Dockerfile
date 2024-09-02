@@ -1,6 +1,9 @@
-FROM --platform=linux/riscv64 ubuntu:24.04
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y --no-install-recommends ca-certificates build-essential wget xz-utils
+FROM --platform=linux/riscv64 ubuntu:noble-20240801
+RUN apt-get install -y --update --no-install-recommends \
+  build-essential=12.10ubuntu1 \
+  ca-certificates=20240203 \
+  wget=1.21.4-1ubuntu4.1 \
+  xz-utils=5.6.1+really5.4.5-1build0.1
 WORKDIR /root
 COPY Makefile .
 COPY bounty.lua .

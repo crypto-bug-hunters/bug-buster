@@ -1,13 +1,12 @@
-FROM ubuntu:24.04 as base-builder
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y --no-install-recommends \
-    build-essential \
-    ca-certificates \
-    crossbuild-essential-riscv64 \
-    git \
-    make \
-    wget \
-    xz-utils
+FROM ubuntu:noble-20240801 as base-builder
+RUN apt-get install -y --update --no-install-recommends \
+    build-essential=12.10ubuntu1 \
+    ca-certificates=20240203 \
+    crossbuild-essential-riscv64=12.10ubuntu1 \
+    git=1:2.43.0-1ubuntu7.1 \
+    make=4.3-4.1build2 \
+    wget=1.21.4-1ubuntu4.1 \
+    xz-utils=5.6.1+really5.4.5-1build0.1
 
 #
 # Build Boost
@@ -32,7 +31,7 @@ RUN ./b2 toolset=gcc-riscv64 link=static variant=release runtime-link=static \
 
 FROM base-builder as solidity-builder
 WORKDIR /opt/build
-RUN apt-get install -y --no-install-recommends cmake
+RUN apt-get install -y --no-install-recommends cmake=3.28.3-1build7
 ARG VERSION
 RUN wget -O solidity-${VERSION}.tar.gz https://github.com/ethereum/solidity/releases/download/v${VERSION}/solidity_${VERSION}.tar.gz
 RUN tar xzf solidity-${VERSION}.tar.gz

@@ -2,18 +2,17 @@
 
 ################################################################################
 # cross build stage
-FROM ubuntu:24.04 as build-stage
+FROM ubuntu:noble-20240801 as build-stage
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
 set -e
 apt update
-apt upgrade -y
 apt install -y --no-install-recommends \
-    build-essential \
-    ca-certificates \
-    g++-riscv64-linux-gnu \
-    wget
+    build-essential=12.10ubuntu1 \
+    ca-certificates=20240203 \
+    g++-riscv64-linux-gnu=4:13.2.0-7ubuntu1 \
+    wget=1.21.4-1ubuntu4.1
 EOF
 
 ARG GOVERSION=1.23.0
@@ -39,18 +38,17 @@ RUN go build -o ./dapp ./contract
 
 ################################################################################
 # riscv64 build stage
-FROM --platform=linux/riscv64 ubuntu:24.04 as riscv64-build-stage
+FROM --platform=linux/riscv64 ubuntu:noble-20240801 as riscv64-build-stage
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
 set -e
 apt update
-apt upgrade -y
 apt install -y --no-install-recommends \
-    lua5.4 \
-    build-essential \
-    ca-certificates \
-    wget
+    lua5.4=5.4.6-3build2 \
+    build-essential=12.10ubuntu1 \
+    ca-certificates=20240203 \
+    wget=1.21.4-1ubuntu4.1
 EOF
 
 WORKDIR /opt/build
@@ -84,7 +82,7 @@ EOF
 
 ################################################################################
 # runtime stage: produces final image that will be executed
-FROM --platform=linux/riscv64 ubuntu:24.04
+FROM --platform=linux/riscv64 ubuntu:noble-20240801
 
 LABEL io.cartesi.sdk_version=0.9.0
 LABEL io.cartesi.rollups.ram_size=128Mi
@@ -96,14 +94,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
 set -eu
 apt-get update
-apt-get upgrade -y
 apt-get install -y --no-install-recommends \
-    busybox-static \
-    ca-certificates \
-    curl \
-    libasan6 \
-    libasan8 \
-    xz-utils
+    busybox-static=1:1.36.1-6ubuntu3.1 \
+    ca-certificates=20240203 \
+    curl=8.5.0-2ubuntu10.3 \
+    libasan6=11.4.0-9ubuntu1 \
+    libasan8=14-20240412-0ubuntu1 \
+    xz-utils=5.6.1+really5.4.5-1build0.1
 curl -o ${MACHINE_EMULATOR_TOOLS_DEB} -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/${MACHINE_EMULATOR_TOOLS_DEB}
 dpkg -i ${MACHINE_EMULATOR_TOOLS_DEB}
 rm ${MACHINE_EMULATOR_TOOLS_DEB}
