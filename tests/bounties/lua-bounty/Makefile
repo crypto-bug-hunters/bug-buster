@@ -5,7 +5,7 @@ SOURCE_DIR=lua-$(VERSION)
 BOUNTY_TAR=lua-$(VERSION)-bounty_$(ARCH).tar.xz
 BOUNTY_RISCV64_TAR=lua-$(VERSION)-bounty_riscv64.tar.xz
 
-HARDEN_CFLAGS=-Os -D_FORTIFY_SOURCE=2 -fexceptions -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections
+HARDEN_CFLAGS=-O1 -ftrivial-auto-var-init=pattern -D_FORTIFY_SOURCE=2 -fexceptions -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections
 HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections -s
 
 # Use GitHub Actions cache when available

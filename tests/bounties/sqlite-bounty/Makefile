@@ -6,7 +6,7 @@ BOUNTY_TAR=sqlite-$(VERSION)-bounty_$(ARCH).tar.xz
 BOUNTY_RISCV64_TAR=sqlite-$(VERSION)-bounty_riscv64.tar.xz
 
 CC=gcc
-HARDEN_CFLAGS=-Os -D_FORTIFY_SOURCE=2 -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections
+HARDEN_CFLAGS=-O1 -ftrivial-auto-var-init=pattern -D_FORTIFY_SOURCE=2 -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections
 HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections
 SQLITE_CFLAGS=-DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 SQLITE_LDFLAGS=-lm -s

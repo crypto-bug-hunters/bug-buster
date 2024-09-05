@@ -36,6 +36,8 @@ ARG VERSION
 RUN wget -O solidity-${VERSION}.tar.gz https://github.com/ethereum/solidity/releases/download/v${VERSION}/solidity_${VERSION}.tar.gz
 RUN tar xzf solidity-${VERSION}.tar.gz
 COPY --from=boost-builder /opt/boost /opt/boost
+ENV CFLAGS="-O1 -ftrivial-auto-var-init=pattern -D_FORTIFY_SOURCE=2 -fPIE -fstack-clash-protection -fstack-protector-strong -ffunction-sections -fdata-sections -Wno-unused-result"
+ENV CXXFLAGS=$CFLAGS
 RUN cmake \
     -S solidity_${VERSION} \
     -B solidity_${VERSION}/build \
