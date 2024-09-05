@@ -1,4 +1,9 @@
 on:
+  pull_request:
+    paths-ignore:
+      - 'cli'
+      - 'cloud'
+      - 'frontend'
   push:
     branches:
       - 'main'
@@ -50,6 +55,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=branch
+            type=ref,event=pr
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
