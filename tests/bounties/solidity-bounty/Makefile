@@ -1,5 +1,5 @@
 ARCH=$(shell uname -m)
-VERSION=0.8.26
+VERSION=0.8.27
 BOUNTY_RISCV64_TAR=solidity-$(VERSION)-bounty_riscv64.tar.xz
 
 # Use GitHub Actions cache when available
