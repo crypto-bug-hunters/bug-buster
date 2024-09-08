@@ -22,6 +22,17 @@ if [ $status -ne 1 ]; then
     exit 1
 fi
 
+#
+# Validate line length limit - Avoids extremely long SPDX license identifiers,
+# which causes catastrophic backtracking in regex pattern matching
+# See: https://github.com/ethereum/solidity/issues/12208
+#
+awk 'length > 1000 { exit 1 }' $1
+status=$?
+if [ $status -ne 0 ]; then
+    >&2 echo "Invalid exploit code: Exceeded line length limit"
+    exit 1
+fi
 
 #
 # Run the exploit code
