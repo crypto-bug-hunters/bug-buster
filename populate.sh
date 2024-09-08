@@ -61,17 +61,17 @@ go run ./cli send exploit \
     -e 'tests/bounties/lua-bounty/exploit-lua-5.4.3.lua' \
     -n "$LUA_HACKER_NAME"
 
-# 5.4.6
+# 5.4.7
 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
-    -n "Lua 5.4.6" \
+    -n "Lua 5.4.7" \
     -i "$LUA_IMG_LINK" \
     -d "$LUA_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/lua-5.4.6-bounty_riscv64.tar.xz' \
+    -p '/bounties/examples/lua-5.4.7-bounty_riscv64.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
