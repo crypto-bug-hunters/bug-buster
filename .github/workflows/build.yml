@@ -72,6 +72,7 @@ jobs:
           context: .
           load: true
           builder: ${{ steps.setup_buildx.outputs.name }}
+          platforms: "linux/riscv64"
           tags: ${{ steps.extract_metadata.outputs.tags }}
           labels: ${{ steps.extract_metadata.outputs.labels }}
           annotations: ${{ steps.extract_metadata.outputs.annotations }}
