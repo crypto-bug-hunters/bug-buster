@@ -11,6 +11,8 @@ HARDEN_LDFLAGS=-pie -Wl,-z,now,-z,relro,--gc-sections
 SQLITE_CFLAGS=-DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 SQLITE_LDFLAGS=-lm -s
 
+TAR_FLAGS=--sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime
+
 # Use GitHub Actions cache when available
 ifdef ACTIONS_RUNTIME_TOKEN
 ifdef ACTIONS_RUNTIME_URL
@@ -28,7 +30,7 @@ riscv64: $(BOUNTY_RISCV64_TAR)
 download: | $(SOURCE_DIR)
 
 $(BOUNTY_TAR): sqlite3 start.sh
-	tar cfJ $@ $^
+	tar $(TAR_FLAGS) -cJf $@ $^
 
 sqlite3: $(SOURCE_DIR)/sqlite3.c
 	$(CC) -o sqlite3 $(HARDEN_CFLAGS) $(SQLITE_CFLAGS) $(SOURCE_DIR)/shell.c $(SOURCE_DIR)/sqlite3.c $(HARDEN_LDFLAGS) $(SQLITE_LDFLAGS)

@@ -59,4 +59,11 @@ RUN make -C solidity_${VERSION}/build solc
 
 RUN mv solidity_${VERSION}/build/solc/solc .
 COPY --chmod=755 start.sh .
-RUN tar cfJ /root/solidity-${VERSION}-bounty_riscv64.tar.xz solc start.sh
+RUN tar \
+    --sort=name \
+    --mtime=@0 \
+    --owner=0 \
+    --group=0 \
+    --numeric-owner \
+    --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
+    -cJf /root/solidity-${VERSION}-bounty_riscv64.tar.xz solc start.sh
