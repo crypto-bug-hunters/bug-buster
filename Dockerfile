@@ -9,9 +9,10 @@ ARG APT_UPDATE_SNAPSHOT=${NOBLE_DATE}T030400Z
 # cross base stage
 FROM ubuntu:noble-${NOBLE_DATE} AS base-build-stage
 
+ARG APT_UPDATE_SNAPSHOT
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
-set -e
+set -eu
 apt update
 apt install -y --no-install-recommends ca-certificates
 apt update --snapshot=${APT_UPDATE_SNAPSHOT}
@@ -19,11 +20,12 @@ EOF
 
 ################################################################################
 # riscv64 base stage
-FROM --platform=linux/riscv64 ubuntu:noble-${NOBLE_DATE} as base-target-stage
+FROM --platform=linux/riscv64 ubuntu:noble-${NOBLE_DATE} AS base-target-stage
 
+ARG APT_UPDATE_SNAPSHOT
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
-set -e
+set -eu
 apt update
 apt install -y --no-install-recommends ca-certificates
 apt update --snapshot=${APT_UPDATE_SNAPSHOT}
