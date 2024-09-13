@@ -91,6 +91,12 @@ jobs:
       - name: Install Node.js dependencies
         run: pnpm i
 
+      - name: Scan image
+        uses: anchore/scan-action@v3
+        with:
+          image: ${{ steps.build_machine.outputs.imageid }}
+          fail-build: false
+
       - name: Build Cartesi Machine image
         env:
           IMAGE_ID: ${{ steps.build_machine.outputs.imageid }}
