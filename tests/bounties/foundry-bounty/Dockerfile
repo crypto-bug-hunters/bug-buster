@@ -1,6 +1,8 @@
 ################################################################################
 # cross build stage
-FROM cartesi/toolchain as builder
+FROM rust-env:latest AS rust-builder
+
+FROM rust-builder AS forge-builder
 ARG VERSION
 ARG TARGET=target/
 ARG CARGO_BUILD_TARGET

@@ -9,14 +9,18 @@ all:
 
 	$(MAKE) -C solidity-bounty riscv64 VERSION=0.8.27
 
+	$(MAKE) -C foundry-bounty riscv64 VERSION=nightly
+	
 clean:
 	$(MAKE) -C lua-bounty clean
 	$(MAKE) -C sqlite-bounty clean
 	$(MAKE) -C busybox-bounty clean
 	$(MAKE) -C solidity-bounty clean
+	$(MAKE) -C foundry-bounty clean
 
 distclean:
 	$(MAKE) -C lua-bounty distclean
 	$(MAKE) -C sqlite-bounty distclean
 	$(MAKE) -C busybox-bounty distclean
 	$(MAKE) -C solidity-bounty distclean
+	$(MAKE) -C foundry-bounty distclean

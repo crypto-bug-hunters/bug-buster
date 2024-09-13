@@ -1,5 +1,7 @@
 ARCH?=$(shell uname -m)
-VERSION=nightly-fb86e5d3bf41f9cef3ccc7fbd04e1a422f20c29e
+ifndef VERSION
+    $(error VERSION is not set for Foundry tools (forge and cast).)
+endif
 SOURCE_TAR=foundry-$(VERSION).tar.bz2
 SOURCE_DIR=foundry-$(VERSION)
 BOUNTY_TAR=foundry-$(VERSION)-bounty_$(ARCH).tar.xz
