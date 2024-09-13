@@ -45,7 +45,7 @@ apt install -y --no-install-recommends \
     wget
 EOF
 
-ARG GOVERSION=1.23.0
+ARG GOVERSION=1.23.1
 
 WORKDIR /opt/build
 
