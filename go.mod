@@ -1,6 +1,6 @@
 module bug-buster
 
-go 1.22.0
+go 1.23.1
 
 require (
 	github.com/Khan/genqlient v0.6.0
