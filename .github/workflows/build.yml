@@ -91,6 +91,21 @@ jobs:
       - name: Install Node.js dependencies
         run: pnpm i
 
+      - name: Scan image
+        id: scan
+        uses: anchore/scan-action@v4
+        with:
+          image: ${{ steps.build_machine.outputs.imageid }}
+          fail-build: false
+
+      - name: Inspect action SARIF report
+        run: cat ${{ steps.scan.outputs.sarif }}
+
+      - name: Upload vulnerability report
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+
       - name: Build Cartesi Machine image
         env:
           IMAGE_ID: ${{ steps.build_machine.outputs.imageid }}
