@@ -93,7 +93,7 @@ jobs:
 
       - name: Scan image
         id: scan
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@v4
         with:
           image: ${{ steps.build_machine.outputs.imageid }}
           fail-build: false
