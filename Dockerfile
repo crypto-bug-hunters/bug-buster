@@ -101,6 +101,7 @@ apt-get install -y --no-install-recommends \
     libasan6=11.4.0-9ubuntu1 \
     libasan8=14-20240412-0ubuntu1 \
     xz-utils=5.6.1+really5.4.5-1build0.1
+apt-get install libatomic1
 curl -o ${MACHINE_EMULATOR_TOOLS_DEB} -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/${MACHINE_EMULATOR_TOOLS_DEB}
 dpkg -i ${MACHINE_EMULATOR_TOOLS_DEB}
 rm ${MACHINE_EMULATOR_TOOLS_DEB}
