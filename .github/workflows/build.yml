@@ -19,6 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      security-events: write
       packages: write
       contents: read
     env:
