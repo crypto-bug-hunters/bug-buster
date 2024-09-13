@@ -117,23 +117,22 @@ LABEL io.cartesi.sdk_version=0.9.0
 LABEL io.cartesi.rollups.ram_size=128Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 
-ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
-ARG MACHINE_EMULATOR_TOOLS_DEB=machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
 set -eu
 apt-get install -y --no-install-recommends \
     busybox-static \
-    ca-certificates \
-    curl \
     libasan6 \
     libasan8 \
     xz-utils
-curl -o ${MACHINE_EMULATOR_TOOLS_DEB} -fsSL https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/${MACHINE_EMULATOR_TOOLS_DEB}
-dpkg -i ${MACHINE_EMULATOR_TOOLS_DEB}
-rm ${MACHINE_EMULATOR_TOOLS_DEB}
 rm -rf /var/lib/apt/lists/*
 EOF
+
+# install machine-emulator-tools
+ARG MACHINE_EMULATOR_TOOLS_VERSION=0.14.1
+ADD https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHINE_EMULATOR_TOOLS_VERSION}/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb /tmp
+RUN dpkg -i /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb \
+  && rm /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 
 COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
