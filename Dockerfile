@@ -113,7 +113,8 @@ EOF
 # runtime stage: produces final image that will be executed
 FROM base-target-stage
 
-LABEL io.cartesi.sdk_version=0.9.0
+LABEL io.cartesi.sdk_name=cryptobughunters/sdk
+LABEL io.cartesi.sdk_version=0.11.1
 LABEL io.cartesi.rollups.ram_size=128Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 

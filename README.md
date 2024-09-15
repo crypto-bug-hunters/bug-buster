@@ -221,6 +221,15 @@ Below are some of those features.
 When running Bug Buster locally, you might want to perform some operations that would otherwise be impossible in a production environment.
 To this end, we advise you to install the [Foundry](https://book.getfoundry.sh/getting-started/installation) toolkit.
 
+### Shell
+
+If you want to run the machine locally through a shell interface, you can do so through the following command.
+Please make sure you have built the machine beforehand.
+
+```sh
+make shell
+```
+
 ### Time travel
 
 When testing sponsor withdrawals, it's handy to be able to instantly advance time past the expiry date of some bounty.
