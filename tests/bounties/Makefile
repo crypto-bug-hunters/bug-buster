@@ -3,7 +3,7 @@ all:
 	$(MAKE) -C lua-bounty bounty VERSION=5.4.7
 	$(MAKE) -C sqlite-bounty bounty VERSION=3.32.2
 	$(MAKE) -C sqlite-bounty bounty VERSION=3.43.2
-	$(MAKE) -C busybox-bounty riscv64 VERSION=1.36.1
+	$(MAKE) -C busybox-bounty bounty VERSION=1.36.1
 	$(MAKE) -C solidity-bounty riscv64 VERSION=0.8.27
 
 clean:
