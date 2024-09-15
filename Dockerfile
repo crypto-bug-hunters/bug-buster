@@ -125,6 +125,7 @@ apt-get install -y --no-install-recommends \
     busybox-static \
     libasan6 \
     libasan8 \
+    libatomic1 \
     xz-utils
 rm -rf /var/lib/apt/lists/*
 EOF
