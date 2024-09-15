@@ -1,5 +1,6 @@
 #!/bin/sh
-./lua bounty.lua $1
+source aliases.sh
+lua bounty.lua $1
 status=$?
 # Status is always 139 when program crashes with "Segmentation fault" (SIGSEGV)
 if [ $status -eq 139 ]; then
