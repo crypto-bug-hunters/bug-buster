@@ -135,12 +135,18 @@ ADD https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHI
 RUN dpkg -i /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb \
   && rm /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 
+# install built-ins
+ARG BUILTINS_VERSION=0.4.0
+ADD https://github.com/crypto-bug-hunters/builtins/releases/download/v${BUILTINS_VERSION}/builtins-${BUILTINS_VERSION}.tar.gz /tmp
+RUN tar -xf /tmp/builtins-${BUILTINS_VERSION}.tar.gz -C /usr/bin \
+    && rm /tmp/builtins-${BUILTINS_VERSION}.tar.gz
+
 COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/bwrapbox/seccomp-filter.bpf
 
 RUN useradd --home-dir /bounty bounty
-RUN mkdir -p /bounties /bounties/examples /bounty
+RUN mkdir -p /bounties /bounty
 RUN chown bounty:bounty /bounty
 
 ENV PATH="/opt/cartesi/bin:${PATH}"
@@ -149,7 +155,6 @@ WORKDIR /opt/cartesi/dapp
 COPY --from=build-stage /opt/build/dapp .
 COPY --chmod=755 skel/cartesi-init /usr/sbin/cartesi-init
 COPY --chmod=755 skel/bounty-run /usr/bin/bounty-run
-COPY --chmod=644 tests/bounties/**/*-bounty_riscv64.tar.xz /bounties/examples
 
 ENTRYPOINT ["rollup-init"]
 CMD ["/opt/cartesi/dapp/dapp"]
