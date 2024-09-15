@@ -1,23 +1,24 @@
-ifndef VERSION
-    $(error VERSION is not set for Solidity.)
-endif
-BOUNTY_RISCV64_TAR=solidity-$(VERSION)-bounty_riscv64.tar.xz
+PROGRAM=solc
+ALIAS=$(PROGRAM)
+TMP_DIR=tmp
+BOUNTY_DIR=$(TMP_DIR)/$(VERSION)
+BOUNTY_TAR=$(PROGRAM)-$(VERSION)-bounty.tar.xz
 
-# Use GitHub Actions cache when available
-ifdef ACTIONS_RUNTIME_TOKEN
-ifdef ACTIONS_RUNTIME_URL
-ifdef BUILDX_BUILDER
-SCOPE=solidity-$(VERSION)-bounty
-DOCKEROPTIONS=--cache-from type=gha,scope=$(SCOPE) --cache-to type=gha,mode=max,scope=$(SCOPE) --load
-endif
-endif
-endif
+FILES=start.sh
 
-riscv64: $(BOUNTY_RISCV64_TAR)
+bounty: $(BOUNTY_TAR)
 
-$(BOUNTY_RISCV64_TAR): Dockerfile start.sh
-	docker build --tag solidity-bounty-cp --file Dockerfile --progress plain --build-arg VERSION=$(VERSION) $(DOCKEROPTIONS) .
-	docker create --name solidity-bounty-cp solidity-bounty-cp
-	docker cp solidity-bounty-cp:/root/$@ $@
-	docker rm solidity-bounty-cp
-	touch $@
+$(BOUNTY_TAR): $(FILES) $(BOUNTY_DIR)/aliases.sh
+	tar -cJf $@ $(FILES) -C $(BOUNTY_DIR) aliases.sh
+
+$(BOUNTY_DIR)/aliases.sh: | $(BOUNTY_DIR)
+	echo "alias $(ALIAS)='$(PROGRAM)-$(VERSION)'" > $@
+
+$(BOUNTY_DIR):
+	mkdir -p $@
+
+clean:
+	rm -rf $(TMP_DIR)
+
+distclean: clean
+	rm -f $(PROGRAM)-*-bounty.tar.xz
