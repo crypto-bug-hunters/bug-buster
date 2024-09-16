@@ -36,7 +36,3 @@ run-frontend-prod:
 .PHONY: populate
 populate:
 	./populate.sh
-
-.PHONY: slides
-slides:
-	docker run --rm --init -v $$PWD:/home/marp/app/ -e MARP_USER="$(id -u):$(id -g)" marpteam/marp-cli slides.md --allow-local-files --pdf

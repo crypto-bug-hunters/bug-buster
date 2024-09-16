@@ -9,4 +9,3 @@ frontend/src/model/__generated__
 frontend/tsconfig.tsbuildinfo
 frontend/yarn.lock
 *.bin
-slides.pdf

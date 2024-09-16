@@ -29,15 +29,6 @@ To help you figure out which dependencies you actually need, here is a table of 
 | `jq`       | 1.6     |              |          |          |       | :o:      |     |           |
 | `pnpm`     | 9.x     |              | :o:      |          | :o:   | :o:      |     | :o:       |
 
-## Presentation
-
-For more info about the project, check out the slides.
-To build the slides, run the following command:
-
-```
-make slides
-```
-
 ## Building example bounties
 
 Before testing, you need to create the bounty bundles locally.
