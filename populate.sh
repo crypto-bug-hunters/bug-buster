@@ -29,7 +29,7 @@ cast send \
 # Lua #
 #=====#
 
-LUA_INFO_FILE=tests/bounties/lua-bounty/info.json
+LUA_INFO_FILE=tests/bounties/src/lua/info.json
 LUA_DESCRIPTION=$(jq -r '.description' "$LUA_INFO_FILE")
 LUA_IMG_LINK=$(jq -r '.imgLink' "$LUA_INFO_FILE")
 LUA_SPONSOR_NAME="Spencer Lunatik"
@@ -45,7 +45,7 @@ go run ./cli send bounty \
     -i "$LUA_IMG_LINK" \
     -d "$LUA_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/lua-5.4.3-bounty_riscv64.tar.xz' \
+    -c 'tests/bounties/dist/lua-5.4.3-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
@@ -58,7 +58,7 @@ go run ./cli send sponsor \
 go run ./cli send exploit \
     -f "$HACKER_ACCOUNT" \
     -b "$bounty_index" \
-    -e 'tests/bounties/lua-bounty/exploit-lua-5.4.3.lua' \
+    -e 'tests/bounties/src/lua/exploit-lua-5.4.3.lua' \
     -n "$LUA_HACKER_NAME"
 
 # 5.4.7
@@ -71,7 +71,7 @@ go run ./cli send bounty \
     -i "$LUA_IMG_LINK" \
     -d "$LUA_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/lua-5.4.7-bounty_riscv64.tar.xz' \
+    -c 'tests/bounties/dist/lua-5.4.7-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
@@ -85,7 +85,7 @@ go run ./cli send sponsor \
 # SQLite #
 #========#
 
-SQLITE_INFO_FILE=tests/bounties/sqlite-bounty/info.json
+SQLITE_INFO_FILE=tests/bounties/src/sqlite/info.json
 SQLITE_DESCRIPTION=$(jq -r '.description' "$SQLITE_INFO_FILE")
 SQLITE_IMG_LINK=$(jq -r '.imgLink' "$SQLITE_INFO_FILE")
 SQLITE_SPONSOR_NAME="Spencer D. B. M. S."
@@ -101,7 +101,7 @@ go run ./cli send bounty \
     -i "$SQLITE_IMG_LINK" \
     -d "$SQLITE_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/sqlite-3.32.2-bounty_riscv64.tar.xz' \
+    -c 'tests/bounties/dist/sqlite-3.32.2-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
@@ -114,7 +114,7 @@ go run ./cli send sponsor \
 go run ./cli send exploit \
     -f "$HACKER_ACCOUNT" \
     -b "$bounty_index" \
-    -e 'tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql' \
+    -e 'tests/bounties/src/sqlite/exploit-sqlite-3.32.2.sql' \
     -n "$SQLITE_HACKER_NAME"
 
 # 3.43.2
@@ -127,7 +127,7 @@ go run ./cli send bounty \
     -i "$SQLITE_IMG_LINK" \
     -d "$SQLITE_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/sqlite-3.43.2-bounty_riscv64.tar.xz' \
+    -c 'tests/bounties/dist/sqlite-3.43.2-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
@@ -141,7 +141,7 @@ go run ./cli send sponsor \
 # BusyBox #
 #=========#
 
-BUSYBOX_INFO_FILE=tests/bounties/busybox-bounty/info.json
+BUSYBOX_INFO_FILE=tests/bounties/src/busybox/info.json
 BUSYBOX_DESCRIPTION=$(jq -r '.description' "$BUSYBOX_INFO_FILE")
 BUSYBOX_IMG_LINK=$(jq -r '.imgLink' "$BUSYBOX_INFO_FILE")
 BUSYBOX_SPONSOR_NAME="Spencer Toolchain"
@@ -157,7 +157,7 @@ go run ./cli send bounty \
     -i "$BUSYBOX_IMG_LINK" \
     -d "$BUSYBOX_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/busybox-1.36.1-bounty_riscv64.tar.xz' \
+    -c 'tests/bounties/dist/busybox-1.36.1-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
@@ -170,14 +170,14 @@ go run ./cli send sponsor \
 go run ./cli send exploit \
     -f "$HACKER_ACCOUNT" \
     -b "$bounty_index" \
-    -e 'tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh' \
+    -e 'tests/bounties/src/busybox/exploit-busybox-1.36.1.sh' \
     -n "$BUSYBOX_HACKER_NAME"
 
 #==========#
 # Solidity #
 #==========#
 
-SOLIDITY_INFO_FILE=tests/bounties/solidity-bounty/info.json
+SOLIDITY_INFO_FILE=tests/bounties/src/solc/info.json
 SOLIDITY_DESCRIPTION=$(jq -r '.description' "$SOLIDITY_INFO_FILE")
 SOLIDITY_IMG_LINK=$(jq -r '.imgLink' "$SOLIDITY_INFO_FILE")
 SOLIDITY_SPONSOR_NAME="Spencer Smart"
@@ -192,7 +192,7 @@ go run ./cli send bounty \
     -i "$SOLIDITY_IMG_LINK" \
     -d "$SOLIDITY_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -p '/bounties/examples/solidity-0.8.27-bounty_riscv64.tar.xz' \
+    -c 'tests/bounties/dist/solc-0.8.27-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \
