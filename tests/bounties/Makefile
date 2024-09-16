@@ -41,8 +41,8 @@ $(BOUNTY_TAR): $(patsubst %,$(BOUNTY_SOURCE_DIR)/%,$(FILES)) $(BOUNTY_ALIAS_FILE
 		--mtime=@0 \
 		--owner=0 --group=0 --numeric-owner \
 		--pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
-		-C $(shell pwd)/$(BOUNTY_SOURCE_DIR) $(FILES) \
-		-C $(shell pwd)/$(BOUNTY_BUILD_DIR) aliases.sh
+		-C "$(shell pwd)/$(BOUNTY_SOURCE_DIR)" $(FILES) \
+		-C "$(shell pwd)/$(BOUNTY_BUILD_DIR)" aliases.sh
 
 $(DIST_DIR):
 	mkdir -p $@
