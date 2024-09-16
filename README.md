@@ -40,29 +40,13 @@ make slides
 
 ## Building example bounties
 
-Before building the machine image and testing, you need to compile the bounties binaries.
+Before testing, you need to create the bounty bundles locally.
 
 ```sh
 make bounties
 ```
 
-The following bounties will be compiled and can be used for testing:
-
-```
-./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz
-./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz
-./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz
-./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz
-./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz
-```
-
-Along with following exploits:
-
-```
-./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh
-./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
-./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql
-```
+This command will create `.tar.xz` files under `tests/bounties/dist`.
 
 ## Back-end
 
@@ -145,7 +129,7 @@ go run ./cli send dapp-address
 go run ./cli send bounty \
     -n "Lua Bounty" \
     -d "Description of Lua bounty" \
-    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz \
+    -c ./tests/bounties/dist/lua-5.4.3-bounty.tar.xz \
     -t 0x92C6bcA388E99d6B304f1Af3c3Cd749Ff0b591e2
 ```
 
@@ -165,7 +149,7 @@ go run ./cli send sponsor \
 go run ./cli send exploit \
     -b 0 \
     -n "Hacker Name" \
-    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+    -e ./tests/bounties/src/lua/exploit-lua-5.4.3.lua
 ```
 
 ### Withdraw bounty
@@ -179,7 +163,7 @@ go run ./cli send withdraw -b 0
 ```sh
 go run ./cli test \
     -b 0 \
-    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+    -e ./tests/bounties/src/lua/exploit-lua-5.4.3.lua
 ```
 
 ## Populating DApp
