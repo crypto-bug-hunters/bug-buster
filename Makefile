@@ -3,6 +3,12 @@ all: bounties test-image
 bounties:
 	$(MAKE) -C tests/bounties
 
+clean:
+	$(MAKE) -C tests/bounties clean
+
+distclean:
+	$(MAKE) -C tests/bounties distclean
+
 test-image:
 	docker build --tag bug-buster-test-image --file tests/Dockerfile --progress plain .
 
