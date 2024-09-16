@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 source aliases.sh
 # there is a flaw here, busybox could kill itself with SIGSEGV
 busybox ash <$1

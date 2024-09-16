@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 source aliases.sh
 rm -f /tmp/test.db
 # -safe was introduced only in recent versions

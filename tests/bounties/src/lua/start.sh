@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 source aliases.sh
 lua bounty.lua $1
 status=$?
