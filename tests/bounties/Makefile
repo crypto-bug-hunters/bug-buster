@@ -14,12 +14,24 @@ BOUNTY_ALIAS_FILE=$(BOUNTY_BUILD_DIR)/aliases.sh
 BOUNTY_TAR=$(DIST_DIR)/$(PROGRAM)-$(VERSION)-bounty.tar.xz
 
 all:
-	$(MAKE) bounty PROGRAM=lua EXTRAFILES=bounty.lua VERSION=5.4.3
-	$(MAKE) bounty PROGRAM=lua EXTRAFILES=bounty.lua VERSION=5.4.7
-	$(MAKE) bounty PROGRAM=sqlite ALIAS=sqlite3 VERSION=3.32.2
-	$(MAKE) bounty PROGRAM=sqlite ALIAS=sqlite3 VERSION=3.43.2
-	$(MAKE) bounty PROGRAM=busybox VERSION=1.36.1
-	$(MAKE) bounty PROGRAM=solc VERSION=0.8.27
+	$(MAKE) lua-bounty VERSION=5.4.3
+	$(MAKE) lua-bounty VERSION=5.4.7
+	$(MAKE) sqlite-bounty VERSION=3.32.2
+	$(MAKE) sqlite-bounty VERSION=3.43.2
+	$(MAKE) busybox-bounty VERSION=1.36.1
+	$(MAKE) solc-bounty VERSION=0.8.27
+
+lua-bounty:
+	$(MAKE) bounty PROGRAM=lua EXTRAFILES=bounty.lua
+
+sqlite-bounty:
+	$(MAKE) bounty PROGRAM=sqlite ALIAS=sqlite3
+
+busybox-bounty:
+	$(MAKE) bounty PROGRAM=busybox
+
+solc-bounty:
+	$(MAKE) bounty PROGRAM=solc
 
 bounty: $(BOUNTY_TAR)
 
