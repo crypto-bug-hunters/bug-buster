@@ -41,15 +41,15 @@ set -e
 apt install -y --no-install-recommends \
     build-essential \
     ca-certificates \
-    g++-riscv64-linux-gnu \
-    wget
+    curl \
+    g++-riscv64-linux-gnu
 EOF
 
 ARG GOVERSION=1.23.1
 
 WORKDIR /opt/build
 
-RUN wget https://go.dev/dl/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz && \
+RUN curl -L -R -O https://go.dev/dl/go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz && \
     tar -C /usr/local -xzf go${GOVERSION}.linux-$(dpkg --print-architecture).tar.gz
 
 ENV GOOS=linux
@@ -77,7 +77,7 @@ apt install -y --no-install-recommends \
     lua5.4 \
     build-essential \
     ca-certificates \
-    wget
+    curl
 EOF
 
 WORKDIR /opt/build
@@ -87,7 +87,7 @@ ARG BUBBLEWRAP_VER=0.8.0
 RUN <<EOF
 set -eu
 apt-get install -y libseccomp-dev libcap-dev
-wget -O bubblewrap-${BUBBLEWRAP_VER}.tar.xz https://github.com/containers/bubblewrap/releases/download/v${BUBBLEWRAP_VER}/bubblewrap-${BUBBLEWRAP_VER}.tar.xz
+curl -L -R -O https://github.com/containers/bubblewrap/releases/download/v${BUBBLEWRAP_VER}/bubblewrap-${BUBBLEWRAP_VER}.tar.xz
 tar xf bubblewrap-${BUBBLEWRAP_VER}.tar.xz
 mv bubblewrap-${BUBBLEWRAP_VER} bubblewrap
 cd bubblewrap
@@ -100,7 +100,7 @@ ARG BWRAPBOX_VER=0.2.2
 COPY --chmod=466 bwrapbox/generate-rules.lua /tmp
 RUN <<EOF
 set -eu
-wget -O bwrapbox-${BWRAPBOX_VER}.tar.gz https://github.com/edubart/bwrapbox/archive/refs/tags/v${BWRAPBOX_VER}.tar.gz
+curl -L -R -o bwrapbox-${BWRAPBOX_VER}.tar.gz https://github.com/edubart/bwrapbox/archive/refs/tags/v${BWRAPBOX_VER}.tar.gz
 tar xf bwrapbox-${BWRAPBOX_VER}.tar.gz
 mv bwrapbox-${BWRAPBOX_VER} bwrapbox
 cd bwrapbox
