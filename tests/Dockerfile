@@ -1,4 +1,4 @@
-FROM cartesi/sdk:0.9.0
+FROM cryptobughunters/sdk:0.11.1
 
 RUN apt-get update
 RUN apt-get install -y \
