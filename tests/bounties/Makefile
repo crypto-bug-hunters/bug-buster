@@ -42,7 +42,8 @@ $(DIST_DIR):
 	mkdir -p $@
 
 $(BOUNTY_ALIAS_FILE): | $(BOUNTY_BUILD_DIR)
-	echo "alias $(ALIAS)='$(PROGRAM)-$(VERSION)'" > $@
+	echo "shopt -s expand_aliases" >> $@
+	echo "alias $(ALIAS)='$(PROGRAM)-$(VERSION)'" >> $@
 
 $(BOUNTY_BUILD_DIR):
 	mkdir -p $@
