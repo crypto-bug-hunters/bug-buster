@@ -2,12 +2,12 @@
 
 # This enforces that the packages downloaded from the repositories are the same
 # for the defined date, no matter when the image is built.
-ARG NOBLE_DATE=20240801
-ARG APT_UPDATE_SNAPSHOT=${NOBLE_DATE}T030400Z
+ARG UBUNTU_TAG=noble-20240827.1
+ARG APT_UPDATE_SNAPSHOT=20240827T030400Z
 
 ################################################################################
 # cross base stage
-FROM ubuntu:noble-${NOBLE_DATE} AS base-build-stage
+FROM ubuntu:${UBUNTU_TAG} AS base-build-stage
 
 ARG APT_UPDATE_SNAPSHOT
 ARG DEBIAN_FRONTEND=noninteractive
@@ -20,7 +20,7 @@ EOF
 
 ################################################################################
 # riscv64 base stage
-FROM --platform=linux/riscv64 ubuntu:noble-${NOBLE_DATE} AS base-target-stage
+FROM --platform=linux/riscv64 ubuntu:${UBUNTU_TAG} AS base-target-stage
 
 ARG APT_UPDATE_SNAPSHOT
 ARG DEBIAN_FRONTEND=noninteractive
