@@ -24,7 +24,7 @@ jobs:
       contents: read
     env:
       PNPM_VERSION: 9
-      NODE_VERSION: 18
+      NODE_VERSION: 20
       CARTESI_MACHINE_IMAGE_NAME: bug-buster-machine
       CARTESI_NODE_IMAGE_NAME: bug-buster-node
       REGISTRY: ghcr.io/${{ github.repository_owner }}
