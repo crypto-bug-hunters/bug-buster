@@ -14,7 +14,7 @@ distclean:
 	$(MAKE) -C tests/bounties distclean
 
 .PHONY: test
-test:
+test: bounties
 	docker run -v "$(shell pwd):/mnt" --rm -it cryptobughunters/test-image:0.0.0 lua5.4 tests/tests.lua
 
 .PHONY: shell

@@ -113,19 +113,9 @@ pnpm exec cartesi build --from-image ghcr.io/crypto-bug-hunters/bug-buster-machi
 pnpm start
 ```
 
-## Building example bounties
-
-Before testing, you need to create the bounty bundles locally.
-
-```sh
-make bounties
-```
-
-This command will create `.tar.xz` files under `tests/bounties/dist`.
-
 ## Tests
 
-Make sure you first built the machine image and bounties.
+Make sure you first built the machine image.
 Then, you may run the tests.
 
 ```sh
