@@ -126,13 +126,7 @@ This command will create `.tar.xz` files under `tests/bounties/dist`.
 ## Tests
 
 Make sure you first built the machine image and bounties.
-Then, build the test image.
-
-```sh
-make test-image
-```
-
-Now, you may run the tests.
+Then, you may run the tests.
 
 ```sh
 make test

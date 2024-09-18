@@ -13,13 +13,9 @@ clean:
 distclean:
 	$(MAKE) -C tests/bounties distclean
 
-.PHONY: test-image
-test-image:
-	docker build --tag bug-buster-test-image --file tests/Dockerfile --progress plain .
-
 .PHONY: test
 test:
-	docker run -v "$(shell pwd):/mnt" --rm -it bug-buster-test-image lua5.4 tests/tests.lua
+	docker run -v "$(shell pwd):/mnt" --rm -it cryptobughunters/test-image:0.0.0 lua5.4 tests/tests.lua
 
 .PHONY: shell
 shell:
