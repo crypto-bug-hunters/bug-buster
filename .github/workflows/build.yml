@@ -39,14 +39,6 @@ jobs:
         id: setup_buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Expose GitHub Runtime
-        uses: crazy-max/ghaction-github-runtime@v3
-
-      - name: Build bounty examples
-        run: make bounties
-        env:
-          BUILDX_BUILDER: ${{ steps.setup_buildx.outputs.name }}
-
       - name: Extract metadata from Git refs and GitHub events
         id: extract_metadata
         uses: docker/metadata-action@v5
