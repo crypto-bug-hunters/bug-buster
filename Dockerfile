@@ -82,16 +82,6 @@ EOF
 
 WORKDIR /opt/build
 
-# install built-ins
-ARG BUILTINS_VERSION=0.4.0
-RUN <<EOF
-set -eu
-curl -L -R -O https://github.com/crypto-bug-hunters/builtins/releases/download/v${BUILTINS_VERSION}/builtins-${BUILTINS_VERSION}.tar.gz
-mkdir -p builtins
-tar -xf builtins-${BUILTINS_VERSION}.tar.gz -C builtins
-rm builtins-${BUILTINS_VERSION}.tar.gz
-EOF
-
 # install bubblewrap (for sanboxing)
 ARG BUBBLEWRAP_VER=0.8.0
 RUN <<EOF
@@ -120,6 +110,10 @@ make LDFLAGS=-static
 EOF
 
 ################################################################################
+# built-in binaries
+FROM ghcr.io/crypto-bug-hunters/builtins:0.5.0 AS builtins
+
+################################################################################
 # runtime stage: produces final image that will be executed
 FROM base-target-stage
 
@@ -146,7 +140,14 @@ ADD https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHI
 RUN dpkg -i /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb \
   && rm /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 
-COPY --from=riscv64-build-stage /opt/build/builtins/* /usr/bin
+COPY --from=builtins --chmod=755 /opt/bundle/busybox-1.36.1-linux-riscv64 /usr/bin/busybox-1.36.1
+COPY --from=builtins --chmod=755 /opt/bundle/forge-2cdbfac-linux-riscv64 /usr/bin/forge-2cdbfac
+COPY --from=builtins --chmod=755 /opt/bundle/lua-5.4.3-linux-riscv64 /usr/bin/lua-5.4.3
+COPY --from=builtins --chmod=755 /opt/bundle/lua-5.4.7-linux-riscv64 /usr/bin/lua-5.4.7
+COPY --from=builtins --chmod=755 /opt/bundle/reth-1.0.5-linux-riscv64 /usr/bin/reth-1.0.5
+COPY --from=builtins --chmod=755 /opt/bundle/solc-0.8.27-linux-riscv64 /usr/bin/solc-0.8.27
+COPY --from=builtins --chmod=755 /opt/bundle/sqlite-3.32.2-linux-riscv64 /usr/bin/sqlite-3.32.2
+COPY --from=builtins --chmod=755 /opt/bundle/sqlite-3.43.2-linux-riscv64 /usr/bin/sqlite-3.43.2
 COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/bwrapbox/seccomp-filter.bpf
