@@ -111,7 +111,8 @@ EOF
 
 ################################################################################
 # built-in binaries
-FROM ghcr.io/crypto-bug-hunters/builtins:0.5.0 AS builtins
+ARG BUILTINS_VERSION=0.5.0
+FROM ghcr.io/crypto-bug-hunters/builtins:${BUILTINS_VERSION} AS builtins
 
 ################################################################################
 # runtime stage: produces final image that will be executed
