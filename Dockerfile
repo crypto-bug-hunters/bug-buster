@@ -5,6 +5,9 @@
 ARG UBUNTU_TAG=noble-20240827.1
 ARG APT_UPDATE_SNAPSHOT=20240827T030400Z
 
+# Built-in binaries version
+ARG BUILTINS_VERSION=0.5.0
+
 ################################################################################
 # cross base stage
 FROM --platform=$BUILDPLATFORM ubuntu:${UBUNTU_TAG} AS base-build-stage
@@ -111,7 +114,6 @@ EOF
 
 ################################################################################
 # built-in binaries
-ARG BUILTINS_VERSION=0.5.0
 FROM ghcr.io/crypto-bug-hunters/builtins:${BUILTINS_VERSION} AS builtins
 
 ################################################################################
