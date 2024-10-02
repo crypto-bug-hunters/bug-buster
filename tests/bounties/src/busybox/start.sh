@@ -1,5 +1,7 @@
-#!/bin/sh
-./lua bounty.lua $1
+#!/usr/bin/env bash
+source aliases.sh
+# there is a flaw here, busybox could kill itself with SIGSEGV
+busybox ash <$1
 status=$?
 # Status is always 139 when program crashes with "Segmentation fault" (SIGSEGV)
 if [ $status -eq 139 ]; then

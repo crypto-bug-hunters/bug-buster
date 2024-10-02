@@ -1,4 +1,0 @@
-{
-    "description": "Find bugs in SQLite, the most used database engine in the world!\n\nSubmitted SQL code will run inside a SQLite safe shell open on an empty database, to win the bounty the SQL code must crash the SQLite shell.\n\nThe source code of the bounty can be inspected at:\nhttps://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/sqlite-bounty",
-    "imgLink": "https://www.svgrepo.com/show/374094/sqlite.svg"
-}

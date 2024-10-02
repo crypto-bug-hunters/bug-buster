@@ -93,8 +93,8 @@ local second_bounty_final_state
 local third_bounty_final_state
 
 describe("tests on Lua bounty", function()
-    local bounty_code = "tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz"
-    local bounty_valid_exploit = readfile("tests/bounties/lua-bounty/exploit-lua-5.4.3.lua")
+    local bounty_code = "tests/bounties/dist/lua-5.4.3-bounty.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/src/lua/exploit-lua-5.4.3.lua")
     local bounty_invalid_exploit = [[print 'hello world']]
     local bounty_index = 0
     local bounty_deadline = timestamp + 3600
@@ -457,8 +457,8 @@ end
 end)
 
 describe("tests on SQLite bounty", function()
-    local sqlite33202_bounty_code = "tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz"
-    local bounty_valid_exploit = readfile("tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql")
+    local sqlite33202_bounty_code = "tests/bounties/dist/sqlite-3.32.2-bounty.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/src/sqlite/exploit-sqlite-3.32.2.sql")
     local bounty_index = 1
     local bounty_deadline = timestamp + 7200
 
@@ -671,8 +671,8 @@ describe("tests on SQLite bounty", function()
 end)
 
 describe("tests on BusyBox bounty", function()
-    local sqlite33202_bounty_code = "tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz"
-    local bounty_valid_exploit = readfile("tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh")
+    local sqlite33202_bounty_code = "tests/bounties/dist/busybox-1.36.1-bounty.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/src/busybox/exploit-busybox-1.36.1.sh")
     local bounty_index = 2
     local bounty_deadline = timestamp + 7200
 
@@ -760,7 +760,7 @@ end)
 
 describe("tests on (linked) Lua bounty", function()
     local bounty_path = "/bounties/0.tar.xz"
-    local bounty_valid_exploit = readfile("tests/bounties/lua-bounty/exploit-lua-5.4.3.lua")
+    local bounty_valid_exploit = readfile("tests/bounties/src/lua/exploit-lua-5.4.3.lua")
     local bounty_invalid_exploit = [[print 'hello world']]
     local bounty_index = 3
     local bounty_deadline = timestamp + 3600

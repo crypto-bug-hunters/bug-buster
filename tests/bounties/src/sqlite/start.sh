@@ -1,10 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source aliases.sh
 rm -f /tmp/test.db
 # -safe was introduced only in recent versions
 if sqlite3 -safe </dev/null 2>/dev/null; then
-    ./sqlite3 -safe /tmp/test.db <$1
+    sqlite3 -safe /tmp/test.db <$1
 else
-    ./sqlite3 /tmp/test.db <$1
+    sqlite3 /tmp/test.db <$1
 fi
 status=$?
 rm -f /tmp/test.db

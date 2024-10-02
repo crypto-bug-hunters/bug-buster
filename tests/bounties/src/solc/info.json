@@ -1,0 +1,4 @@
+{
+  "description": "Find bugs in Solidity, the most popular programming language for smart contracts!\n\nSubmit Solidity code and try to crash the compiler exit with a segmentation fault status (code 139).\n\nThe source code of the bounty can be inspected at:\nhttps://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/src/solidity",
+  "imgLink": "https://docs.soliditylang.org/en/v0.8.27/_static/img/logo-dark.svg"
+}

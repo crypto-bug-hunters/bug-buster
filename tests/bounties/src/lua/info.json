@@ -1,0 +1,4 @@
+{
+    "description": "Find bugs in Lua, a powerful, efficient, lightweight, embeddable scripting language!\n\nSubmitted Lua code will run inside a sanboxed Lua environment, to win the bounty the code must crash its interpreter or escape the sandbox and exit with segmentation fault status (code 139).\n\nThe source code of the bounty can be inspected at:\nhttps://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/src/lua",
+    "imgLink": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg"
+}

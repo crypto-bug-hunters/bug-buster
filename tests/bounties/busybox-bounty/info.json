@@ -1,4 +1,0 @@
-{
-    "description": "Find bugs in BusyBox, a software suite that provides several Unix utilities!\n\nDid you know it is one of the most downloaded software in Docker Hub, with more than one billion downloads?\n\nSubmitted shell code will run inside a BusyBox with only ash utility enabled, to win this bounty the shell code must crash it.\n\nThe source code of the bounty can be inspected at:\nhttps://github.com/crypto-bug-hunters/bug-buster/tree/main/tests/bounties/busybox-bounty",
-    "imgLink": "https://uawartifacts.blob.core.windows.net/upload-files/Busy_Box_c74c024d34.svg"
-}

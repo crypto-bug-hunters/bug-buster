@@ -19,49 +19,59 @@ If, however, no one is able to submit a valid exploit until a certain deadline, 
 ## Dependencies
 
 For your purposes, not all dependencies may be required.
-To help you figure out which dependencies you actually need, here is a table of dependencies for each part of the code base.
+To help you figure out which dependencies you actually need, here is a tree of dependencies for each part of the code base.
 
-| Dependency | Version | Presentation | Back-end | Examples | Tests | Populate | CLI | Front-end |
-| :-:        | :-:     | :-:          | :-:      | :-:      | :-:   | :-:      | :-: | :-:       |
-| `docker`   | 26.1    | :o:          | :o:      | :o:      | :o:   |          |     |           |
-| `go`       | 1.21.1  |              |          |          |       | :o:      | :o: |           |
-| `foundry`  | nightly |              |          |          |       | :o:      | :o: |           |
-| `jq`       | 1.6     |              |          |          |       | :o:      |     |           |
-| `pnpm`     | 9.x     |              | :o:      |          | :o:   | :o:      |     | :o:       |
+```mermaid
+flowchart LR
 
-## Presentation
+    %% External Dependencies
 
-For more info about the project, check out the slides.
-To build the slides, run the following command:
+    classDef dependency fill:#008DA5,color:#fff
 
-```
-make slides
-```
+    bash:::dependency
+    docker:::dependency
+    cast:::dependency
+    go:::dependency
+    jq:::dependency
+    make:::dependency
+    pnpm:::dependency
+    tar:::dependency
+    xz:::dependency
 
-## Building example bounties
+    %% Bug Buster Components
 
-Before building the machine image and testing, you need to compile the bounties binaries.
+    classDef component fill:#00F6FF,color:#000
 
-```sh
-make bounties
-```
+    BackEnd:::component
+    Shell:::component
+    BountyExamples:::component
+    Tests:::component
+    PopulateScript:::component
+    CLI:::component
+    FrontEnd:::component
 
-The following bounties will be compiled and can be used for testing:
+    %% Components -> Dependencies
 
-```
-./tests/bounties/busybox-bounty/busybox-1.36.1-bounty_riscv64.tar.xz
-./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz
-./tests/bounties/lua-bounty/lua-5.4.6-bounty_riscv64.tar.xz
-./tests/bounties/sqlite-bounty/sqlite-3.32.2-bounty_riscv64.tar.xz
-./tests/bounties/sqlite-bounty/sqlite-3.43.2-bounty_riscv64.tar.xz
-```
-
-Along with following exploits:
-
-```
-./tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh
-./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
-./tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql
+    BackEnd --> docker
+    BackEnd --> pnpm
+    Shell --> BackEnd
+    Shell --> docker
+    Shell --> make
+    BountyExamples --> make
+    BountyExamples --> tar
+    BountyExamples --> xz
+    Tests ---> docker
+    Tests ---> make
+    Tests --> BountyExamples
+    PopulateScript ---> bash
+    PopulateScript ---> cast
+    PopulateScript ---> jq
+    PopulateScript ---> pnpm
+    PopulateScript --> BountyExamples
+    PopulateScript --> CLI
+    CLI --> cast
+    CLI --> go
+    FrontEnd ---> pnpm
 ```
 
 ## Back-end
@@ -105,14 +115,8 @@ pnpm start
 
 ## Tests
 
-Make sure you first built the machine image and bounties.
-Then, build the test image.
-
-```sh
-make test-image
-```
-
-Now, you may run the tests.
+Make sure you first built the machine image.
+Then, you may run the tests.
 
 ```sh
 make test
@@ -145,7 +149,7 @@ go run ./cli send dapp-address
 go run ./cli send bounty \
     -n "Lua Bounty" \
     -d "Description of Lua bounty" \
-    -c ./tests/bounties/lua-bounty/lua-5.4.3-bounty_riscv64.tar.xz \
+    -c ./tests/bounties/dist/lua-5.4.3-bounty.tar.xz \
     -t 0x92C6bcA388E99d6B304f1Af3c3Cd749Ff0b591e2
 ```
 
@@ -165,7 +169,7 @@ go run ./cli send sponsor \
 go run ./cli send exploit \
     -b 0 \
     -n "Hacker Name" \
-    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+    -e ./tests/bounties/src/lua/exploit-lua-5.4.3.lua
 ```
 
 ### Withdraw bounty
@@ -179,7 +183,7 @@ go run ./cli send withdraw -b 0
 ```sh
 go run ./cli test \
     -b 0 \
-    -e ./tests/bounties/lua-bounty/exploit-lua-5.4.3.lua
+    -e ./tests/bounties/src/lua/exploit-lua-5.4.3.lua
 ```
 
 ## Populating DApp
@@ -220,6 +224,15 @@ Below are some of those features.
 
 When running Bug Buster locally, you might want to perform some operations that would otherwise be impossible in a production environment.
 To this end, we advise you to install the [Foundry](https://book.getfoundry.sh/getting-started/installation) toolkit.
+
+### Shell
+
+If you want to run the machine locally through a shell interface, you can do so through the following command.
+Please make sure you have built the machine beforehand.
+
+```sh
+make shell
+```
 
 ### Time travel
 
