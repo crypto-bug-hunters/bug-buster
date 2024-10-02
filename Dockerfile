@@ -6,7 +6,7 @@ ARG UBUNTU_TAG=noble-20240827.1
 ARG APT_UPDATE_SNAPSHOT=20240827T030400Z
 
 # Built-in binaries version
-ARG BUILTINS_VERSION=0.5.0
+ARG BUILTINS_VERSION=0.6.0
 
 ################################################################################
 # cross base stage
