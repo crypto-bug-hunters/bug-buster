@@ -29,13 +29,28 @@ const getBadgeDescriptors = (bountyStatus: BountyStatus): BadgeDescriptor[] => {
                     label: "Expired",
                 },
             ];
-        case "exploited":
+        case "solved":
             return [
                 {
                     color: "red",
-                    label: "Exploited",
+                    label: "solved",
                 },
             ];
+        case "bug":
+            return [
+                {
+                    color: "gray",
+                    label: "Bug Bounty"
+                }
+            ]
+        
+        case "model":
+            return [
+                {
+                    color: "gray",
+                    label: "Model Bounty"
+                }
+            ]
         default:
             throw new Error("Unknown bounty status");
     }

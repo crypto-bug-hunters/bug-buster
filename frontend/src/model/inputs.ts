@@ -18,11 +18,11 @@ export interface AddSponsorship {
     bountyIndex: number;
 }
 
-export interface SendExploit {
+export interface SendSolution {
     name: string;
     imgLink?: string;
     bountyIndex: number;
-    exploit: string;
+    solution: string;
 }
 
 export interface WithdrawSponsorship {
@@ -37,7 +37,7 @@ export interface TaggedInput<K, T> {
 export type AdvanceRequest =
     | TaggedInput<"CreateAppBounty", CreateAppBounty>
     | TaggedInput<"AddSponsorship", AddSponsorship>
-    | TaggedInput<"SendExploit", SendExploit>
+    | TaggedInput<"SendSolution", SendSolution>
     | TaggedInput<"WithdrawSponsorship", WithdrawSponsorship>;
 
 export interface InputInfo {

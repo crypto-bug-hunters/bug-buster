@@ -21,8 +21,8 @@ import {
     useInput,
     isInput,
 } from "../../../model/reader";
-import { getBountyTotalPrize, AppBounty } from "../../../model/state";
-import { SendExploit } from "../../../model/inputs";
+import { getBountyTotalPrize, AppBounty, BountyType } from "../../../model/state";
+import { SendSolution } from "../../../model/inputs";
 import { usePrepareWithdrawSponsorship } from "../../../hooks/bug-buster";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
@@ -129,6 +129,16 @@ const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
             <Text styles={{ root: { whiteSpace: "pre-wrap" } }}>
                 {bounty.description}
             </Text>
+            {bounty.bountyType == BountyType.RLModel ? (
+                <>
+                    <Title order={3}>
+                        RL Model Environment (for local development):
+                    </Title>
+                    <Code>
+                        {bounty.modelEnvironment}
+                    </Code>
+                </>
+            ): ""}
             <Title order={3}>
                 Total Prize:{" "}
                 {formatErc20Amount(token, totalPrize, erc20Metadata)}
@@ -143,18 +153,30 @@ const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
     );
 };
 
-const ExploitCodeBox: FC<{ exploitCode?: string }> = ({ exploitCode }) => {
-    if (exploitCode !== undefined) {
-        return (
-            <Stack align="center">
-                <Title order={2}>Exploit Code</Title>
-                <Code w="100%" block>
-                    {exploitCode}
-                </Code>
-            </Stack>
-        );
+const SolutionCodeBox: FC<{ bountyType: BountyType, solutionCode?: string }> = ({ bountyType, solutionCode }) => {
+    if (solutionCode == undefined) return <></>
+    switch(bountyType) {
+        case BountyType.Bug:
+            return (
+                <Stack align="center">
+                    <Title order={2}>Exploit Code</Title>
+                    <Code w="100%" block>
+                        {solutionCode}
+                    </Code>
+                </Stack>
+            );
+        case BountyType.RLModel:
+            return (
+                <Stack align="center">
+                    <Title order={2}>Winning Model</Title>
+                    <Link href={`data:application/octet-stream;${solutionCode}`}>
+                        <Button>Download .ONNX model</Button>
+                    </Link>
+                </Stack>
+            );
+        default:
+            return <></>;
     }
-    return <></>;
 };
 
 const ParticipantsBox: FC<{
@@ -183,10 +205,10 @@ const ParticipantsBox: FC<{
             <Center>
                 <Title order={2}>Participants</Title>
             </Center>
-            {bounty.exploit && (
+            {bounty.solution && (
                 <ProfileCard
-                    profile={bounty.exploit.hacker}
-                    badge="Exploiter"
+                    profile={bounty.solution.hacker}
+                    badge="Winner"
                 />
             )}
             {sponsorships}
@@ -194,25 +216,28 @@ const ParticipantsBox: FC<{
     );
 };
 
-const isSendExploit = (payload: any): payload is SendExploit => {
-    return payload !== undefined && "exploit" in payload;
+const isSendSolution = (payload: any): payload is SendSolution => {
+    return payload !== undefined && ("solution" in payload || "exploit" in payload);
 };
 
 const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     const bountyIndex = Number(bountyId);
 
-    const [exploitInputIndex, setExploitInputIndex] = useState<number>();
-    const [exploitCode, setExploitCode] = useState<string>();
+    const [solutionInputIndex, setSolutionInputIndex] = useState<number>();
+    const [solutionCode, setSolutionCode] = useState<string>();
 
+    // Gets bounty state from the Cartesi Machine
     const bountyResult = useBounty(bountyIndex);
-    const inputResult = useInput(exploitInputIndex);
+    
+    // Gets input for a given bounty attempt
+    const inputResult = useInput(solutionInputIndex);
 
     useEffect(() => {
         if (bountyResult.kind == "success") {
             const bounty = bountyResult.response;
-            const exploit = bounty.exploit;
-            if (exploit !== null) {
-                setExploitInputIndex(exploit.inputIndex);
+            const solution = bounty.solution;
+            if (solution !== null) {
+                setSolutionInputIndex(solution.inputIndex);
             }
         }
     }, [bountyResult]);
@@ -222,8 +247,13 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             const input = parseHexAsJson(inputResult.response.payload);
             if (isInput(input)) {
                 const payload = input.payload;
-                if (isSendExploit(payload)) {
-                    setExploitCode(atob(payload.exploit));
+                if (isSendSolution(payload)) {
+                    // TODO remove the exploit part after changing backend
+                    if ("solution" in payload) {
+                        setSolutionCode(atob(payload.solution));
+                    } else {
+                        setSolutionCode(atob(payload.exploit));
+                    }
                 }
             }
         }
@@ -236,7 +266,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             return <Center>{bountyResult.message}</Center>;
     }
 
-    if (exploitInputIndex !== undefined) {
+    if (solutionInputIndex !== undefined) {
         switch (inputResult.kind) {
             case "loading":
                 return <Center>Loading exploit input...</Center>;
@@ -254,7 +284,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             gap="xl"
         >
             <BountyBox bountyIndex={bountyIndex} bounty={bounty} />
-            <ExploitCodeBox exploitCode={exploitCode} />
+            <SolutionCodeBox bountyType={bounty.bountyType} solutionCode={solutionCode} />
             <ParticipantsBox bounty={bounty} />
         </Stack>
     );

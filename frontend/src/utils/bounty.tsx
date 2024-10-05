@@ -10,8 +10,8 @@ export function getBountyStatus(
     bounty: AppBounty,
     blockTimestamp?: bigint,
 ): BountyStatus {
-    if (bounty.exploit) {
-        return { kind: "exploited" };
+    if (bounty.solution) {
+        return { kind: "solved" };
     } else if (blockTimestamp === undefined) {
         return { kind: "loading" };
     } else {
