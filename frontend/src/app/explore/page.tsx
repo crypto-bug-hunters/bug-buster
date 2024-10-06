@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -12,10 +12,11 @@ import {
     Anchor,
     SimpleGrid,
     Group,
+    Radio,
 } from "@mantine/core";
 import Link from "next/link";
 import { useLatestState } from "../../model/reader";
-import { AppBounty } from "../../model/state";
+import { AppBounty, BountyType } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
 import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../../hooks/block";
@@ -47,6 +48,7 @@ const Bounty: FC<{
                             {bounty.name}
                         </Text>
                         <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
+                        <BountyStatusBadgeGroup bountyStatus={{ kind: (bounty.bountyType == 0 ? "bug" : "model") }} />
                     </Group>
                     <Text truncate="end" size="xs" c="dimmend">
                         {bounty.description}
@@ -57,7 +59,9 @@ const Bounty: FC<{
     );
 };
 
-const BountyList: FC = () => {
+const BountyList: FC<{
+    bountyKindFilter: BountyType | null
+}> = ({ bountyKindFilter }) => {
     const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
 
@@ -78,7 +82,7 @@ const BountyList: FC = () => {
             verticalSpacing="lg"
             style={{ maxWidth: 1024 }}
         >
-            {state.bounties.map((bounty, index) => {
+            {state.bounties.filter((bounty => bounty.bountyType == bountyKindFilter || bountyKindFilter == null)).map((bounty, index) => {
                 return (
                     <Bounty
                         key={index}
@@ -93,22 +97,41 @@ const BountyList: FC = () => {
 };
 
 const Explore: FC = () => {
+    const [bountyKindFilterStr, setBountyKindFilterStr] = useState<string>("all");
+
     return (
         <Stack>
             <HasConnectedAccount>
                 <Flex
                     mt="lg"
                     mr={{ base: "xs", md: "lg" }}
-                    justify="flex-end"
+                    justify="end"
                     visibleFrom="md"
                 >
+
                     <Link href={GOOGLE_BOUNTY_CREATION_FORM_URL}>
                         <Button size="lg">Create bounty</Button>
                     </Link>
                 </Flex>
             </HasConnectedAccount>
             <Center>
-                <BountyList />
+                <Radio.Group
+                    name="filterBountyKind"
+                    label="Filter bounties by kind"
+                    withAsterisk
+                    value={bountyKindFilterStr}
+                    onChange={setBountyKindFilterStr}
+
+                >
+                    <Group mt="xs">
+                        <Radio value="all" label="All bounties" />
+                        <Radio value="bug" label="Bug bounties" />
+                        <Radio value="rl" label="RL bounties" />
+                    </Group>
+                </Radio.Group>
+            </Center>
+            <Center>
+                <BountyList bountyKindFilter={bountyKindFilterStr == "rl" ? BountyType.RLModel : bountyKindFilterStr == "bug" ? BountyType.Bug : null} />
             </Center>
         </Stack>
     );

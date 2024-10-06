@@ -7,8 +7,8 @@ type BountyOpenStatus = {
     daysLeft: bigint;
 };
 
-type BountyExploitedStatus = {
-    kind: "exploited";
+type BountySolvedStatus = {
+    kind: "solved";
 };
 
 type BountyExpiredStatus = {
@@ -16,8 +16,18 @@ type BountyExpiredStatus = {
     withdrawn: boolean;
 };
 
+type BountyBugStatus = {
+    kind: "bug";
+}
+
+type BountyRLModelStatus = {
+    kind: "model";
+}
+
 export type BountyStatus =
     | BountyLoadingStatus
     | BountyOpenStatus
-    | BountyExploitedStatus
-    | BountyExpiredStatus;
+    | BountySolvedStatus
+    | BountyExpiredStatus
+    | BountyBugStatus
+    | BountyRLModelStatus;

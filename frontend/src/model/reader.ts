@@ -90,7 +90,7 @@ export const parseHexAsJson = (hex: Hex) => {
     const str = buffer.toString("utf-8");
     try {
         return JSON.parse(str);
-    } catch (e) {}
+    } catch (e) { }
 };
 
 export const parseStringAsJson = (str: string) => {

@@ -4,15 +4,23 @@ export interface BugBusterState {
     bounties: AppBounty[];
 }
 
+export enum BountyType {
+    Bug,
+    RLModel
+}
+
 export interface AppBounty {
     name: string;
+    bountyType: BountyType;
     imgLink?: string;
     description: string;
     deadline: number;
     token: Address;
     sponsorships: Sponsorship[] | null;
-    exploit: Exploit | null;
+    solution: Solution | null;
     withdrawn: boolean;
+    attempts: Array<Solution>;
+    modelEnvironment: string | null;
 }
 
 export const getBountyTotalPrize = (bounty: AppBounty) => {
@@ -32,7 +40,7 @@ export interface Profile {
     imgLink?: string;
 }
 
-export interface Exploit {
+export interface Solution {
     hacker: Profile;
     inputIndex: number;
 }
