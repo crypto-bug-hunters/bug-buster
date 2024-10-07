@@ -1,0 +1,14 @@
+[X] Add bounty types to CLI
+[X] Add support for different bounty types in the frontend (rl & bug)
+[X] Remove comments and todos
+[X] (depends on previous) remove .exploit check in bounty info
+[] Render all model attempts
+[] Print errors from test.py for better debugging
+
+
+---
+Thoughts:
+- Better introspection tools? 
+- Authentication equivalent for rollups
+- Não atualiza essa porra eu tenho que dar 4 cartesi clean
+- Precisamos dar downgrade para ubuntu slim jammy pq conpilamos onnxruntime p python3.10 e não tem python3.10 no repositorio do noble. E também foi dificil achar uma toolchain riscv para compilar para o noble. Fé

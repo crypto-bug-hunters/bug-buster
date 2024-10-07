@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RL Model Bounties in Bug Buster</title>
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/theme/black.css">
+</head>
+<body>
+
+<div class="reveal">
+    <div class="slides">
+
+        <!-- Slide 1: Title Slide -->
+        <section>
+            <h2>RL Model Bounties in Bug Buster</h2>
+            <p><strong>Team</strong>: [Insert Team Name]</p>
+            <p><strong>Client</strong>: Cartesi</p>
+            <p><strong>Date</strong>: [Insert Date]</p>
+        </section>
+
+        <!-- Slide 2: Introduction -->
+        <section>
+            <h3>Introduction</h3>
+            <p><strong>Bug Buster</strong>: A trustless bug bounty platform powered by Cartesi Rollups.</p>
+            <p><strong>Initial Goal</strong>: Add reinforcement learning (RL) model bounties to the existing system.</p>
+            <p><strong>Why RL Models?</strong>: Expands Bug Buster's use case beyond bug hunting—introduces a marketplace for AI model competitions.</p>
+        </section>
+
+        <!-- Slide 3: Problem Overview -->
+        <section>
+            <h3>Problem Overview</h3>
+            <p><strong>Traditional Bug Bounties:</strong></p>
+            <ul>
+                <li>Focused on rewarding hackers for discovering software vulnerabilities.</li>
+                <li>Limited to bug hunting and exploit submissions.</li>
+            </ul>
+            <p><strong>Challenges in Current System:</strong></p>
+            <ul>
+                <li>Unable to support non-bug bounty types (e.g., AI/ML competitions).</li>
+                <li>No mechanism to rank submissions based on quantitative performance.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 4: Solution -->
+        <section>
+            <h3>Solution: RL Model Bounties</h3>
+            <p><strong>New Bounty Type</strong>: RLModelBounty.</p>
+            <p><strong>How It Works</strong>:</p>
+            <ul>
+                <li>Sponsors create RL model bounties with ERC-20 rewards.</li>
+                <li>Hackers submit models (ONNX format).</li>
+                <li>Models are evaluated based on performance (higher score wins).</li>
+            </ul>
+            <p><strong>Result</strong>: Expands Bug Buster to host AI challenges and model competitions.</p>
+        </section>
+
+        <!-- Slide 5: Architecture Before vs. After -->
+        <section>
+            <h3>Architecture Before vs. After</h3>
+            <p><strong>Before</strong>:</p>
+            <ul>
+                <li>Supported traditional bug bounties only.</li>
+                <li>Focus on discovering vulnerabilities.</li>
+            </ul>
+            <p><strong>After</strong>:</p>
+            <ul>
+                <li>Supports both RL model and bug bounties.</li>
+                <li>Model submission mechanism.</li>
+                <li>Scoring and ranking system for RL models.</li>
+            </ul>
+        </section>
+
+        <section>
+            <img src="./a.svg" width="1800" srcset="">
+        </section>
+
+        <!-- Slide 6: Frontend Changes -->
+        <section>
+            <h3>Frontend Changes</h3>
+            <ul>
+                <li><strong>Explore</strong>: Added filters for bug bounties and RL model bounties.</li>
+                <li><strong>Exploit/[id]</strong>: RL bounties: Option to download models. Local environment to test models before submission.</li>
+                <li><strong>Model Interface</strong>: New fields for <code>BountyType</code> and <code>Attempts</code>.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 7: Dapp Changes -->
+        <section>
+            <h3>Dapp Changes</h3>
+            <ul>
+                <li><strong>AppBounty</strong>: New <code>BountyType</code>: RLModelBounty or BugBounty. <code>Attempts</code> stores hacker, inputIndex, and score for RL model submissions.</li>
+                <li><strong>InputKinds</strong>: Expanded to support both RLModelBounty and BugBounty.</li>
+                <li><strong>Automatic Scoring</strong>: Submissions ranked by score after deadline (highest score wins).</li>
+            </ul>
+        </section>
+
+        <!-- Slide 8: Bounties Update -->
+        <section>
+            <h3>Bounties Update</h3>
+            <ul>
+                <li><strong>New RLModelBounty</strong>: <code>environment.py</code>: Helper code for local development. <code>test.py</code>: Executes model and outputs score.</li>
+                <li><strong>BugBounty</strong>: Remains the same as before (program + test scripts in tar file).</li>
+                <li><strong>Tar File Changes</strong>: RLModelBounty tar now includes ONNX model execution logic.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 9: OS Environment Changes -->
+        <section>
+            <h3>OS Environment Changes</h3>
+            <ul>
+                <li><strong>New Environment</strong>: Moved from Ubuntu Noble to slim-jammy.</li>
+                <li>Installed cp310 ONNX Runtime wheel.</li>
+                <li>Increased memory from 128Mi to 1024Mi for handling ONNX models.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 10: Final Results -->
+        <section>
+            <h3>Final Results</h3>
+            <p><strong>New Bounty Type</strong>: Successfully added RL model bounties to Bug Buster.</p>
+            <p><strong>Key Outcomes</strong>:</p>
+            <ul>
+                <li>Opened up a marketplace for AI model challenges.</li>
+                <li>Expanded use case for Bug Buster beyond traditional bug hunting.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 11: Challenges in Development -->
+        <section>
+            <h3>Challenges in Development</h3>
+            <ul>
+                <li><strong>Rebuild Times</strong>: Slow rebuilds of the Cartesi image hindered rapid iteration.</li>
+                <li><strong>Debugging Tools</strong>: Lack of tools for inspecting variables in real-time or debugging.</li>
+                <li><strong>CLI Issues</strong>: Required building the image twice for changes to take effect.</li>
+                <li><strong>Authentication for Rollups</strong>: No equivalent for an authentication mechanism within rollups.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 12: Cartesi Development Environment -->
+        <section>
+            <h3>Cartesi Development Environment</h3>
+            <ul>
+                <li><strong>Positive Aspects</strong>: Deterministic Linux environment made blockchain integration seamless.</li>
+                <li><strong>Flexibility</strong>: Traditional programming tools within blockchain context.</li>
+                <li><strong>Learning Curve</strong>: Minimal prior experience with blockchain development; quick adaptation to Cartesi’s infrastructure.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 13: Next Steps -->
+        <section>
+            <h3>Next Steps</h3>
+            <ul>
+                <li><strong>Future Improvements</strong>: Optimize rebuild times and streamline CLI usage. Add more introspection tools for debugging during development.</li>
+                <li><strong>New Opportunities</strong>: Explore expanding to other types of AI challenges. Further develop the model marketplace for broader applications.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 14: Conclusion -->
+        <section>
+            <h3>Conclusion</h3>
+            <p><strong>Successful Outcome</strong>: RL Model Bounties integrated into Bug Buster.</p>
+            <p><strong>Enhanced Platform</strong>: Bug Buster now supports both bug bounties and AI model competitions.</p>
+            <p><strong>Great Experience</strong>: Despite challenges, our team successfully navigated the Cartesi environment and expanded Bug Buster's capabilities.</p>
+        </section>
+
+        <!-- Slide 15: Thank You -->
+        <section>
+            <h3>Thank You!</h3>
+            <p><strong>Questions?</strong></p>
+            <p>Contact Information: [Insert Team Contact Info]</p>
+        </section>
+
+    </div>
+</div>
+
+<script src="https://unpkg.com/reveal.js/dist/reveal.js"></script>
+<script>
+    Reveal.initialize();
+</script>
+
+</body>
+</html>
