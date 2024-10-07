@@ -57,7 +57,7 @@ export function usePrepareAddSponsorship(
 }
 
 export function usePrepareSendExploit(exploit: SendExploit) {
-    return usePrepareBugBusterInput({ kind: "SendSolution", payload: exploit });
+    return usePrepareBugBusterInput({ kind: "SendExploit", payload: exploit });
 }
 
 export function usePrepareWithdrawSponsorship(

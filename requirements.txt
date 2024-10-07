@@ -1,0 +1,4 @@
+requests == 2.31.0
+https://github.com/sarmentow/riscv-wheels/raw/main/onnxruntime_riscv-1.20.0-cp310-cp310-linux_riscv64.whl
+-i https://think-and-dev.github.io/riscv-python-wheels/pip-index/
+numpy == 1.26.2

@@ -82,11 +82,11 @@ const BountyList: FC<{
             verticalSpacing="lg"
             style={{ maxWidth: 1024 }}
         >
-            {state.bounties.filter((bounty => bounty.bountyType == bountyKindFilter || bountyKindFilter == null)).map((bounty, index) => {
+            {state.bounties.filter((bounty => bounty.bountyType == bountyKindFilter || bountyKindFilter == null)).map((bounty) => {
                 return (
                     <Bounty
-                        key={index}
-                        index={index}
+                        key={bounty.bountyIndex}
+                        index={bounty.bountyIndex}
                         bounty={bounty}
                         blockTimestamp={blockTimestamp!}
                     />

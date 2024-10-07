@@ -24,17 +24,17 @@ func (s *BugBusterState) GetBounty(bountyIndex int) *AppBounty {
 }
 
 type AppBounty struct {
-	Name             string         `json:"name"`
-	ImgLink          string         `json:"imgLink"` // optional
-	Description      string         `json:"description"`
-	Deadline         int64          `json:"deadline"`   // (unix timestamp)
-	BountyType       BountyType     `json:"bountyType"` // "BugBuster" or "RLBuster"
-	Token            common.Address `json:"token"`      // ERC-20
-	Sponsorships     []*Sponsorship `json:"sponsorships"`
-	Exploit          *Exploit       `json:"exploit"`
-	Attempts         []*Attempt     `json:"attempts"`         // Only makes sense to "RLBuster"
-	ModelEnvironment string         `json:"modelEnvironment"` //
-	Withdrawn        bool           `json:"withdrawn"`
+	Name         string         `json:"name"`
+	ImgLink      string         `json:"imgLink"` // optional
+	Description  string         `json:"description"`
+	Deadline     int64          `json:"deadline"`   // (unix timestamp)
+	BountyType   BountyType     `json:"bountyType"` // "BugBuster" or "RLBuster"
+	Token        common.Address `json:"token"`      // ERC-20
+	Environment  string         `json:"environment"`
+	Sponsorships []*Sponsorship `json:"sponsorships"`
+	Exploit      *Exploit       `json:"exploit"`
+	Attempts     []*Attempt     `json:"attempts"` // Only makes sense to "RLBuster"
+	Withdrawn    bool           `json:"withdrawn"`
 }
 
 func (b *AppBounty) GetSponsorship(sponsorAddress common.Address) *Sponsorship {
@@ -95,12 +95,14 @@ type Input struct {
 
 type CreateAppBounty struct {
 	Name          string         `json:"name"`
+	BountyType    BountyType     `json:"bountyType"`
 	ImgLink       string         `json:"imgLink"`
 	Description   string         `json:"description"`
 	Deadline      int64          `json:"deadline"`                // (unix timestamp)
 	CodeZipBinary *string        `json:"codeZipBinary,omitempty"` // base64?
 	CodeZipPath   *string        `json:"codeZipPath,omitempty"`
-	Token         common.Address `json:"token"` // ERC-20
+	Token         common.Address `json:"token"`       // ERC-20
+	Environment   string         `json:"environment"` // Environment code for RL models
 }
 
 func (b *CreateAppBounty) Validate() error {

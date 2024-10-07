@@ -27,8 +27,6 @@ func (c *BugBusterContract) Advance(
 	payload []byte,
 ) error {
 
-	CheckOpenRLBounties(c.state.Bounties, metadata.BlockTimestamp, env)
-
 	var input shared.Input
 	err := json.Unmarshal(payload, &input)
 	if err != nil {
@@ -73,16 +71,16 @@ func (c *BugBusterContract) Advance(
 
 		// append bounty to array of bounties
 		bounty := &shared.AppBounty{
-			Name:             inputPayload.Name,
-			ImgLink:          inputPayload.ImgLink,
-			Description:      inputPayload.Description,
-			Deadline:         inputPayload.Deadline,
-			Token:            inputPayload.Token,
-			Sponsorships:     nil,
-			Exploit:          nil,
-			Attempts:         nil,
-			ModelEnvironment: "",
-			Withdrawn:        false,
+			Name:         inputPayload.Name,
+			ImgLink:      inputPayload.ImgLink,
+			Description:  inputPayload.Description,
+			Deadline:     inputPayload.Deadline,
+			Token:        inputPayload.Token,
+			Environment:  inputPayload.Environment,
+			BountyType:   inputPayload.BountyType,
+			Sponsorships: nil,
+			Exploit:      nil,
+			Withdrawn:    false,
 		}
 		c.state.Bounties = append(c.state.Bounties, bounty)
 
@@ -181,10 +179,12 @@ func (c *BugBusterContract) Advance(
 
 		// generate voucher for each sponsor
 		for _, sponsorship := range bounty.Sponsorships {
-			_, err := env.ERC20Withdraw(bounty.Token, sponsorship.Sponsor.Address, sponsorship.Value.ToBig())
+			idx, err := env.ERC20Withdraw(bounty.Token, sponsorship.Sponsor.Address, sponsorship.Value.ToBig())
 			if err != nil {
 				return fmt.Errorf("failed to withdraw: %v", err)
 			}
+			slog.Debug("Idx for ERC20Withdraw:")
+			slog.Debug(string(idx))
 		}
 
 		// set bounty as withdrawn
@@ -199,13 +199,20 @@ func (c *BugBusterContract) Advance(
 
 		// validate input
 		if err := inputPayload.Validate(); err != nil {
+
 			return err
 		}
 
 		// check if bounty exist
 		bounty := c.state.GetBounty(inputPayload.BountyIndex)
+
 		if bounty == nil {
 			return fmt.Errorf("bounty not found")
+		}
+
+		paid, _ := CheckOpenRLBounty(bounty, metadata.BlockTimestamp, env, c)
+		if paid {
+			break
 		}
 
 		// check exploit
@@ -283,6 +290,7 @@ func ExecutePayment(
 	env rollmelette.Env,
 ) error {
 
+	slog.Debug("Executing payment")
 	accBounty := new(uint256.Int)
 	// Move assets to hacker
 	for _, sponsorship := range bounty.Sponsorships {
@@ -294,6 +302,7 @@ func ExecutePayment(
 		if sponsor == hackerAddr {
 			continue
 		}
+		slog.Debug("Performing the transfer call")
 		err := env.ERC20Transfer(bounty.Token, sponsor, hackerAddr, sponsorship.Value.ToBig())
 		if err != nil {
 
@@ -301,18 +310,23 @@ func ExecutePayment(
 		}
 	}
 	// generate voucher
-	_, err := env.ERC20Withdraw(bounty.Token, hackerAddr, accBounty.ToBig())
+	slog.Debug("Now calling ERC20Withdraw")
+	idx, err := env.ERC20Withdraw(bounty.Token, hackerAddr, accBounty.ToBig())
 	if err != nil {
 		return fmt.Errorf("failed to generate voucher: %v", err)
 	}
+	slog.Debug("Voucher idx:")
+	slog.Debug(string(idx))
 	return nil
 }
 
 func (c *BugBusterContract) Inspect(env rollmelette.EnvInspector, payload []byte) error {
+	// TODO remove this
+	slog.Debug("New c is working as expected v44")
 	var input shared.TestExploit
 	err := json.Unmarshal(payload, &input)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal input: %w", err)
+		return fmt.Errorf("failed to unmarshal payload: %w", err)
 	}
 
 	// check if bounty exist
@@ -321,13 +335,25 @@ func (c *BugBusterContract) Inspect(env rollmelette.EnvInspector, payload []byte
 		return fmt.Errorf("bounty not found")
 	}
 
-	// try to run exploit
-	if err := RunExploit(env, input.BountyIndex, input.Exploit, true); err != nil {
+	slog.Debug("Bounty index:")
+	slog.Debug(string(input.BountyIndex))
+
+	switch bounty.BountyType {
+	case shared.BugBounty:
+		// try to run exploit
+		if err := RunExploit(env, input.BountyIndex, input.Exploit, false); err != nil {
+			return err
+		}
+
+	case shared.RLBounty:
+		// try to run exploit PLACEHOLDER
+		_, err := RunRLModel(env, input.BountyIndex, input.Exploit)
+		if err != nil {
+			return err
+		}
+
 		return err
 	}
-
-	cJson, _ := json.Marshal(c.state)
-	env.Report(cJson)
 
 	return nil
 }
@@ -405,7 +431,7 @@ func RunExploit(env rollmelette.EnvInspector, bountyIndex int, exploit string, c
 
 func RunRLModel(env rollmelette.EnvInspector, bountyIndex int, exploit string) (float64, error) {
 	codePath := CodePath(bountyIndex)
-	slog.Debug("testing exploit", "codePath", codePath)
+	slog.Debug("testing RL model", "codePath", codePath)
 	bytes, err := base64.StdEncoding.DecodeString(exploit)
 	if err != nil {
 		return -1, fmt.Errorf("base64 decode failed: %v", err)
@@ -417,22 +443,21 @@ func RunRLModel(env rollmelette.EnvInspector, bountyIndex int, exploit string) (
 	os.RemoveAll("/var/tmp/inference")
 	os.Mkdir("/var/tmp/inference", 0777)
 
-	os.Remove("/var/tmp/inference/model.onnx") // intentionally ignore errors
-	err = os.WriteFile("/var/tmp/model.onnx", bytes, 0644)
+	err = os.WriteFile("/var/tmp/inference/model.onnx", bytes, 0644)
 	if err != nil {
 		return -1, fmt.Errorf("writing model to file failed: %s", err)
 	}
 
-	cmd := exec.Command("tar", "-xzf", codePath)
+	cmd := exec.Command("tar", "-xvf", codePath, "-C", "/var/tmp/inference")
 	err = cmd.Run()
 	if err != nil {
 		return -1, fmt.Errorf("Error extracting tar file: %s", err)
 	}
 
-	cmd = exec.Command("python3", "var/tmp/inference/test.py", "var/tmp/inference/model.onnx")
-	output, err := cmd.Output()
+	cmd = exec.Command("python3", "/var/tmp/inference/test.py", "/var/tmp/inference/model.onnx")
+	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return -1, fmt.Errorf("Error running command: ", err)
+		return -1, fmt.Errorf("Error running command: ", string(output), err)
 	}
 
 	resultStr := string(output)              // Convert the byte slice to string
@@ -447,38 +472,48 @@ func RunRLModel(env rollmelette.EnvInspector, bountyIndex int, exploit string) (
 	return result, nil
 }
 
-func CheckOpenRLBounties(b []*shared.AppBounty, currTime int64, env rollmelette.Env) error {
-	for _, bounty := range b {
-		if bounty.BountyType == shared.RLBounty {
+func CheckOpenRLBounty(b *shared.AppBounty, currTime int64, env rollmelette.Env, c *BugBusterContract) (bool, error) {
+	slog.Debug("In check open rl bounties")
+	slog.Debug("checking")
+	slog.Debug(b.Name)
 
-			if currTime < bounty.Deadline {
-				continue
-			}
+	if b.BountyType == shared.RLBounty {
 
-			if bounty.Attempts == nil {
-				continue
-			}
-
-			highest := bounty.Attempts[0]
-			for _, attempt := range bounty.Attempts[1:] {
-				if attempt.Score > highest.Score {
-					highest = attempt
-				}
-			}
-
-			if err := ExecutePayment(bounty, highest.Hacker.Address, env); err != nil {
-				return err
-			}
-
-			bounty.Exploit = &shared.Exploit{
-				Hacker:     highest.Hacker,
-				InputIndex: highest.InputIndex,
-			}
-
-			bounty.Withdrawn = true
+		if currTime < b.Deadline {
+			return false, nil
 		}
+
+		if b.Attempts == nil {
+			return false, nil
+		}
+
+		slog.Debug("There will be a winner")
+		highest := b.Attempts[0]
+		for _, attempt := range b.Attempts[1:] {
+			if attempt.Score > highest.Score {
+				highest = attempt
+			}
+		}
+
+		slog.Debug("Highest is:")
+		slog.Debug(fmt.Sprintf("%f", highest.Score))
+
+		if err := ExecutePayment(b, highest.Hacker.Address, env); err != nil {
+			return false, err
+		}
+
+		b.Exploit = &shared.Exploit{
+			Hacker:     highest.Hacker,
+			InputIndex: highest.InputIndex,
+		}
+
+		b.Withdrawn = true
+		slog.Debug("chama")
+		// Update reports
+		cJson, _ := json.Marshal(c.state)
+		env.Report(cJson)
 	}
-	return nil
+	return true, nil
 }
 
 func main() {

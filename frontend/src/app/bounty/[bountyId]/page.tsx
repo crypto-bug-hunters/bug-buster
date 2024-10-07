@@ -135,7 +135,9 @@ const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
                         RL Model Environment (for local development):
                     </Title>
                     <Code>
-                        {bounty.modelEnvironment}
+                        <pre>
+                        {bounty.environment}
+                        </pre>
                     </Code>
                 </>
             ): ""}
@@ -205,9 +207,9 @@ const ParticipantsBox: FC<{
             <Center>
                 <Title order={2}>Participants</Title>
             </Center>
-            {bounty.solution && (
+            {bounty.exploit && (
                 <ProfileCard
-                    profile={bounty.solution.hacker}
+                    profile={bounty.exploit.hacker}
                     badge="Winner"
                 />
             )}
@@ -235,8 +237,9 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
     useEffect(() => {
         if (bountyResult.kind == "success") {
             const bounty = bountyResult.response;
-            const solution = bounty.solution;
+            const solution = bounty.exploit;
             if (solution !== null) {
+                console.log(solution)
                 setSolutionInputIndex(solution.inputIndex);
             }
         }
@@ -248,12 +251,7 @@ const BountyInfoPage: FC<BountyParams> = ({ params: { bountyId } }) => {
             if (isInput(input)) {
                 const payload = input.payload;
                 if (isSendSolution(payload)) {
-                    // TODO remove the exploit part after changing backend
-                    if ("solution" in payload) {
-                        setSolutionCode(atob(payload.solution));
-                    } else {
-                        setSolutionCode(atob(payload.exploit));
-                    }
+                    setSolutionCode(atob(payload.exploit));
                 }
             }
         }

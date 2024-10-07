@@ -28,17 +28,17 @@ cast send \
 #=====#
 # Lua #
 #=====#
-
+# 
 LUA_INFO_FILE=tests/bounties/lua-bounty/info.json
 LUA_DESCRIPTION=$(jq -r '.description' "$LUA_INFO_FILE")
 LUA_IMG_LINK=$(jq -r '.imgLink' "$LUA_INFO_FILE")
 LUA_SPONSOR_NAME="Spencer Lunatik"
 LUA_HACKER_NAME="Hackett Rock"
-
+# 
 # 5.4.3
-
+# 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
-
+# 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
     -n "Lua 5.4.3" \
@@ -46,25 +46,27 @@ go run ./cli send bounty \
     -d "$LUA_DESCRIPTION" \
     --duration "$ONE_DAY" \
     -p '/bounties/examples/lua-5.4.3-bounty_riscv64.tar.xz' \
-    -t "$TOKEN_ADDRESS"
-
+    -t "$TOKEN_ADDRESS" \
+    --type "bug"
+# 
+# 
 go run ./cli send sponsor \
     -f "$SPONSOR_ACCOUNT" \
     -b "$bounty_index" \
     -n "$LUA_SPONSOR_NAME" \
     -t "$TOKEN_ADDRESS" \
     -v "$SPONSORSHIP_AMOUNT"
-
+# 
 go run ./cli send exploit \
     -f "$HACKER_ACCOUNT" \
     -b "$bounty_index" \
     -e 'tests/bounties/lua-bounty/exploit-lua-5.4.3.lua' \
     -n "$LUA_HACKER_NAME"
-
+# 
 # 5.4.7
-
+# 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
-
+# 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
     -n "Lua 5.4.7" \
@@ -72,29 +74,31 @@ go run ./cli send bounty \
     -d "$LUA_DESCRIPTION" \
     --duration "$ONE_DAY" \
     -p '/bounties/examples/lua-5.4.7-bounty_riscv64.tar.xz' \
-    -t "$TOKEN_ADDRESS"
-
+    -t "$TOKEN_ADDRESS" \
+    --type "bug"
+# 
+# 
 go run ./cli send sponsor \
     -f "$SPONSOR_ACCOUNT" \
     -b "$bounty_index" \
     -n "$LUA_SPONSOR_NAME" \
     -t "$TOKEN_ADDRESS" \
     -v "$SPONSORSHIP_AMOUNT"
-
+# 
 #========#
 # SQLite #
 #========#
-
+# 
 SQLITE_INFO_FILE=tests/bounties/sqlite-bounty/info.json
 SQLITE_DESCRIPTION=$(jq -r '.description' "$SQLITE_INFO_FILE")
 SQLITE_IMG_LINK=$(jq -r '.imgLink' "$SQLITE_INFO_FILE")
 SQLITE_SPONSOR_NAME="Spencer D. B. M. S."
 SQLITE_HACKER_NAME="Hackett Query"
-
+# 
 # 3.32.2
-
+# 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
-
+# 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
     -n "SQLite 3.32.2" \
@@ -102,25 +106,27 @@ go run ./cli send bounty \
     -d "$SQLITE_DESCRIPTION" \
     --duration "$ONE_DAY" \
     -p '/bounties/examples/sqlite-3.32.2-bounty_riscv64.tar.xz' \
-    -t "$TOKEN_ADDRESS"
-
+    -t "$TOKEN_ADDRESS" \
+    --type "bug"
+# 
+# 
 go run ./cli send sponsor \
     -f "$SPONSOR_ACCOUNT" \
     -b "$bounty_index" \
     -n "$SQLITE_SPONSOR_NAME" \
     -t "$TOKEN_ADDRESS" \
     -v "$SPONSORSHIP_AMOUNT"
-
+# 
 go run ./cli send exploit \
     -f "$HACKER_ACCOUNT" \
     -b "$bounty_index" \
     -e 'tests/bounties/sqlite-bounty/exploit-sqlite-3.32.2.sql' \
     -n "$SQLITE_HACKER_NAME"
-
+# 
 # 3.43.2
-
+# 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
-
+# 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
     -n "SQLite 3.43.2" \
@@ -128,29 +134,31 @@ go run ./cli send bounty \
     -d "$SQLITE_DESCRIPTION" \
     --duration "$ONE_DAY" \
     -p '/bounties/examples/sqlite-3.43.2-bounty_riscv64.tar.xz' \
-    -t "$TOKEN_ADDRESS"
-
+    -t "$TOKEN_ADDRESS" \
+    --type "bug"
+# 
+# 
 go run ./cli send sponsor \
     -f "$SPONSOR_ACCOUNT" \
     -b "$bounty_index" \
     -n "$SQLITE_SPONSOR_NAME" \
     -t "$TOKEN_ADDRESS" \
     -v "$SPONSORSHIP_AMOUNT"
-
+# 
 #=========#
 # BusyBox #
 #=========#
-
+# 
 BUSYBOX_INFO_FILE=tests/bounties/busybox-bounty/info.json
 BUSYBOX_DESCRIPTION=$(jq -r '.description' "$BUSYBOX_INFO_FILE")
 BUSYBOX_IMG_LINK=$(jq -r '.imgLink' "$BUSYBOX_INFO_FILE")
 BUSYBOX_SPONSOR_NAME="Spencer Toolchain"
 BUSYBOX_HACKER_NAME="Hackett Linux"
-
+# 
 # 1.36.1
-
+# 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
-
+# 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
     -n "BusyBox 1.36.1" \
@@ -158,34 +166,36 @@ go run ./cli send bounty \
     -d "$BUSYBOX_DESCRIPTION" \
     --duration "$ONE_DAY" \
     -p '/bounties/examples/busybox-1.36.1-bounty_riscv64.tar.xz' \
-    -t "$TOKEN_ADDRESS"
-
+    -t "$TOKEN_ADDRESS" \
+    --type "bug"
+# 
+# 
 go run ./cli send sponsor \
     -f "$SPONSOR_ACCOUNT" \
     -b "$bounty_index" \
     -n "$BUSYBOX_SPONSOR_NAME" \
     -t "$TOKEN_ADDRESS" \
     -v "$SPONSORSHIP_AMOUNT"
-
+# 
 go run ./cli send exploit \
     -f "$HACKER_ACCOUNT" \
     -b "$bounty_index" \
     -e 'tests/bounties/busybox-bounty/exploit-busybox-1.36.1.sh' \
     -n "$BUSYBOX_HACKER_NAME"
-
+# 
 #==========#
 # Solidity #
 #==========#
-
+# 
 SOLIDITY_INFO_FILE=tests/bounties/solidity-bounty/info.json
 SOLIDITY_DESCRIPTION=$(jq -r '.description' "$SOLIDITY_INFO_FILE")
 SOLIDITY_IMG_LINK=$(jq -r '.imgLink' "$SOLIDITY_INFO_FILE")
 SOLIDITY_SPONSOR_NAME="Spencer Smart"
-
+# 
 # 0.8.27
-
+# 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
-
+# 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
     -n "Solidity 0.8.27" \
@@ -193,11 +203,68 @@ go run ./cli send bounty \
     -d "$SOLIDITY_DESCRIPTION" \
     --duration "$ONE_DAY" \
     -p '/bounties/examples/solidity-0.8.27-bounty_riscv64.tar.xz' \
-    -t "$TOKEN_ADDRESS"
-
+    -t "$TOKEN_ADDRESS" \
+    --type "bug"
+# 
 go run ./cli send sponsor \
     -f "$SPONSOR_ACCOUNT" \
     -b "$bounty_index" \
     -n "$SOLIDITY_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
+
+#======================#
+# Frozen Lake RL Model #
+#======================#
+
+FROZEN_INFO_FILE=tests/bounties/frozen-lake-bounty/info.json
+FROZEN_IMG_LINK=$(jq -r '.imgLink' "$FROZEN_INFO_FILE")
+FROZEN_LAKE_SPONSOR_NAME="Freez Lak"
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
+go run ./cli send bounty \
+    -f "$DEV_ACCOUNT" \
+    -n "Frozen Lake RL Model" \
+    -i "$FROZEN_IMG_LINK" \
+    -d "Write an RL model to cross a frozen lake. Model with lowest average steps to the end wins!" \
+    --duration "$ONE_DAY" \
+    -c 'tests/bounties/frozen-lake-bounty/frozen-lake.tar.xz' \
+    -t "$TOKEN_ADDRESS" \
+    --type "rl"
+
+
+go run ./cli send sponsor \
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$FROZEN_LAKE_SPONSOR_NAME" \
+    -t "$TOKEN_ADDRESS" \
+    -v "$SPONSORSHIP_AMOUNT"
+
+#======================#
+# Hello RL Test #
+#======================#
+
+FROZEN_INFO_FILE=tests/bounties/frozen-lake-bounty/info.json
+FROZEN_IMG_LINK=$(jq -r '.imgLink' "$FROZEN_INFO_FILE")
+FROZEN_LAKE_SPONSOR_NAME="Freez Lak"
+
+bounty_index=$(go run ./cli state | jq '.bounties | length')
+
+go run ./cli send bounty \
+    -f "$DEV_ACCOUNT" \
+    -n "Hello RL Model" \
+    -i "$FROZEN_IMG_LINK" \
+    -d "Hello RL bounty" \
+    --duration "$ONE_DAY" \
+    -c 'tests/bounties/hello-rl-bounty/hello-rl.tar.xz' \
+    -t "$TOKEN_ADDRESS" \
+    --type "rl"
+
+
+go run ./cli send sponsor \
+    -f "$SPONSOR_ACCOUNT" \
+    -b "$bounty_index" \
+    -n "$FROZEN_LAKE_SPONSOR_NAME" \
     -t "$TOKEN_ADDRESS" \
     -v "$SPONSORSHIP_AMOUNT"

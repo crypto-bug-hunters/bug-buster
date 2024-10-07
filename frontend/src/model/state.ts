@@ -17,10 +17,10 @@ export interface AppBounty {
     deadline: number;
     token: Address;
     sponsorships: Sponsorship[] | null;
-    solution: Solution | null;
+    exploit: Exploit | null;
     withdrawn: boolean;
-    attempts: Array<Solution>;
-    modelEnvironment: string | null;
+    attempts: Array<Attempt>;
+    environment: string | null;
 }
 
 export const getBountyTotalPrize = (bounty: AppBounty) => {
@@ -40,7 +40,13 @@ export interface Profile {
     imgLink?: string;
 }
 
-export interface Solution {
+export interface Attempt {
+    hacker: Profile;
+    inputIndex: number;
+    score: number;
+}
+
+export interface Exploit {
     hacker: Profile;
     inputIndex: number;
 }

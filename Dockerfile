@@ -2,12 +2,12 @@
 
 # This enforces that the packages downloaded from the repositories are the same
 # for the defined date, no matter when the image is built.
-ARG NOBLE_DATE=20240801
-ARG APT_UPDATE_SNAPSHOT=${NOBLE_DATE}T030400Z
+ARG JAMMY_DATE=20240911.1
+ARG APT_UPDATE_SNAPSHOT=${JAMMY_DATE}T030400Z
 
 ################################################################################
 # cross base stage
-FROM ubuntu:noble-${NOBLE_DATE} AS base-build-stage
+FROM ubuntu:jammy-${JAMMY_DATE} AS base-build-stage
 
 ARG APT_UPDATE_SNAPSHOT
 ARG DEBIAN_FRONTEND=noninteractive
@@ -20,7 +20,7 @@ EOF
 
 ################################################################################
 # riscv64 base stage
-FROM --platform=linux/riscv64 ubuntu:noble-${NOBLE_DATE} AS base-target-stage
+FROM --platform=linux/riscv64 ubuntu:jammy-${JAMMY_DATE} AS base-target-stage
 
 ARG APT_UPDATE_SNAPSHOT
 ARG DEBIAN_FRONTEND=noninteractive
@@ -30,6 +30,26 @@ apt update
 apt install -y --no-install-recommends ca-certificates
 apt update --snapshot=${APT_UPDATE_SNAPSHOT}
 EOF
+
+###############################################################################
+# Python installation for onnxruntime
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN <<EOF
+set -e
+apt-get update
+apt-get install -y --no-install-recommends \
+  libatomic1 \
+  libopenblas-dev \
+  python3-full \
+  python3-pip
+EOF
+
+COPY ./requirements.txt /bounties/requirements.txt
+
+RUN pip install -r /bounties/requirements.txt --no-cache
+
+
 
 ################################################################################
 # cross build stage
@@ -114,7 +134,7 @@ EOF
 FROM base-target-stage
 
 LABEL io.cartesi.sdk_version=0.9.0
-LABEL io.cartesi.rollups.ram_size=128Mi
+LABEL io.cartesi.rollups.ram_size=1024Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -149,6 +169,10 @@ COPY --from=build-stage /opt/build/dapp .
 COPY --chmod=755 skel/cartesi-init /usr/sbin/cartesi-init
 COPY --chmod=755 skel/bounty-run /usr/bin/bounty-run
 COPY --chmod=644 tests/bounties/**/*-bounty_riscv64.tar.xz /bounties/examples
+
+###############################
+# Setup gymnasium 
+RUN pip install gymnasium --no-cache
 
 ENTRYPOINT ["rollup-init"]
 CMD ["/opt/cartesi/dapp/dapp"]

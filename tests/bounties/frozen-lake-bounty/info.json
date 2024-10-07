@@ -1,0 +1,4 @@
+{
+    "description": "Write an RL model to cross a frozen lake. Model with lowest average steps to the end wins!",
+    "imgLink": "https://gymnasium.farama.org/_images/frozen_lake.gif"
+}

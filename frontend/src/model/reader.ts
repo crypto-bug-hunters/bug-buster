@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "./__generated__/gql";
 import { GetVouchersQuery } from "./__generated__/graphql";
-import { BugBusterState, AppBounty } from "./state";
+import { BugBusterState, AppBounty, BountyType } from "./state";
 import { Validity, Proof, Voucher } from "../utils/voucher";
 import { InputInfo } from "./inputs";
 import { Hex, isHex, hexToBytes, isAddress, isHash } from "viem";
@@ -125,7 +125,9 @@ export const useLatestState = () => {
             } else {
                 const state = parseStringAsJson(lastEdge.node.payload);
                 if (isBugBusterState(state)) {
-                    setResult({ kind: "success", response: state });
+                    setResult({ kind: "success", response: {...state, bounties: state.bounties.map((bounty, index) => {
+                        return {...bounty, bountyIndex: index};
+                    })} });
                 }
             }
         }
