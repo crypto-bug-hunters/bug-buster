@@ -1,5 +1,5 @@
 .PHONY: all
-all: bounties test-image
+all: bounties
 
 .PHONY: bounties
 bounties:
