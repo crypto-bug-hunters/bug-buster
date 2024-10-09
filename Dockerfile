@@ -155,6 +155,10 @@ COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/bwrapbox/seccomp-filter.bpf
 
+# install forge-std
+ARG FORGE_STD_VERSION=1.9.3
+ADD https://github.com/foundry-rs/forge-std.git#v${FORGE_STD_VERSION} /usr/share/forge-std
+
 RUN useradd --home-dir /bounty bounty
 RUN mkdir -p /bounties /bounty
 RUN chown bounty:bounty /bounty
