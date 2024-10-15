@@ -75,3 +75,25 @@ dist/solc-%-bounty.tar.xz: build/solc-%-bounty/aliases.sh src/solc/start.sh
 build/solc-%-bounty/aliases.sh:
 	mkdir -p $(@D)
 	printf "$(ALIAS_TEMPLATE)" solc solc $* > $@
+
+###################
+# Adder contract
+###################
+
+ADDER_VERSIONS= safe unsafe
+
+all: $(patsubst %,dist/adder-%-bounty.tar.xz,$(ADDER_VERSIONS))
+
+dist/adder-%-bounty.tar.xz: \
+		build/adder-%-bounty/script/Deploy.s.sol \
+		src/adder/start.sh \
+		src/adder/foundry.toml \
+		src/adder/src/IAdder.sol \
+		src/adder/src/%/Adder.sol \
+		src/adder/script/LibDeployments.sol \
+		src/adder/script/Test.s.sol
+	tar $(TAR_OPTS) $@ $^
+
+build/adder-%-bounty/script/Deploy.s.sol: src/adder/script/%/Deploy.s.sol
+	mkdir -p $(@D)
+	cp $< $@
