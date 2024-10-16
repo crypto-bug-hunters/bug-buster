@@ -89,7 +89,7 @@ pnpm i
 #### From source
 
 ```sh
-pnpm build
+make build
 ```
 
 #### From a tagged image
