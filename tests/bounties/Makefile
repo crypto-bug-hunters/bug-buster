@@ -69,6 +69,44 @@ build/solc/0.8.27/aliases.sh: | build/solc/0.8.27
 build/solc/0.8.27:
 	mkdir -p $@
 
+all: dist/safe-adder-bounty.tar.xz
+
+dist/safe-adder-bounty.tar.xz: build/adder/aliases.sh build/safe-adder/script/Deploy.s.sol \
+		src/adder/start.sh src/adder/foundry.toml src/adder/src/IAdder.sol src/adder/src/SafeAdder.sol \
+		src/adder/script/LibDeployments.sol src/adder/script/Test.s.sol | dist
+	tar -cJf $@ -C build/adder aliases.sh -C ../safe-adder script/Deploy.s.sol \
+		-C ../../src/adder start.sh foundry.toml src/IAdder.sol src/SafeAdder.sol \
+		script/LibDeployments.sol script/Test.s.sol
+
+build/safe-adder/script/Deploy.s.sol: | build/safe-adder/script
+	cp src/adder/script/DeploySafe.s.sol $@
+
+build/safe-adder/script:
+	mkdir -p $@
+
+all: dist/unsafe-adder-bounty.tar.xz
+
+dist/unsafe-adder-bounty.tar.xz: build/adder/aliases.sh build/unsafe-adder/script/Deploy.s.sol \
+		src/adder/start.sh src/adder/foundry.toml src/adder/src/IAdder.sol src/adder/src/UnsafeAdder.sol \
+		src/adder/script/LibDeployments.sol src/adder/script/Test.s.sol | dist
+	tar -cJf $@ -C build/adder aliases.sh -C ../unsafe-adder script/Deploy.s.sol \
+		-C ../../src/adder start.sh foundry.toml src/IAdder.sol src/UnsafeAdder.sol \
+		script/LibDeployments.sol script/Test.s.sol
+
+build/unsafe-adder/script/Deploy.s.sol: | build/unsafe-adder/script
+	cp src/adder/script/DeployUnsafe.s.sol $@
+
+build/unsafe-adder/script:
+	mkdir -p $@
+
+build/adder/aliases.sh: | build/adder
+	printf "$(ALIAS_TEMPLATE)" forge forge 2cdbfac > $@
+	printf "$(ALIAS_TEMPLATE)" reth reth 1.0.5 >> $@
+	printf "$(ALIAS_TEMPLATE)" solc solc 0.8.27 >> $@
+
+build/adder:
+	mkdir -p $@
+
 dist:
 	mkdir -p $@
 
