@@ -1,9 +1,21 @@
+MACHINE_IMAGE=.cartesi/image.ext2
+IIDFILE=.imageid
+
 .PHONY: all
-all: bounties
+all: bounties $(MACHINE_IMAGE)
 
 .PHONY: bounties
 bounties:
 	$(MAKE) -C tests/bounties
+
+.PHONY: machine
+machine: $(MACHINE_IMAGE)
+
+$(MACHINE_IMAGE): $(IIDFILE)
+	pnpm exec cartesi build --from-image "$(shell cat $<)"
+
+$(IIDFILE): Dockerfile .dockerignore go.mod go.sum $(shell find shared contract bwrapbox skel)
+	docker build --iidfile $@ --platform linux/riscv64 .
 
 .PHONY: clean
 clean:
