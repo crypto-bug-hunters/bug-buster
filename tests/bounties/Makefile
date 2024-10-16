@@ -1,76 +1,8 @@
-ALIAS_TEMPLATE=shopt -s expand_aliases\nalias %s='%s-%s'\n
+ALIAS_TEMPLATE= shopt -s expand_aliases\nalias %s='%s-%s'\n
+TAR_OPTS= --transform='s,/*[^/]*/[^/]*/,,' --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime -cJf
 
 .PHONY: all
 all:
-
-all: dist/lua-5.4.3-bounty.tar.xz
-
-dist/lua-5.4.3-bounty.tar.xz: build/lua/5.4.3/aliases.sh src/lua/start.sh src/lua/bounty.lua | dist
-	tar -cJf $@ -C build/lua/5.4.3 aliases.sh -C ../../../src/lua start.sh bounty.lua
-
-build/lua/5.4.3/aliases.sh: | build/lua/5.4.3
-	printf "$(ALIAS_TEMPLATE)" lua lua 5.4.3 > $@
-
-build/lua/5.4.3:
-	mkdir -p $@
-
-all: dist/lua-5.4.7-bounty.tar.xz
-
-dist/lua-5.4.7-bounty.tar.xz: build/lua/5.4.7/aliases.sh src/lua/start.sh src/lua/bounty.lua | dist
-	tar -cJf $@ -C build/lua/5.4.7 aliases.sh -C ../../../src/lua start.sh bounty.lua
-
-build/lua/5.4.7/aliases.sh: | build/lua/5.4.7
-	printf "$(ALIAS_TEMPLATE)" lua lua 5.4.7 > $@
-
-build/lua/5.4.7:
-	mkdir -p $@
-
-all: dist/sqlite-3.32.2-bounty.tar.xz
-
-dist/sqlite-3.32.2-bounty.tar.xz: build/sqlite/3.32.2/aliases.sh src/sqlite/start.sh | dist
-	tar -cJf $@ -C build/sqlite/3.32.2 aliases.sh -C ../../../src/sqlite start.sh
-
-build/sqlite/3.32.2/aliases.sh: | build/sqlite/3.32.2
-	printf "$(ALIAS_TEMPLATE)" sqlite3 sqlite 3.32.2 > $@
-
-build/sqlite/3.32.2:
-	mkdir -p $@
-
-all: dist/sqlite-3.43.2-bounty.tar.xz
-
-dist/sqlite-3.43.2-bounty.tar.xz: build/sqlite/3.43.2/aliases.sh src/sqlite/start.sh | dist
-	tar -cJf $@ -C build/sqlite/3.43.2 aliases.sh -C ../../../src/sqlite start.sh
-
-build/sqlite/3.43.2/aliases.sh: | build/sqlite/3.43.2
-	printf "$(ALIAS_TEMPLATE)" sqlite3 sqlite 3.43.2 > $@
-
-build/sqlite/3.43.2:
-	mkdir -p $@
-
-all: dist/busybox-1.36.1-bounty.tar.xz
-
-dist/busybox-1.36.1-bounty.tar.xz: build/busybox/1.36.1/aliases.sh src/busybox/start.sh | dist
-	tar -cJf $@ -C build/busybox/1.36.1 aliases.sh -C ../../../src/busybox start.sh
-
-build/busybox/1.36.1/aliases.sh: | build/busybox/1.36.1
-	printf "$(ALIAS_TEMPLATE)" busybox busybox 1.36.1 > $@
-
-build/busybox/1.36.1:
-	mkdir -p $@
-
-all: dist/solc-0.8.27-bounty.tar.xz
-
-dist/solc-0.8.27-bounty.tar.xz: build/solc/0.8.27/aliases.sh src/solc/start.sh | dist
-	tar -cJf $@ -C build/solc/0.8.27 aliases.sh -C ../../../src/solc start.sh
-
-build/solc/0.8.27/aliases.sh: | build/solc/0.8.27
-	printf "$(ALIAS_TEMPLATE)" solc solc 0.8.27 > $@
-
-build/solc/0.8.27:
-	mkdir -p $@
-
-dist:
-	mkdir -p $@
 
 .PHONY: clean
 clean:
@@ -79,3 +11,67 @@ clean:
 .PHONY: distclean
 distclean: clean
 	rm -rf dist
+
+###################
+# Lua
+###################
+
+LUA_VERSIONS= 5.4.3 5.4.7
+
+all: $(patsubst %,dist/lua-%-bounty.tar.xz,$(LUA_VERSIONS))
+
+dist/lua-%-bounty.tar.xz: build/lua-%-bounty/aliases.sh src/lua/start.sh src/lua/bounty.lua
+	mkdir -p $(@D)
+	tar $(TAR_OPTS) $@ $^
+
+build/lua-%-bounty/aliases.sh:
+	mkdir -p $(@D)
+	printf "$(ALIAS_TEMPLATE)" lua lua $* > $@
+
+###################
+# SQLite
+###################
+
+SQLITE_VERSIONS= 3.32.2 3.43.2
+
+all: $(patsubst %,dist/sqlite-%-bounty.tar.xz,$(SQLITE_VERSIONS))
+
+dist/sqlite-%-bounty.tar.xz: build/sqlite-%-bounty/aliases.sh src/sqlite/start.sh
+	mkdir -p $(@D)
+	tar $(TAR_OPTS) $@ $^
+
+build/sqlite-%-bounty/aliases.sh:
+	mkdir -p $(@D)
+	printf "$(ALIAS_TEMPLATE)" sqlite3 sqlite $* > $@
+
+###################
+# BusyBox
+###################
+
+BUSYBOX_VERSIONS= 1.36.1
+
+all: $(patsubst %,dist/busybox-%-bounty.tar.xz,$(BUSYBOX_VERSIONS))
+
+dist/busybox-%-bounty.tar.xz: build/busybox-%-bounty/aliases.sh src/busybox/start.sh
+	mkdir -p $(@D)
+	tar $(TAR_OPTS) $@ $^
+
+build/busybox-%-bounty/aliases.sh:
+	mkdir -p $(@D)
+	printf "$(ALIAS_TEMPLATE)" busybox busybox $* > $@
+
+###################
+# Solidity
+###################
+
+SOLC_VERSIONS= 0.8.27
+
+all: $(patsubst %,dist/solc-%-bounty.tar.xz,$(SOLC_VERSIONS))
+
+dist/solc-%-bounty.tar.xz: build/solc-%-bounty/aliases.sh src/solc/start.sh
+	mkdir -p $(@D)
+	tar $(TAR_OPTS) $@ $^
+
+build/solc-%-bounty/aliases.sh:
+	mkdir -p $(@D)
+	printf "$(ALIAS_TEMPLATE)" solc solc $* > $@
