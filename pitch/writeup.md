@@ -2,7 +2,7 @@
 
 ### Introduction
 
-Our team, hired by Cartesi, embarked on this project after participating in a hackathon and Cartesi’s CSG program. The core aim was to introduce RL (Reinforcement Learning) model bounties into **Bug Buster**, Cartesi’s trustless bug bounty platform. Bug Buster operates within a deterministic Linux environment powered by Cartesi Rollups, allowing traditional tools and languages to be used in blockchain applications.
+The core aim was to introduce RL (Reinforcement Learning) model bounties into **Bug Buster**, a trustless bug bounty platform. Bug Buster operates within a deterministic Linux environment powered by Cartesi Rollups, allowing traditional tools and languages to be used in blockchain applications.
 
 ### Bug Buster Architecture Before
 
