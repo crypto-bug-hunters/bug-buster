@@ -27,7 +27,7 @@ distclean:
 
 .PHONY: test
 test: bounties
-	docker run -v "$(shell pwd):/mnt" --rm -it cryptobughunters/test-image:0.0.0 lua5.4 tests/tests.lua
+	docker run -v "$(shell pwd):/mnt:ro" --rm -it cryptobughunters/test-image:0.0.0 lua5.4 tests/tests.lua
 
 .PHONY: shell
 shell:
