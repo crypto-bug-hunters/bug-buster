@@ -89,7 +89,7 @@ pnpm i
 #### From source
 
 ```sh
-make build
+make machine
 ```
 
 #### From a tagged image
@@ -188,7 +188,7 @@ go run ./cli test \
 
 ## Populating DApp
 
-Run the following command to fill up the DApp with test data. 
+Run the following command to fill up the DApp with test data.
 
 ```sh
 make populate
