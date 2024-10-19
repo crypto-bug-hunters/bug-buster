@@ -22,7 +22,7 @@ export interface SendSolution {
     name: string;
     imgLink?: string;
     bountyIndex: number;
-    solution: string;
+    exploit: string;
 }
 
 export interface WithdrawSponsorship {

@@ -13,7 +13,7 @@ import {
     Text,
 } from "@mantine/core";
 
-import { useWaitForTransaction } from "wagmi";
+import { useWaitForTransaction, useAccount} from "wagmi";
 
 import {
     parseHexAsJson,
@@ -21,9 +21,9 @@ import {
     useInput,
     isInput,
 } from "../../../model/reader";
-import { getBountyTotalPrize, AppBounty, BountyType } from "../../../model/state";
+import { getBountyTotalPrize, AppBounty, BountyType, Attempt } from "../../../model/state";
 import { SendSolution } from "../../../model/inputs";
-import { usePrepareWithdrawSponsorship } from "../../../hooks/bug-buster";
+import { usePrepareSendExploit, usePrepareWithdrawSponsorship } from "../../../hooks/bug-buster";
 import { useInputBoxAddInput } from "../../../hooks/contracts";
 
 import { BountyParams, ConcreteBountyParams } from "./utils";
@@ -70,10 +70,38 @@ const WithdrawButton: FC<{
 const ButtonsBox: FC<{
     bountyIndex: number;
     bountyStatus: BountyStatus;
-}> = ({ bountyIndex, bountyStatus }) => {
+    bounty: AppBounty;
+}> = ({ bountyIndex, bountyStatus, bounty }) => {
+
+    const addInputPrepare = usePrepareSendExploit({
+        bountyIndex,
+    });
+
+    const addInputWrite = useInputBoxAddInput(addInputPrepare.config);
+
+    const addInputWait = useWaitForTransaction({
+        hash: addInputWrite.data?.hash,
+    });
+
+    const { disabled: addInputDisabled, loading: addInputLoading } =
+        transactionStatus(addInputPrepare, addInputWrite, addInputWait);
+
+
     const isOpen = bountyStatus.kind == "open";
     const canWithdraw =
         bountyStatus.kind === "expired" && !bountyStatus.withdrawn;
+    const hasWinner = !(JSON.stringify(bounty.exploit) === '{}');
+    const isWinner = () => {
+        if(bounty.attempts === null) return false;
+        const { address, connector, isConnected } = useAccount()
+        let winner = bounty.attempts[0]
+        for(const attempt of bounty.attempts )
+            if(attempt.score > winner.score) {
+                winner = attempt;
+            }
+        
+        return winner.hacker.address === address;
+        };
     return (
         <Flex
             direction={{ base: "column", sm: "row" }}
@@ -102,6 +130,16 @@ const ButtonsBox: FC<{
                 bountyIndex={bountyIndex}
                 canWithdraw={canWithdraw}
             />
+            {bounty.bountyType == BountyType.RLModel ? (
+                <Button
+                fullWidth
+                disabled={isOpen && hasWinner && !isWinner()}
+                onClick={() => addInputWrite.write && addInputWrite.write()}
+            >
+                Get Prize
+            </Button>
+            ): ""}
+            
         </Flex>
     );
 };
@@ -149,6 +187,8 @@ const BountyBox: FC<ConcreteBountyParams> = ({ bountyIndex, bounty }) => {
                 <ButtonsBox
                     bountyIndex={bountyIndex}
                     bountyStatus={bountyStatus}
+                    bounty={bounty}
+
                 />
             </HasConnectedAccount>
         </Stack>
