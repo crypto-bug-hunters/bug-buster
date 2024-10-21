@@ -20,7 +20,6 @@ import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
 import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../../hooks/block";
 import { getBountyStatus } from "../../utils/bounty";
-import { GOOGLE_BOUNTY_CREATION_FORM_URL } from "../../utils/links";
 
 const Bounty: FC<{
     index: number;
@@ -102,7 +101,7 @@ const Explore: FC = () => {
                     justify="flex-end"
                     visibleFrom="md"
                 >
-                    <Link href={GOOGLE_BOUNTY_CREATION_FORM_URL}>
+                    <Link href="/bounty/create">
                         <Button size="lg">Create bounty</Button>
                     </Link>
                 </Flex>
