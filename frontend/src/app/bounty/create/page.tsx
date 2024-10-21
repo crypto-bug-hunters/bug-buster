@@ -4,14 +4,17 @@ import { FC, useState, useEffect } from "react";
 import {
     Box,
     Button,
-    Center,
     Stack,
     Title,
     TextInput,
     Textarea,
     useMantineTheme,
+    Tabs,
+    Text,
+    Code,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { FileWithPath } from "@mantine/dropzone";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { isAddress, zeroAddress } from "viem";
 
@@ -21,6 +24,30 @@ import { CreateAppBounty } from "../../../model/inputs";
 import { usePrepareCreateBounty } from "../../../hooks/bug-buster";
 import { useBlockTimestamp } from "../../../hooks/block";
 import { transactionStatus } from "../../../utils/transactionStatus";
+import { readFile } from "fs";
+import { FileDrop } from "../../../components/filedrop";
+
+interface FileDropTextParams {
+    filename?: string;
+}
+
+const FileDropText: FC<FileDropTextParams> = ({ filename }) => {
+    if (filename) {
+        return (
+            <Box>
+                <Text size="lg">Bundle uploaded!</Text>
+                <Code>{filename}</Code>
+            </Box>
+        );
+    } else {
+        return (
+            <Box>
+                <Text size="lg">Drop your bounty bundle here!</Text>
+                <Code>*.tar.xz</Code>
+            </Box>
+        );
+    }
+};
 
 interface CreateBountyFormValues {
     name?: string;
@@ -66,7 +93,26 @@ const CreateBountyForm: FC = () => {
             name: isNotEmpty("A name is required"),
             description: isNotEmpty("A description is required"),
             deadline: isNotEmpty("A deadline is required"),
-            codeZipPath: isNotEmpty("A code path is required"),
+            codeZipBinary: (value, values) => {
+                if (value === undefined && values.codeZipPath === undefined) {
+                    return "A bundle path or binary is required";
+                } else if (value !== undefined) {
+                    return null;
+                }
+            },
+            codeZipPath: (value, values) => {
+                console.log(value, values);
+                if (value === undefined && values.codeZipBinary === undefined) {
+                    return "A bundle path or binary is required";
+                } else if (
+                    value !== undefined &&
+                    values.codeZipBinary !== undefined
+                ) {
+                    return "Cannot set both a bundle path and binary";
+                } else if (value !== undefined) {
+                    return null;
+                }
+            },
             token: (token) => {
                 if (token === undefined) {
                     return "A token address is required";
@@ -82,6 +128,23 @@ const CreateBountyForm: FC = () => {
     });
 
     const { name, description, deadline, token } = form.getTransformedValues();
+
+    const [filename, setFilename] = useState<string | undefined>();
+    const readFile = (f: FileWithPath | null) => {
+        if (f) {
+            f.arrayBuffer().then((buf) => {
+                form.setFieldValue(
+                    "codeZipBinary",
+                    btoa(
+                        Array.from(new Uint8Array(buf))
+                            .map((b) => String.fromCharCode(b))
+                            .join(""),
+                    ),
+                );
+                setFilename(f.name);
+            });
+        }
+    };
 
     const bounty: CreateAppBounty = {
         ...form.values,
@@ -152,13 +215,34 @@ const CreateBountyForm: FC = () => {
                     minDate={minDeadline}
                     {...form.getInputProps("deadline")}
                 />
-                <TextInput
-                    size="lg"
-                    label="Bundle path"
-                    placeholder="/path/to/bundle.tar.xz"
-                    description="Path to the bounty bundle in the machine filesystem"
-                    {...form.getInputProps("codeZipPath")}
-                />
+
+                <Tabs defaultValue="file">
+                    <Tabs.List>
+                        <Tabs.Tab value="file">Upload</Tabs.Tab>
+                        <Tabs.Tab value="path">Built-in</Tabs.Tab>
+                    </Tabs.List>
+
+                    <Tabs.Panel value="file">
+                        <FileDrop
+                            onDrop={(files) => readFile(files[0])}
+                            accept={{
+                                "application/octet-stream": [".tar.xz"],
+                            }}
+                        >
+                            <FileDropText filename={filename} />
+                        </FileDrop>
+                    </Tabs.Panel>
+
+                    <Tabs.Panel value="path">
+                        <TextInput
+                            size="lg"
+                            label="Bundle path"
+                            placeholder="/path/to/bundle.tar.xz"
+                            description="Path to the bounty bundle in the machine filesystem"
+                            {...form.getInputProps("codeZipPath")}
+                        />
+                    </Tabs.Panel>
+                </Tabs>
                 <Button
                     size="lg"
                     disabled={
