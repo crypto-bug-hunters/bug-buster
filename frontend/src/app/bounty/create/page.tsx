@@ -26,6 +26,7 @@ import { useBlockTimestamp } from "../../../hooks/block";
 import { transactionStatus } from "../../../utils/transactionStatus";
 import { readFile } from "fs";
 import { FileDrop } from "../../../components/filedrop";
+import { validate } from "graphql";
 
 interface FileDropTextParams {
     filename?: string;
@@ -73,6 +74,19 @@ const CreateBountyForm: FC = () => {
         }
     }, [blockTimestamp]);
 
+    function validateBountyBundle(
+        zipBinary: string | undefined,
+        codeZipPath: string | undefined,
+    ) {
+        if (zipBinary === undefined && codeZipPath === undefined) {
+            return "A bundle path or binary is required";
+        } else if (zipBinary !== undefined && codeZipPath !== undefined) {
+            return "Cannot set both a bundle path and a bundle binary";
+        } else {
+            return null;
+        }
+    }
+
     const form = useForm({
         initialValues: {} as CreateBountyFormValues,
         transformValues: (values) => {
@@ -94,24 +108,10 @@ const CreateBountyForm: FC = () => {
             description: isNotEmpty("A description is required"),
             deadline: isNotEmpty("A deadline is required"),
             codeZipBinary: (value, values) => {
-                if (value === undefined && values.codeZipPath === undefined) {
-                    return "A bundle path or binary is required";
-                } else if (value !== undefined) {
-                    return null;
-                }
+                return validateBountyBundle(value, values.codeZipPath);
             },
             codeZipPath: (value, values) => {
-                console.log(value, values);
-                if (value === undefined && values.codeZipBinary === undefined) {
-                    return "A bundle path or binary is required";
-                } else if (
-                    value !== undefined &&
-                    values.codeZipBinary !== undefined
-                ) {
-                    return "Cannot set both a bundle path and binary";
-                } else if (value !== undefined) {
-                    return null;
-                }
+                return validateBountyBundle(values.codeZipBinary, value);
             },
             token: (token) => {
                 if (token === undefined) {
