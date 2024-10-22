@@ -74,14 +74,24 @@ const CreateBountyForm: FC = () => {
         }
     }, [blockTimestamp]);
 
+    function isBountyBundleEmpty(bundle: string | undefined) {
+        return bundle === undefined || bundle.length === 0;
+    }
+
     function validateBountyBundle(
         zipBinary: string | undefined,
         codeZipPath: string | undefined,
     ) {
-        if (zipBinary === undefined && codeZipPath === undefined) {
+        if (
+            isBountyBundleEmpty(zipBinary) &&
+            isBountyBundleEmpty(codeZipPath)
+        ) {
             return "A bundle path or binary is required";
-        } else if (zipBinary !== undefined && codeZipPath !== undefined) {
-            return "Cannot set both a bundle path and a bundle binary";
+        } else if (
+            !isBountyBundleEmpty(zipBinary) &&
+            !isBountyBundleEmpty(codeZipPath)
+        ) {
+            return "Cannot set a bundle path and a bundle binary";
         } else {
             return null;
         }
@@ -133,14 +143,12 @@ const CreateBountyForm: FC = () => {
     const readFile = (f: FileWithPath | null) => {
         if (f) {
             f.arrayBuffer().then((buf) => {
-                form.setFieldValue(
-                    "codeZipBinary",
-                    btoa(
-                        Array.from(new Uint8Array(buf))
-                            .map((b) => String.fromCharCode(b))
-                            .join(""),
-                    ),
+                const codeZipBinary = btoa(
+                    Array.from(new Uint8Array(buf))
+                        .map((b) => String.fromCharCode(b))
+                        .join(""),
                 );
+                form.setFieldValue("codeZipBinary", codeZipBinary);
                 setFilename(f.name);
             });
         }
@@ -231,6 +239,11 @@ const CreateBountyForm: FC = () => {
                         >
                             <FileDropText filename={filename} />
                         </FileDrop>
+                        {form.errors.codeZipBinary && (
+                            <Text size="sm" c="red">
+                                {form.errors.codeZipBinary}
+                            </Text>
+                        )}
                     </Tabs.Panel>
 
                     <Tabs.Panel value="path">
