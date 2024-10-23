@@ -19,8 +19,9 @@ import { AppBounty } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
 import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../../hooks/block";
-import { getBountyStatus } from "../../utils/bounty";
+import { getBountyStatus, getBountyTotalPrize } from "../../utils/bounty";
 import { GOOGLE_BOUNTY_CREATION_FORM_URL } from "../../utils/links";
+import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
 
 const Bounty: FC<{
     index: number;
@@ -28,6 +29,9 @@ const Bounty: FC<{
     blockTimestamp: bigint;
 }> = ({ index, bounty, blockTimestamp }) => {
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
+    const totalPrize = getBountyTotalPrize(bounty);
+    const { token } = bounty;
+    const erc20Metadata = useErc20Metadata(token);
     return (
         <Anchor href={"/bounty/" + index} underline="never">
             <Card h="100%">
@@ -42,12 +46,24 @@ const Bounty: FC<{
                     />
                 </Card.Section>
                 <Box>
-                    <Group my="sm">
-                        <Text truncate="end" fw={700} size="lg">
-                            {bounty.name}
+                    <Stack>
+                        <Group my="sm">
+                            <Text truncate="end" fw={700} size="lg">
+                                {bounty.name}
+                            </Text>
+                            <BountyStatusBadgeGroup
+                                bountyStatus={bountyStatus}
+                            />
+                        </Group>
+                        <Text>
+                            Total Prize:{" "}
+                            {formatErc20Amount(
+                                token,
+                                totalPrize,
+                                erc20Metadata,
+                            )}
                         </Text>
-                        <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
-                    </Group>
+                    </Stack>
                     <Text truncate="end" size="xs" c="dimmend">
                         {bounty.description}
                     </Text>
