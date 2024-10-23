@@ -15,17 +15,6 @@ export interface AppBounty {
     withdrawn: boolean;
 }
 
-export const getBountyTotalPrize = (bounty: AppBounty) => {
-    if (bounty.sponsorships) {
-        // prettier-ignore
-        return bounty.sponsorships
-            .map((s) => BigInt(s.value))
-            .reduce((acc, v) => acc + v);
-    } else {
-        return BigInt(0);
-    }
-};
-
 export interface Profile {
     address: Address;
     name: string;
