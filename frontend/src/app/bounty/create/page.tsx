@@ -91,7 +91,7 @@ const CreateBountyForm: FC = () => {
             !isBountyBundleEmpty(zipBinary) &&
             !isBountyBundleEmpty(codeZipPath)
         ) {
-            return "Cannot set a bundle path and a bundle binary";
+            return "Cannot set a bundle path and also a bundle binary";
         } else {
             return null;
         }
@@ -136,6 +136,11 @@ const CreateBountyForm: FC = () => {
             },
         },
     });
+
+    useEffect(() => {
+        if (form.values.codeZipPath !== undefined)
+            form.validateField("codeZipBinary");
+    }, [form]);
 
     const { name, description, deadline, token } = form.getTransformedValues();
 
