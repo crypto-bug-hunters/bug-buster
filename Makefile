@@ -26,7 +26,7 @@ distclean:
 	$(MAKE) -C tests/bounties distclean
 
 .PHONY: test
-test: bounties
+test: bounties machine
 	docker run -v "$(shell pwd):/mnt:ro" --rm -it cryptobughunters/test-image:0.0.0 lua5.4 tests/tests.lua
 
 .PHONY: shell
@@ -42,5 +42,5 @@ run-frontend-prod:
 	cd frontend && pnpm build && pnpm start
 
 .PHONY: populate
-populate:
+populate: bounties
 	./populate.sh
