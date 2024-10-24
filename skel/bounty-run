@@ -81,32 +81,6 @@ tar xf $BOUNTY_TAR --warning=no-timestamp
 bwrapbox \
   --cgroup $BWRAPBOX_USER.bwrapbox \
   --cgroup-overwrite \
-  --climit-elapsed-high $BWRAPBOX_CLIMIT_ELAPSED_HIGH \
-  --climit-elapsed-max $BWRAPBOX_CLIMIT_ELAPSED_MAX \
-  --climit cgroup.max.descendants $BWRAPBOX_CLIMIT_CGROUP_MAX_DESCENDANTS \
-  --climit cgroup.max.depth $BWRAPBOX_CLIMIT_CGROUP_MAX_DEPTH \
-  --climit pids.max $BWRAPBOX_CLIMIT_PIDS_MAX \
-  --climit cpu.weight.nice $BWRAPBOX_CLIMIT_CPU_WEIGHT_NICE \
-  --climit memory.swap.max $BWRAPBOX_CLIMIT_MEMORY_SWAP_MAX \
-  --climit memory.high $BWRAPBOX_CLIMIT_MEMORY_HIGH \
-  --climit memory.max $BWRAPBOX_CLIMIT_MEMORY_MAX \
-  --climit time.high $BWRAPBOX_CLIMIT_TIME_HIGH \
-  --climit time.max $BWRAPBOX_CLIMIT_TIME_MAX \
-  --rlimit cpu.max $BWRAPBOX_RLIMIT_CPU_MAX \
-  --rlimit fsize.max $BWRAPBOX_RLIMIT_FSIZE_MAX \
-  --rlimit data.max $BWRAPBOX_RLIMIT_DATA_MAX \
-  --rlimit stack.max $BWRAPBOX_RLIMIT_STACK_MAX \
-  --rlimit core.max $BWRAPBOX_RLIMIT_CORE_MAX \
-  --rlimit nproc.max $BWRAPBOX_RLIMIT_NPROC_MAX \
-  --rlimit nofile.max $BWRAPBOX_RLIMIT_NOFILE_MAX \
-  --rlimit memlock.max $BWRAPBOX_RLIMIT_MEMLOCK_MAX \
-  --rlimit as.high $BWRAPBOX_RLIMIT_AS_HIGH \
-  --rlimit as.max $BWRAPBOX_RLIMIT_AS_MAX \
-  --rlimit sigpending.max $BWRAPBOX_RLIMIT_SIGPENDING_MAX \
-  --rlimit msgqueue.max $BWRAPBOX_RLIMIT_MSGQUEUE_MAX \
-  --rlimit nice.max $BWRAPBOX_RLIMIT_NICE_MAX \
-  --rlimit rtprio.max $BWRAPBOX_RLIMIT_RTPRIO_MAX \
-  --rlimit rttime.max $BWRAPBOX_RLIMIT_RTTIME_MAX \
   --setuid $(id -u $BWRAPBOX_USER) \
   --setgid $(id -g $BWRAPBOX_USER) \
   --dev /dev \
@@ -137,6 +111,5 @@ bwrapbox \
   --die-with-parent \
   --as-pid-1 \
   --new-session \
-  --seccomp 9 9<$BWRAPBOX_SECCOMP_FILTER \
   -- /bounty/start.sh /exploit
 
