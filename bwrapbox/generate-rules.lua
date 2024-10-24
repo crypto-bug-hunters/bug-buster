@@ -227,15 +227,51 @@ local allowed_syscalls = {
 
   --- futex
   'futex',
+  'set_robust_list',
+
+  -- epoll
+  'epoll_create1',
+  'epoll_ctl',
+  'epoll_pwait',
+
+  -- scheduler information
+  'sched_getaffinity',
+
+  -- advanced filesystem
+  'fadvise64',
+
+  -- advanced memory control
+  'madvise',
+
+  -- networking
+  'accept',
+  'accept4',
+  'bind',
+  'connect',
+  'getpeername',
+  'getsockname',
+  'getsockopt',
+  'listen',
+  'recv',
+  'recvfrom',
+  'recvmmsg',
+  'recvmmsg_time64',
+  'recvmsg',
+  'send',
+  'sendmmsg',
+  'sendmsg',
+  'sendto',
+  'setsockopt',
+  'shutdown',
+  'socket',
+  'socketcall',
+  'socketpair',
 }
 
 local disallowed_syscalls = {
   -- epoll
   'epoll_create',
-  'epoll_create1',
-  'epoll_ctl',
   'epoll_ctl_old',
-  'epoll_pwait',
   'epoll_pwait2',
   'epoll_wait',
   'epoll_wait_old',
@@ -256,7 +292,6 @@ local disallowed_syscalls = {
 
   --- futex
   'get_robust_list',
-  'set_robust_list',
   'futex_time64',
   'futex_waitv',
 
@@ -296,7 +331,6 @@ local disallowed_syscalls = {
   -- scheduler information
   'sched_get_priority_max',
   'sched_get_priority_min',
-  'sched_getaffinity',
   'sched_getattr',
   'sched_getparam',
   'sched_getscheduler',
@@ -304,7 +338,6 @@ local disallowed_syscalls = {
   'sched_rr_get_interval_time64',
 
   -- advanced filesystem
-  'fadvise64',
   'fadvise64_64',
   'flock',
   'readahead',
@@ -346,7 +379,6 @@ local disallowed_syscalls = {
   'munlockall',
 
   -- advanced memory control
-  'madvise',
   'mremap',
   'mincore',
 
@@ -366,30 +398,6 @@ local disallowed_syscalls = {
   'io_uring_enter',
   'io_uring_register',
   'io_uring_setup',
-
-  -- networking
-  'accept',
-  'accept4',
-  'bind',
-  'connect',
-  'getpeername',
-  'getsockname',
-  'getsockopt',
-  'listen',
-  'recv',
-  'recvfrom',
-  'recvmmsg',
-  'recvmmsg_time64',
-  'recvmsg',
-  'send',
-  'sendmmsg',
-  'sendmsg',
-  'sendto',
-  'setsockopt',
-  'shutdown',
-  'socket',
-  'socketcall',
-  'socketpair',
 
   -- filesystem chown
   'chown',
