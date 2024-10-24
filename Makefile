@@ -31,7 +31,7 @@ test: bounties
 
 .PHONY: shell
 shell:
-	docker run -it -v "$(shell pwd)/.cartesi:/mnt:ro" cryptobughunters/sdk:0.11.1 cartesi-machine --ram-length=128Mi --flash-drive=label:root,filename:/mnt/image.ext2 -it /bin/bash
+	docker run -it -v "$(shell pwd)/.cartesi:/mnt:ro" cryptobughunters/sdk:0.11.1 cartesi-machine --ram-length=256Mi --flash-drive=label:root,filename:/mnt/image.ext2 -it /bin/bash
 
 .PHONY: run-frontend-dev
 run-frontend-dev:

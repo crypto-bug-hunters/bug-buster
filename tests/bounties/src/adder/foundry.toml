@@ -1,0 +1,15 @@
+[profile.deploy]
+fs_permissions = [
+    { access = "read-write", path = "./deployments.json" },
+]
+
+[profile.exploit]
+fs_permissions = [
+    { access = "read", path = "./deployments.json" },
+]
+
+[profile.test]
+fs_permissions = [
+	{ access = "read", path = "./deployments.json" },
+	{ access = "read-write", path = "./exploited" },
+]
