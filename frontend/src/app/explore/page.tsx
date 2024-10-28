@@ -12,6 +12,7 @@ import {
     Anchor,
     SimpleGrid,
     Group,
+    Tooltip,
 } from "@mantine/core";
 import Link from "next/link";
 import { useLatestState } from "../../model/reader";
@@ -19,7 +20,11 @@ import { AppBounty } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
 import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../../hooks/block";
-import { getBountyStatus, getBountyTotalPrize } from "../../utils/bounty";
+import {
+    getBountyStatus,
+    getBountyTotalPrize,
+    getBountyDescription,
+} from "../../utils/bounty";
 import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
 
 const Bounty: FC<{
@@ -45,27 +50,28 @@ const Bounty: FC<{
                     />
                 </Card.Section>
                 <Box>
-                    <Stack>
-                        <Group my="sm">
-                            <Text truncate="end" fw={700} size="lg">
+                    <Tooltip
+                        label={getBountyDescription(bounty.description, 200)}
+                        multiline={true}
+                        w={220}
+                    >
+                        <Stack>
+                            <Text truncate="end" fw={700} size="lg" mt="sm">
                                 {bounty.name}
                             </Text>
                             <BountyStatusBadgeGroup
                                 bountyStatus={bountyStatus}
                             />
-                        </Group>
-                        <Text>
-                            Total Prize:{" "}
-                            {formatErc20Amount(
-                                token,
-                                totalPrize,
-                                erc20Metadata,
-                            )}
-                        </Text>
-                    </Stack>
-                    <Text truncate="end" size="xs" c="dimmend">
-                        {bounty.description}
-                    </Text>
+                            <Text>
+                                Total Prize:{" "}
+                                {formatErc20Amount(
+                                    token,
+                                    totalPrize,
+                                    erc20Metadata,
+                                )}
+                            </Text>
+                        </Stack>
+                    </Tooltip>
                 </Box>
             </Card>
         </Anchor>

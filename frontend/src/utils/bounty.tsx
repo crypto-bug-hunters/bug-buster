@@ -35,3 +35,11 @@ export const getBountyTotalPrize = (bounty: AppBounty) => {
         return BigInt(0);
     }
 };
+
+export const getBountyDescription = (description: string, length: number) => {
+    if (description.length <= length) {
+        return description;
+    } else {
+        return description.slice(0, length) + " [...]";
+    }
+};
