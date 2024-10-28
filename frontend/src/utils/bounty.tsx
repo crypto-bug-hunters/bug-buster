@@ -24,3 +24,22 @@ export function getBountyStatus(
         }
     }
 }
+
+export const getBountyTotalPrize = (bounty: AppBounty) => {
+    if (bounty.sponsorships) {
+        // prettier-ignore
+        return bounty.sponsorships
+            .map((s) => BigInt(s.value))
+            .reduce((acc, v) => acc + v);
+    } else {
+        return BigInt(0);
+    }
+};
+
+export const getBountyDescription = (description: string, length: number) => {
+    if (description.length <= length) {
+        return description;
+    } else {
+        return description.slice(0, length) + " [...]";
+    }
+};

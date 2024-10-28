@@ -12,6 +12,7 @@ import {
     Anchor,
     SimpleGrid,
     Group,
+    Tooltip,
 } from "@mantine/core";
 import Link from "next/link";
 import { useLatestState } from "../../model/reader";
@@ -19,7 +20,12 @@ import { AppBounty } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
 import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../../hooks/block";
-import { getBountyStatus } from "../../utils/bounty";
+import {
+    getBountyStatus,
+    getBountyTotalPrize,
+    getBountyDescription,
+} from "../../utils/bounty";
+import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
 
 const Bounty: FC<{
     index: number;
@@ -27,6 +33,9 @@ const Bounty: FC<{
     blockTimestamp: bigint;
 }> = ({ index, bounty, blockTimestamp }) => {
     const bountyStatus = getBountyStatus(bounty, blockTimestamp);
+    const totalPrize = getBountyTotalPrize(bounty);
+    const { token } = bounty;
+    const erc20Metadata = useErc20Metadata(token);
     return (
         <Anchor href={"/bounty/" + index} underline="never">
             <Card h="100%">
@@ -41,15 +50,28 @@ const Bounty: FC<{
                     />
                 </Card.Section>
                 <Box>
-                    <Group my="sm">
-                        <Text truncate="end" fw={700} size="lg">
-                            {bounty.name}
-                        </Text>
-                        <BountyStatusBadgeGroup bountyStatus={bountyStatus} />
-                    </Group>
-                    <Text truncate="end" size="xs" c="dimmend">
-                        {bounty.description}
-                    </Text>
+                    <Tooltip
+                        label={getBountyDescription(bounty.description, 200)}
+                        multiline={true}
+                        w={220}
+                    >
+                        <Stack>
+                            <Text truncate="end" fw={700} size="lg" mt="sm">
+                                {bounty.name}
+                            </Text>
+                            <BountyStatusBadgeGroup
+                                bountyStatus={bountyStatus}
+                            />
+                            <Text>
+                                Total Prize:{" "}
+                                {formatErc20Amount(
+                                    token,
+                                    totalPrize,
+                                    erc20Metadata,
+                                )}
+                            </Text>
+                        </Stack>
+                    </Tooltip>
                 </Box>
             </Card>
         </Anchor>
