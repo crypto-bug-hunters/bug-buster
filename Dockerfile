@@ -6,7 +6,7 @@ ARG UBUNTU_TAG=noble-20240827.1
 ARG APT_UPDATE_SNAPSHOT=20240827T030400Z
 
 # Built-in binaries version
-ARG BUILTINS_VERSION=0.6.0
+ARG BUILTINS_VERSION=0.7.2
 
 ################################################################################
 # cross base stage
@@ -122,7 +122,7 @@ FROM base-target-stage
 
 LABEL io.cartesi.sdk_name=cryptobughunters/sdk
 LABEL io.cartesi.sdk_version=0.11.1
-LABEL io.cartesi.rollups.ram_size=128Mi
+LABEL io.cartesi.rollups.ram_size=256Mi
 LABEL io.cartesi.rollups.data_size=128Mb
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -145,6 +145,7 @@ RUN dpkg -i /tmp/machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb \
 
 COPY --from=builtins --chmod=755 /opt/bundle/busybox-1.36.1-linux-riscv64 /usr/bin/busybox-1.36.1
 COPY --from=builtins --chmod=755 /opt/bundle/forge-2cdbfac-linux-riscv64 /usr/bin/forge-2cdbfac
+COPY --from=builtins --chmod=755 /opt/bundle/cast-2cdbfac-linux-riscv64 /usr/bin/cast-2cdbfac
 COPY --from=builtins --chmod=755 /opt/bundle/lua-5.4.3-linux-riscv64 /usr/bin/lua-5.4.3
 COPY --from=builtins --chmod=755 /opt/bundle/lua-5.4.7-linux-riscv64 /usr/bin/lua-5.4.7
 COPY --from=builtins --chmod=755 /opt/bundle/reth-1.0.5-linux-riscv64 /usr/bin/reth-1.0.5
@@ -154,6 +155,10 @@ COPY --from=builtins --chmod=755 /opt/bundle/sqlite-3.43.2-linux-riscv64 /usr/bi
 COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/bwrapbox /usr/bin/bwrapbox
 COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/bwrapbox/seccomp-filter.bpf
+
+# install forge-std
+ARG FORGE_STD_VERSION=1.9.3
+ADD https://github.com/foundry-rs/forge-std.git#v${FORGE_STD_VERSION}:src /usr/share/forge-lib/forge-std/src
 
 RUN useradd --home-dir /bounty bounty
 RUN mkdir -p /bounties /bounty
