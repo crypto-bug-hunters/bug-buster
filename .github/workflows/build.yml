@@ -3,6 +3,7 @@ on:
     paths-ignore:
       - 'cli'
       - 'cloud'
+      - 'docs'
       - 'frontend'
   push:
     branches:
