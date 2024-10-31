@@ -72,13 +72,13 @@ run_forge_script_broadcast() {
 }
 
 >&2 echo "Deploying contracts..."
-FOUNDRY_PROFILE=deploy run_forge_script_broadcast script/Deploy.s.sol:DeployScript
+FOUNDRY_PROFILE=deploy run_forge_script_broadcast script/Setup.s.sol:SetupScript
 
 >&2 echo "Running exploit..."
 FOUNDRY_PROFILE=exploit run_forge_script_broadcast script/Exploit.s.sol:ExploitScript
 
 >&2 echo "Testing contracts..."
-FOUNDRY_PROFILE=test run_forge_script script/Test.s.sol:TestScript
+FOUNDRY_PROFILE=test run_forge_script script/Assertion.s.sol:AssertionScript
 
 if [ -f exploited ]
 then
