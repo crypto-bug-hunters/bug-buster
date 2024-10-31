@@ -19,10 +19,12 @@ If, however, no one is able to submit a valid exploit until a certain deadline, 
 ## Documentation
 
 - [Dependencies](docs/dependencies.md)
-- [Back-end](docs/backend.md)
-- [Front-end](docs/frontend.md)
-- [Tests](docs/tests.md)
-- [Bug Buster CLI](docs/cli.md)
-- [Populating the state](docs/populate.md)
-- [Debugging](docs/debug.md)
+- Running
+  - [Back-end](docs/backend.md)
+  - [Populate script](docs/populate.md)
+  - [Front-end](docs/frontend.md)
+- Contributing
+  - [Tests](docs/tests.md)
+  - [Bug Buster CLI](docs/cli.md)
+  - [Debugging](docs/debug.md)
 - [Future work](docs/future.md)
