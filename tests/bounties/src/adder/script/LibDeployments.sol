@@ -3,10 +3,9 @@
 pragma solidity ^0.8.27;
 
 import {Vm} from "forge-std/Vm.sol";
-import {IAdder} from "src/IAdder.sol";
 
 struct Deployments {
-    IAdder adder;
+    address[] contracts;
 }
 
 library LibDeployments {
@@ -16,8 +15,8 @@ library LibDeployments {
         return path;
     }
 
-    function storeDeployments(Vm vm, Deployments memory deployment) internal {
-        string memory json = vm.serializeAddress("deployments", "adder", address(deployment.adder));
+    function storeDeployments(Vm vm, Deployments memory deployments) internal {
+        string memory json = vm.serializeAddress("deployments", "contracts", deployments.contracts);
         vm.writeJson(json, getDeploymentsPath(vm));
     }
 
