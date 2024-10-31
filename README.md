@@ -24,6 +24,7 @@ If, however, no one is able to submit a valid exploit until a certain deadline, 
   - [Populate script](docs/populate.md)
   - [Front-end](docs/frontend.md)
 - Contributing
+  - [Guidelines](docs/contributing.md)
   - [Tests](docs/tests.md)
   - [Bug Buster CLI](docs/cli.md)
   - [Debugging](docs/debug.md)
