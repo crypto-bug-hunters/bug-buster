@@ -2,22 +2,16 @@
 
 pragma solidity ^0.8.27;
 
-import {Script} from "forge-std/Script.sol";
-import {Vm} from "forge-std/Vm.sol";
+import {DeploymentWriterScript} from "forge-deploy-lib/DeploymentScript.sol";
+
 import {SafeAdder} from "src/safe/Adder.sol";
-import {Deployments, LibDeployments} from "script/LibDeployments.sol";
 
-contract SetupScript is Script {
-    using LibDeployments for Vm;
-
+contract SetupScript is DeploymentWriterScript {
     function run() external {
-        Deployments memory deployments;
-        deployments.contracts = new address[](1);
-
         vm.startBroadcast();
-        deployments.contracts[0] = new SafeAdder();
+        addContract("Adder", address(new SafeAdder()));
         vm.stopBroadcast();
 
-        vm.storeDeployments(deployments);
+        storeDeployment();
     }
 }
