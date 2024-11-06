@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.27;
 
-import {DeploymentWriterScript} from "forge-deploy-lib/DeploymentScript.sol";
+import {DeploymentWriterScript} from "forge-deploy-lib/src/DeploymentScript.sol";
 
 import {UnsafeAdder} from "src/unsafe/Adder.sol";
 

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.27;
 
-import {DeploymentReaderScript} from "forge-deploy-lib/DeploymentScript.sol";
+import {DeploymentReaderScript} from "forge-deploy-lib/src/DeploymentScript.sol";
 
 import {IAdder} from "src/IAdder.sol";
 
