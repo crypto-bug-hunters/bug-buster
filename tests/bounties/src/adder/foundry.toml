@@ -1,15 +1,15 @@
 [profile.deploy]
 fs_permissions = [
-    { access = "read-write", path = "./deployments.json" },
+    { access = "read-write", path = "./deployment.json" },
 ]
 
 [profile.exploit]
 fs_permissions = [
-    { access = "read", path = "./deployments.json" },
+    { access = "read", path = "./deployment.json" },
 ]
 
 [profile.test]
 fs_permissions = [
-	{ access = "read", path = "./deployments.json" },
+	{ access = "read", path = "./deployment.json" },
 	{ access = "read-write", path = "./exploited" },
 ]
