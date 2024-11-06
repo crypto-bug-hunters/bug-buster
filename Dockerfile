@@ -160,6 +160,14 @@ COPY --from=riscv64-build-stage /opt/build/bwrapbox/seccomp-filter.bpf /usr/lib/
 ARG FORGE_STD_VERSION=1.9.3
 ADD https://github.com/foundry-rs/forge-std.git#v${FORGE_STD_VERSION}:src /usr/share/forge-lib/forge-std/src
 
+# install openzeppelin-contracts
+ARG OPENZEPPELIN_VERSION=5.1.0
+ADD https://github.com/OpenZeppelin/openzeppelin-contracts.git#v${OPENZEPPELIN_VERSION}:contracts /usr/share/forge-lib/openzeppelin-contracts/contracts
+
+# install forge-deploy-lib
+ARG FORGE_DEPLOY_LIB_VERSION=0.0.0
+ADD https://github.com/crypto-bug-hunters/forge-deploy-lib.git#v${FORGE_DEPLOY_LIB_VERSION}:src /usr/share/forge-lib/forge-deploy-lib/src
+
 RUN useradd --home-dir /bounty bounty
 RUN mkdir -p /bounties /bounty
 RUN chown bounty:bounty /bounty
