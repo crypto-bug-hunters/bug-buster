@@ -6,10 +6,7 @@ const NotFoundPage = () => {
   return (
     <>
       <Helmet>
-        <title>
-          404 Page Not Found - Cartesi - Application-specific rollups with a
-          Linux runtime.
-        </title>
+        <title>404 Page Not Found - Bug Buster</title>
         <meta
           name='description'
           content='Scaling Computation. Transcending EVM Limitations.'
