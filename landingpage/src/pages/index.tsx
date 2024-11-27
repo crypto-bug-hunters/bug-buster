@@ -22,7 +22,7 @@ const data = {
       noindex: false,
     },
     hero: {
-      title: 'Your decentralized basefor onchain bounties',
+      title: 'Your decentralized base for onchain bounties',
       subtitle:
         'Bug Buster is on a mission to help secure developer code with streamlined bounties onchain. Submit and sponsor a bounty, or hack for rewards and clout.',
       cta1: {

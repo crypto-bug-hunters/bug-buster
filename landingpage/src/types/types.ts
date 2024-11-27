@@ -1,6 +1,6 @@
 export enum Routes {
   home = '/',
-  app = 'https://app.bugbuster.app/',
+  app = 'https://bugbuster.app/',
   github = 'https://github.com/crypto-bug-hunters/bug-buster',
   x = 'https://x.com/BugBusterApp',
   telegram = 'https://t.me/+G_CPMEhCHC04MzA5',
