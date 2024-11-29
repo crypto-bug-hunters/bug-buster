@@ -1,0 +1,230 @@
+/* Remove this in gatsby */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@500;600&display=swap");
+@import "swiper/css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Radix UI */
+    --background: 0 0% 100%;
+    --foreground: 255 7% 11%;
+
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 255 7% 11%;
+
+    --card: 189 41% 96%;
+    --card-foreground: 255 7% 11;
+
+    --border: 189 1% 90%;
+    --input: 189 1% 85%;
+
+    --primary: 255 7% 11%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 172 100% 64%;
+    --secondary-foreground: 255 7% 11%;
+
+    --tertiary: 180 100% 32%;
+    --tertiary-foreground: 0 0% 100%;
+
+    --accent: 172 100% 64%;
+    --accent-foreground: 255 7% 11%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+
+    --ring: 217.9 10.6% 64.9%;
+
+    --radius: 0.5rem;
+
+    /* Text sizes */
+    --fs1: clamp(2rem, calc(1.3rem + 3.48vw), 4rem);
+    --fs2: clamp(1.75rem, calc(1.32rem + 2.17vw), 3rem);
+    --fs3: clamp(1.25rem, calc(0.82rem + 2.17vw), 2.5rem);
+    --fs4: clamp(1.13rem, calc(0.82rem + 1.52vw), 2rem);
+    --fs5: clamp(1rem, calc(0.83rem + 0.87vw), 1.5rem);
+
+    /* Header */
+    --header-desktop-height: 8rem;
+    --header-desktop-infobar-height: 11rem;
+    --header-mobile-height: 4rem;
+    --header-mobile-infobar-height: 7rem;
+    --header-side-column-width: 13rem; /* used to center the navigation on desktop */
+
+    /* Section */
+    --section-spacing: clamp(1.5rem, calc(-0.11rem + 8.04vw), 5.9rem);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply scroll-smooth subpixel-antialiased;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  a * {
+    @apply pointer-events-none;
+  }
+
+  button * {
+    @apply pointer-events-none;
+  }
+}
+
+.mySwiper .swiper-wrapper {
+  display: grid !important;
+  grid-auto-flow: column;
+}
+
+.loading {
+  transform-origin: center;
+  animation: spinner_zKoa 1.5s linear infinite;
+}
+.loading circle {
+  stroke-linecap: round;
+  animation: spinner_YpZS 1s ease-in-out infinite;
+}
+@keyframes spinner_zKoa {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner_YpZS {
+  0% {
+    stroke-dasharray: 0 150;
+    stroke-dashoffset: 0;
+  }
+  47.5% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -16;
+  }
+  95%,
+  100% {
+    stroke-dasharray: 42 150;
+    stroke-dashoffset: -59;
+  }
+}
+
+.heading-styled-dark {
+  @apply relative isolate;
+  span {
+    @apply relative after:absolute after:bottom-0 after:left-0 after:z-[-1] after:block after:h-[0.9rem] after:w-full after:bg-tertiary after:content-[''] lg:after:bottom-[-0.3rem] lg:after:h-[1.5rem];
+  }
+}
+
+.heading-styled-light {
+  @apply relative isolate;
+  span {
+    @apply relative after:absolute after:bottom-0 after:left-0 after:z-[-1] after:block after:h-[0.9rem] after:w-full after:bg-secondary after:content-[''] lg:after:bottom-[-0.3rem] lg:after:h-[1.5rem];
+  }
+}
+
+.tep-description {
+  h1 {
+    @apply mb-4 font-heading text-h1 font-bold;
+  }
+  h2 {
+    @apply mb-4 font-heading text-h2 font-bold;
+  }
+  h3 {
+    @apply mb-4 font-heading text-h3 font-bold;
+  }
+  h4 {
+    @apply mb-4 font-heading text-h4 font-bold;
+  }
+  p {
+    @apply prose max-w-screen-lg;
+  }
+  img {
+    @apply mx-auto my-2 w-full lg:my-6;
+  }
+}
+
+.tep-item-summary {
+  p {
+    @apply mb-0;
+  }
+}
+
+.blog-article {
+  h1 {
+    @apply text-h2;
+  }
+  h2 {
+    @apply text-h3;
+  }
+  h3 {
+    @apply text-h4;
+  }
+  h4 {
+    @apply text-h5;
+  }
+
+  h2,
+  h3 {
+    margin-top: 1.125em;
+    margin-bottom: 0.65em;
+  }
+
+  a {
+    @apply text-foreground tracking-wide font-semibold normal-case underline underline-offset-4 hover:decoration-tertiary hover:decoration-4;
+  }
+  
+  ul {
+    margin-top: 0.05rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+
+  li {
+    margin-top: 0 !important;
+    margin-bottom: 0.05rem !important;
+    a {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .twitter-tweet,
+  .yt-lite,
+  img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.custom-scrollbars {
+  --scrollbar-width: 2rem;
+}
+
+@media (pointer: fine) {
+  .custom-scrollbars {
+    padding-left: var(--scrollbar-width);
+  }
+
+  .custom-scrollbars::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    height: var(--scrollbar-width);
+  }
+
+  .custom-scrollbars::-webkit-scrollbar-thumb {
+    background: hsla(0, 0%, 100%, 0.25);
+    border-radius: var(--scrollbar-width);
+    border: 0.75rem solid hsla(255, 7%, 11%, 1);
+    background-clip: padding-box;
+  }
+
+  .custom-scrollbars:hover::-webkit-scrollbar-thumb {
+    background: hsla(0, 0%, 100%, 0.5);
+  }
+}
