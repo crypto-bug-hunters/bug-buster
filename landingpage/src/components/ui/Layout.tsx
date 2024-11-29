@@ -18,14 +18,16 @@ const data = {
   },
   appCTA: {
     label: 'Bust Some Bugs',
-    link: Routes.app,
+    link: process.env.ROUTE_APP ? process.env.ROUTE_APP : Routes.app,
     isExternal: false,
   },
   navItems: {
     navLinks2: [
       {
         _id: 'nav-1',
-        path: Routes.github,
+        path: process.env.ROUTE_GITHUB
+          ? process.env.ROUTE_GITHUB
+          : Routes.github,
         label: 'GitHub',
         icon: {
           asset: {
@@ -37,7 +39,7 @@ const data = {
       },
       {
         _id: 'nav-2',
-        path: Routes.x,
+        path: process.env.ROUTE_X ? process.env.ROUTE_X : Routes.x,
         label: 'X.com',
         icon: {
           asset: {
@@ -49,7 +51,9 @@ const data = {
       },
       {
         _id: 'nav-3',
-        path: Routes.telegram,
+        path: process.env.ROUTE_TELEGRAM
+          ? process.env.ROUTE_TELEGRAM
+          : Routes.telegram,
         label: 'Telegram',
         icon: {
           asset: {

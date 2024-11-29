@@ -13,7 +13,9 @@ const Logo = ({
   ...rest
 }: Props & React.SVGProps<SVGSVGElement>) => {
   return (
-    <SiteLink to={Routes.home}>
+    <SiteLink
+      to={process.env.ROUTE_HOME ? process.env.ROUTE_HOME : Routes.home}
+    >
       {!footer ? (
         <svg
           width='206'
