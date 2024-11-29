@@ -27,7 +27,7 @@ const data = {
         'Bug Buster is on a mission to help secure developer code with streamlined bounties onchain. Submit and sponsor a bounty, or hack for rewards and clout.',
       cta1: {
         label: 'Bust Some Bugs',
-        link: Routes.app,
+        link: process.env.ROUTE_APP ? process.env.ROUTE_APP : Routes.app,
         isExternal: false,
       },
     },
@@ -131,7 +131,7 @@ const data = {
         },
         cta: {
           label: 'Join the Conversation',
-          link: Routes.x,
+          link: process.env.ROUTE_X ? process.env.ROUTE_X : Routes.x,
           isExternal: true,
         },
       },
@@ -146,7 +146,9 @@ const data = {
         },
         cta: {
           label: 'Reach out',
-          link: Routes.telegram,
+          link: process.env.ROUTE_TELEGRAM
+            ? process.env.ROUTE_TELEGRAM
+            : Routes.telegram,
           isExternal: true,
         },
       },
