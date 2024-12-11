@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.27;
 
-import {IAdder} from "../IAdder.sol";
+import {IAdder} from "src/IAdder.sol";
 
-contract UnsafeAdder is IAdder {
+contract Adder is IAdder {
     uint256 public number = 1;
 
     function add(uint256 x) external override {

@@ -12,9 +12,8 @@ RETH_VERSION=1.0.5
 alias reth="reth-$RETH_VERSION"
 
 >&2 echo "Setting up Forge project..."
-cp -r foundry.toml src script /tmp
-cp "$1" /tmp/script/Exploit.s.sol
-cp -r /usr/share/forge-lib /tmp/lib
+cp -r src /tmp
+cp "$1" /tmp/src/Exploit.sol
 cd /tmp
 
 >&2 echo "Building Forge project..."
@@ -39,7 +38,7 @@ export ETH_RPC_URL=$HTTP_ADDR:$HTTP_PORT
 
 while true
 do
-    if chain_id=`cast chain-id 2>/dev/null`
+    if chain_id=$(cast chain-id 2>/dev/null)
     then
         if [[ $chain_id == 1337 ]]
         then
@@ -63,24 +62,36 @@ done
 
 PK=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
-run_forge_script() {
-    forge script --silent --fork-url $ETH_RPC_URL "$@"
+deploy() {
+    forge create --json --private-key "$PK" "$1:$2" | jq -r .deployedTo
 }
 
-run_forge_script_broadcast() {
-    run_forge_script --broadcast --slow --private-key $PK "$@"
+>&2 echo "Deploying registry contract..."
+REGISTRY=$(deploy src/Registry.sol Registry)
+
+send() {
+    >/dev/null cast send --private-key "$PK" "$@"
 }
 
->&2 echo "Deploying contracts..."
-FOUNDRY_PROFILE=deploy run_forge_script_broadcast script/Setup.s.sol:SetupScript
+deploy_and_register() {
+    address=$(deploy "$@")
+    send "$REGISTRY" 'set(string,address)' "$2" "$address"
+    echo "$address"
+}
+
+>&2 echo "Deploying and registering project contracts..."
+ADDER=$(deploy_and_register src/Adder.sol Adder)
+
+>&2 echo "Deploying exploit contract..."
+EXPLOIT=$(deploy src/Exploit.sol Exploit)
 
 >&2 echo "Running exploit..."
-FOUNDRY_PROFILE=exploit run_forge_script_broadcast script/Exploit.s.sol:ExploitScript
+send "$EXPLOIT" 'run(address)' "$REGISTRY"
 
 >&2 echo "Testing contracts..."
-FOUNDRY_PROFILE=test run_forge_script script/Assertion.s.sol:AssertionScript
+number=$(cast call "$ADDER" 'number()(uint256)')
 
-if [ -f exploited ]
+if [ "$number" -eq 0 ]
 then
     >&2 echo "Valid exploit!"
     exit 0

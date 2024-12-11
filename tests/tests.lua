@@ -91,6 +91,7 @@ local timestamp = 1697567000
 local first_bounty_final_state
 local second_bounty_final_state
 local third_bounty_final_state
+local fourth_bounty_final_state
 
 describe("tests on Lua bounty", function()
     local bounty_code = "tests/bounties/dist/lua-5.4.3-bounty.tar.xz"
@@ -796,6 +797,7 @@ describe("tests on (linked) Lua bounty", function()
                 },
             },
         })
+        fourth_bounty_final_state = res.state.bounties[bounty_index + 1]
     end)
 
     -- advance to just before deadline
@@ -884,6 +886,61 @@ end
             },
         })
         expect.equal(res.status, "rejected")
+    end)
+end)
+
+describe("tests on Adder bounty", function()
+    local name = "Adder"
+    local description = "Try to break the Adder smart contract written in Solidity"
+    local bounty_code = "tests/bounties/dist/adder-unsafe-bounty.tar.xz"
+    local bounty_valid_exploit = readfile("tests/bounties/src/adder/src/unsafe/Exploit.sol")
+    local bounty_index = 4
+    local bounty_deadline = timestamp + 3600
+
+    it("should create bounty", function()
+        local res = advance_input(machine, {
+            sender = DEVELOPER1_WALLET,
+            kind = "CreateAppBounty",
+            timestamp = timestamp,
+            data = {
+                name = name,
+                description = description,
+                deadline = bounty_deadline,
+                token = CTSI_ADDRESS,
+                codeZipBinary = tobase64(readfile(bounty_code)),
+            },
+        })
+        expect.equal(res.status, "accepted")
+        expect.equal(res.state, {
+            bounties = {
+                first_bounty_final_state,
+                second_bounty_final_state,
+                third_bounty_final_state,
+                fourth_bounty_final_state,
+                {
+                    deadline = bounty_deadline,
+                    description = description,
+                    exploit = null,
+                    imgLink = "",
+                    name = name,
+                    sponsorships = null,
+                    token = CTSI_ADDRESS,
+                    withdrawn = false,
+                },
+            },
+        })
+    end)
+
+    it("should accept inspect of a exploit that succeeded", function()
+        local res = inspect_input(machine, {
+            sender = HACKER1_WALLET,
+            timestamp = timestamp,
+            data = {
+                bountyIndex = bounty_index,
+                exploit = tobase64(bounty_valid_exploit),
+            },
+        })
+        expect.equal(res.status, "accepted")
     end)
 end)
 

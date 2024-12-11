@@ -85,14 +85,13 @@ ADDER_VERSIONS= safe unsafe
 all: $(patsubst %,dist/adder-%-bounty.tar.xz,$(ADDER_VERSIONS))
 
 dist/adder-%-bounty.tar.xz: \
-		build/adder-%-bounty/script/Setup.s.sol \
 		src/adder/start.sh \
-		src/adder/foundry.toml \
+		src/adder/src/IRegistry.sol \
+		src/adder/src/Registry.sol \
 		src/adder/src/IAdder.sol \
-		src/adder/src/%/Adder.sol \
-		src/adder/script/Assertion.s.sol
+		build/adder-%-bounty/src/Adder.sol
 	tar $(TAR_OPTS) $@ $^
 
-build/adder-%-bounty/script/Setup.s.sol: src/adder/script/%/Setup.s.sol
+build/adder-%-bounty/src/Adder.sol: src/adder/src/%/Adder.sol
 	mkdir -p $(@D)
 	cp $< $@
