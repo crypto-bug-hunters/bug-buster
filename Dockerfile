@@ -130,6 +130,7 @@ RUN <<EOF
 set -eu
 apt-get install -y --no-install-recommends \
     busybox-static \
+    jq \
     libasan6 \
     libasan8 \
     libatomic1 \
