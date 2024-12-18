@@ -85,6 +85,7 @@ ADDER_VERSIONS= safe unsafe
 all: $(patsubst %,dist/adder-%-bounty.tar.xz,$(ADDER_VERSIONS))
 
 dist/adder-%-bounty.tar.xz: \
+		src/adder/setup-exec-env.sh \
 		src/adder/start.sh \
 		src/adder/src/IRegistry.sol \
 		src/adder/src/Registry.sol \
