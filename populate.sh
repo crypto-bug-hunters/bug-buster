@@ -182,17 +182,17 @@ SOLIDITY_DESCRIPTION=$(jq -r '.description' "$SOLIDITY_INFO_FILE")
 SOLIDITY_IMG_LINK=$(jq -r '.imgLink' "$SOLIDITY_INFO_FILE")
 SOLIDITY_SPONSOR_NAME="Spencer Smart"
 
-# 0.8.27
+# 0.8.28
 
 bounty_index=$(go run ./cli state | jq '.bounties | length')
 
 go run ./cli send bounty \
     -f "$DEV_ACCOUNT" \
-    -n "Solidity 0.8.27" \
+    -n "Solidity 0.8.28" \
     -i "$SOLIDITY_IMG_LINK" \
     -d "$SOLIDITY_DESCRIPTION" \
     --duration "$ONE_DAY" \
-    -c 'tests/bounties/dist/solc-0.8.27-bounty.tar.xz' \
+    -c 'tests/bounties/dist/solc-0.8.28-bounty.tar.xz' \
     -t "$TOKEN_ADDRESS"
 
 go run ./cli send sponsor \

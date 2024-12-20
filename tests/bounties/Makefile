@@ -64,7 +64,7 @@ build/busybox-%-bounty/aliases.sh:
 # Solidity
 ###################
 
-SOLC_VERSIONS= 0.8.27
+SOLC_VERSIONS= 0.8.28
 
 all: $(patsubst %,dist/solc-%-bounty.tar.xz,$(SOLC_VERSIONS))
 
