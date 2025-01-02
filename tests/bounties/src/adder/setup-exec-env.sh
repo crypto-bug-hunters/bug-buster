@@ -2,7 +2,7 @@
 set -euo pipefail
 shopt -s expand_aliases
 
-SOLC_VERSION=0.8.27
+SOLC_VERSION=0.8.28
 
 FOUNDRY_REF=2cdbfac
 alias cast="cast-$FOUNDRY_REF"

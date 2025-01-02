@@ -2,11 +2,11 @@
 
 # This enforces that the packages downloaded from the repositories are the same
 # for the defined date, no matter when the image is built.
-ARG UBUNTU_TAG=noble-20240827.1
-ARG APT_UPDATE_SNAPSHOT=20240827T030400Z
+ARG UBUNTU_TAG=noble-20241015
+ARG APT_UPDATE_SNAPSHOT=20241015T030400Z
 
 # Built-in binaries version
-ARG BUILTINS_VERSION=0.7.2
+ARG BUILTINS_VERSION=0.8.0
 
 ################################################################################
 # cross base stage
@@ -150,7 +150,7 @@ COPY --from=builtins --chmod=755 /opt/bundle/cast-2cdbfac-linux-riscv64 /usr/bin
 COPY --from=builtins --chmod=755 /opt/bundle/lua-5.4.3-linux-riscv64 /usr/bin/lua-5.4.3
 COPY --from=builtins --chmod=755 /opt/bundle/lua-5.4.7-linux-riscv64 /usr/bin/lua-5.4.7
 COPY --from=builtins --chmod=755 /opt/bundle/reth-1.0.5-linux-riscv64 /usr/bin/reth-1.0.5
-COPY --from=builtins --chmod=755 /opt/bundle/solc-0.8.27-linux-riscv64 /usr/bin/solc-0.8.27
+COPY --from=builtins --chmod=755 /opt/bundle/solc-0.8.28-linux-riscv64 /usr/bin/solc-0.8.28
 COPY --from=builtins --chmod=755 /opt/bundle/sqlite-3.32.2-linux-riscv64 /usr/bin/sqlite-3.32.2
 COPY --from=builtins --chmod=755 /opt/bundle/sqlite-3.43.2-linux-riscv64 /usr/bin/sqlite-3.43.2
 COPY --from=riscv64-build-stage /opt/build/bubblewrap/bwrap /usr/bin/bwrap
