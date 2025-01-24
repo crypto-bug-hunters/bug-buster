@@ -13,6 +13,7 @@ alias reth="reth-$RETH_VERSION"
 
 >&2 echo "Setting up Forge project..."
 cp -r src /tmp
+cp foundry.toml /tmp
 cp "$1" /tmp/src/Exploit.sol
 cd /tmp
 
