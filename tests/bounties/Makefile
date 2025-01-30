@@ -96,3 +96,18 @@ dist/adder-%-bounty.tar.xz: \
 build/adder-%-bounty/src/Adder.sol: src/adder/src/%/Adder.sol
 	mkdir -p $(@D)
 	cp $< $@
+
+###################
+# OpenZeppelin
+###################
+
+all: dist/openzeppelin-bounty.tar.xz
+
+dist/openzeppelin-bounty.tar.xz: \
+		src/openzeppelin/setup-exec-env.sh \
+		src/openzeppelin/start.sh \
+		src/openzeppelin/foundry.toml \
+		src/openzeppelin/src/IRegistry.sol \
+		src/openzeppelin/src/Registry.sol \
+		src/openzeppelin/src/Counter.sol
+	tar $(TAR_OPTS) $@ $^

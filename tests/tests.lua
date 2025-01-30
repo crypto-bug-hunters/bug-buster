@@ -944,5 +944,28 @@ describe("tests on Adder bounty", function()
     end)
 end)
 
+describe("tests on OpenZeppelin bounty", function()
+    local name = "openzeppelin"
+    local description = "Try to break the Counter smart contract written in Solidity and dependent of OpenZeppelin"
+    local bounty_code = "tests/bounties/dist/openzeppelin-bounty.tar.xz"
+    local bounty_deadline = timestamp + 3600
+
+    it("should create bounty", function()
+        local res = advance_input(machine, {
+            sender = DEVELOPER1_WALLET,
+            kind = "CreateAppBounty",
+            timestamp = timestamp,
+            data = {
+                name = name,
+                description = description,
+                deadline = bounty_deadline,
+                token = CTSI_ADDRESS,
+                codeZipBinary = tobase64(readfile(bounty_code)),
+            },
+        })
+        expect.equal(res.status, "accepted")
+    end)
+end)
+
 lester.report() -- Print overall statistic of the tests run.
 lester.exit() -- Exit with success if all tests passed.
