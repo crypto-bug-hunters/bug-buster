@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
     Box,
     Center,
@@ -10,7 +10,14 @@ import {
     Anchor,
     SimpleGrid,
     Tooltip,
+    Checkbox,
+    Popover,
+    TextInput,
+    Button,
+    Flex,
 } from "@mantine/core";
+import { IoFilter } from "react-icons/io5";
+import Link from "next/link";
 import { useLatestState } from "../../model/reader";
 import { AppBounty } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
@@ -21,6 +28,8 @@ import {
     getBountyDescription,
 } from "../../utils/bounty";
 import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
+import FilterPopover from "../../components/bountyFilter";
+import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 
 const Bounty: FC<{
     index: number;
@@ -74,6 +83,7 @@ const Bounty: FC<{
 };
 
 const BountyList: FC = () => {
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
     const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
 
@@ -86,31 +96,59 @@ const BountyList: FC = () => {
 
     const state = stateResult.response;
 
+    // TODO: Implement multiple filter selection
+    const filteredBounties = selectedFilters.length
+        ? state.bounties.filter(
+              (bounty) =>
+                  getBountyStatus(bounty, blockTimestamp).kind ===
+                  selectedFilters[0].toLowerCase(),
+          )
+        : state.bounties;
+
     return (
-        <SimpleGrid
-            m={{ base: "xs", md: "lg" }}
-            cols={{ base: 1, sm: 2, lg: 3 }}
-            spacing="xl"
-            verticalSpacing="lg"
-            style={{ maxWidth: 1024 }}
-        >
-            {state.bounties.map((bounty, index) => {
-                return (
-                    <Bounty
-                        key={index}
-                        index={index}
-                        bounty={bounty}
-                        blockTimestamp={blockTimestamp!}
-                    />
-                );
-            })}
-        </SimpleGrid>
+        <Stack>
+            <FilterPopover
+                selectedFilters={selectedFilters}
+                onFilterChange={setSelectedFilters}
+            />
+            <SimpleGrid
+                m={{ base: "xs", md: "lg" }}
+                cols={{ base: 1, sm: 2, lg: 3 }}
+                spacing="xl"
+                verticalSpacing="lg"
+                style={{ maxWidth: 1024 }}
+            >
+                {filteredBounties.map((bounty, index) => {
+                    return (
+                        <Bounty
+                            key={index}
+                            index={index}
+                            bounty={bounty}
+                            blockTimestamp={blockTimestamp!}
+                        />
+                    );
+                })}
+            </SimpleGrid>
+        </Stack>
     );
 };
 
 const Explore: FC = () => {
     return (
         <Stack>
+            <HasConnectedAccount>
+                <Flex
+                    mt="lg"
+                    mr={{ base: "xs", md: "lg" }}
+                    ml={{ base: "xs", md: "lg" }}
+                    justify={"space-between"}
+                    visibleFrom="md"
+                >
+                    <Link href="/bounty/create">
+                        <Button size="lg">Create bounty</Button>
+                    </Link>
+                </Flex>
+            </HasConnectedAccount>
             <Center>
                 <BountyList />
             </Center>
