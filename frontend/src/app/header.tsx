@@ -6,10 +6,12 @@ import {
     ActionIcon,
     Tooltip,
     Stack,
-    Box,
+    Flex,
+    Divider,
 } from "@mantine/core";
 import { FC } from "react";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
+import { MdArrowOutward } from "react-icons/md";
 import { HasConnectedAccount } from "../components/hasConnectedAccount";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -46,24 +48,52 @@ export const Header: FC = () => {
                     </Anchor>
                 </Center>
             </Group>
-            <Group
+            <Flex
+                direction={{ base: "column", sm: "row" }}
                 px={{ base: "xs", md: "lg" }}
                 pb="xs"
-                justify="space-between"
+                justify={{ base: "center", sm: "space-between" }}
                 style={{ minWidth: 360 }}
             >
-                <Box style={{ flexGrow: 1 }}>
+                <Flex
+                    justify={{ base: "center", sm: "flex-start" }}
+                    style={{ flexGrow: 1 }}
+                >
                     <Anchor href="/" underline="never">
                         <Title>🪲 Bug Buster</Title>
                     </Anchor>
-                </Box>
+                </Flex>
 
-                <HasConnectedAccount>
-                    <VoucherNotification />
-                </HasConnectedAccount>
+                <Flex justify={{ base: "center" }} align="center">
+                    <HasConnectedAccount>
+                        <Anchor
+                            href="/bounty/create"
+                            size="lg"
+                            underline="always"
+                        >
+                            Create Bounty
+                        </Anchor>
+                        <MdArrowOutward
+                            style={{
+                                color: "var(--mantine-color-cartesi-cyan-8)",
+                            }}
+                            size="24px"
+                        />
+                    </HasConnectedAccount>
+                </Flex>
 
-                <ConnectButton />
-            </Group>
+                <Divider size="lg" orientation="vertical" mr={"sm"} ml={"sm"} />
+
+                <Flex justify={{ base: "center" }}>
+                    <HasConnectedAccount>
+                        <VoucherNotification />
+                    </HasConnectedAccount>
+                </Flex>
+
+                <Flex justify={{ base: "center" }}>
+                    <ConnectButton />
+                </Flex>
+            </Flex>
         </Stack>
     );
 };

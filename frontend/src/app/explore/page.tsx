@@ -2,23 +2,18 @@
 import { FC } from "react";
 import {
     Box,
-    Button,
     Center,
     Stack,
     Image,
     Card,
-    Flex,
     Text,
     Anchor,
     SimpleGrid,
-    Group,
     Tooltip,
 } from "@mantine/core";
-import Link from "next/link";
 import { useLatestState } from "../../model/reader";
 import { AppBounty } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
-import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 import { useBlockTimestamp } from "../../hooks/block";
 import {
     getBountyStatus,
@@ -116,18 +111,6 @@ const BountyList: FC = () => {
 const Explore: FC = () => {
     return (
         <Stack>
-            <HasConnectedAccount>
-                <Flex
-                    mt="lg"
-                    mr={{ base: "xs", md: "lg" }}
-                    justify="flex-end"
-                    visibleFrom="md"
-                >
-                    <Link href="/bounty/create">
-                        <Button size="lg">Create bounty</Button>
-                    </Link>
-                </Flex>
-            </HasConnectedAccount>
             <Center>
                 <BountyList />
             </Center>
