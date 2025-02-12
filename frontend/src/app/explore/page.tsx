@@ -28,7 +28,7 @@ import {
     getBountyDescription,
 } from "../../utils/bounty";
 import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
-import FilterPopover from "../../components/bountyFilter";
+import BountyFilter from "../../components/bountyFilter";
 import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 
 const Bounty: FC<{
@@ -83,7 +83,7 @@ const Bounty: FC<{
 };
 
 const BountyList: FC = () => {
-    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    const [selectedFilter, setSelectedFilter] = useState<string>("");
     const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
 
@@ -96,20 +96,19 @@ const BountyList: FC = () => {
 
     const state = stateResult.response;
 
-    // TODO: Implement multiple filter selection
-    const filteredBounties = selectedFilters.length
-        ? state.bounties.filter(
+    const filteredBounties = !selectedFilter.length
+        ? state.bounties
+        : state.bounties.filter(
               (bounty) =>
                   getBountyStatus(bounty, blockTimestamp).kind ===
-                  selectedFilters[0].toLowerCase(),
-          )
-        : state.bounties;
+                  selectedFilter.toLowerCase(),
+          );
 
     return (
         <Stack>
-            <FilterPopover
-                selectedFilters={selectedFilters}
-                onFilterChange={setSelectedFilters}
+            <BountyFilter
+                selectedFilter={selectedFilter}
+                onFilterChange={setSelectedFilter}
             />
             <SimpleGrid
                 m={{ base: "xs", md: "lg" }}

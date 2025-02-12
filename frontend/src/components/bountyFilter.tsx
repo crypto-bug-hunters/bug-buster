@@ -2,23 +2,19 @@ import React from "react";
 import { Popover, Button, Checkbox, Badge, Group } from "@mantine/core";
 import { IoFilter } from "react-icons/io5";
 
-interface FilterPopoverProps {
-    selectedFilters: string[];
-    onFilterChange: (filters: string[]) => void;
+interface BountyFilterProps {
+    selectedFilter: string;
+    onFilterChange: (filterChange: string) => void;
 }
 
-const FilterPopover: React.FC<FilterPopoverProps> = ({
-    selectedFilters,
+const BountyFilter: React.FC<BountyFilterProps> = ({
+    selectedFilter,
     onFilterChange,
 }) => {
     const FILTER_OPTIONS = ["Open", "Expired", "Exploited"];
 
-    const handleFilterToggle = (filter: string) => {
-        onFilterChange(
-            selectedFilters.includes(filter)
-                ? selectedFilters.filter((f) => f !== filter)
-                : [...selectedFilters, filter],
-        );
+    const handleFilterToggle = (filterChange: string) => {
+        onFilterChange(filterChange);
     };
 
     return (
@@ -31,12 +27,14 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
                     </Button>
                 </Popover.Target>
                 <Popover.Dropdown>
-                    {FILTER_OPTIONS.map((filter) => (
+                    {FILTER_OPTIONS.map((filterOption) => (
                         <Checkbox
-                            key={filter}
-                            label={filter}
-                            checked={selectedFilters.includes(filter)}
-                            onChange={() => handleFilterToggle(filter)}
+                            key={filterOption}
+                            label={filterOption}
+                            checked={
+                                filterOption === selectedFilter ? true : false
+                            }
+                            onChange={() => handleFilterToggle(filterOption)}
                             mb="sm"
                         />
                     ))}
@@ -45,14 +43,14 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
 
             {/* Display selected filters as badges */}
             <Group>
-                {selectedFilters.map((filter) => (
-                    <Badge key={filter} color="blue" variant="filled">
-                        {filter}
+                {selectedFilter.length && (
+                    <Badge color="blue" variant="filled">
+                        {selectedFilter}
                     </Badge>
-                ))}
+                )}
             </Group>
         </Group>
     );
 };
 
-export default FilterPopover;
+export default BountyFilter;
