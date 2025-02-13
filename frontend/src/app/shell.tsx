@@ -11,13 +11,16 @@ export const Shell: FC<{ children: React.ReactNode }> = ({ children }) => {
     const offset = !!address && !!connector && !!isConnected ? "10rem" : "7rem";
 
     return (
-        <AppShell header={{ height: "auto" }}>
+        <AppShell
+            header={{ height: { base: 212, sm: 99 } }}
+            footer={{ height: "auto" }}
+            padding="md"
+            withBorder={true}
+        >
             <AppShell.Header>
                 <Header />
             </AppShell.Header>
-            <AppShell.Main mt={{ base: offset, sm: "7rem" }} pb="8rem">
-                {children}
-            </AppShell.Main>
+            <AppShell.Main>{children}</AppShell.Main>
             <AppShell.Footer>
                 <Footer />
             </AppShell.Footer>

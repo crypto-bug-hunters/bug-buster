@@ -10,14 +10,8 @@ import {
     Anchor,
     SimpleGrid,
     Tooltip,
-    Checkbox,
-    Popover,
-    TextInput,
-    Button,
     Flex,
 } from "@mantine/core";
-import { IoFilter } from "react-icons/io5";
-import Link from "next/link";
 import { useLatestState } from "../../model/reader";
 import { AppBounty } from "../../model/state";
 import { BountyStatusBadgeGroup } from "../../components/bountyStatus";
@@ -29,7 +23,6 @@ import {
 } from "../../utils/bounty";
 import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
 import BountyFilter from "../../components/bountyFilter";
-import { HasConnectedAccount } from "../../components/hasConnectedAccount";
 
 const Bounty: FC<{
     index: number;
@@ -82,7 +75,7 @@ const Bounty: FC<{
     );
 };
 
-const BountyList: FC = () => {
+const Explore: FC = () => {
     const [selectedFilter, setSelectedFilter] = useState<string>("");
     const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
@@ -105,7 +98,7 @@ const BountyList: FC = () => {
           );
 
     return (
-        <Stack>
+        <Flex direction="column" align={"center"}>
             <BountyFilter
                 selectedFilter={selectedFilter}
                 onFilterChange={setSelectedFilter}
@@ -128,30 +121,7 @@ const BountyList: FC = () => {
                     );
                 })}
             </SimpleGrid>
-        </Stack>
-    );
-};
-
-const Explore: FC = () => {
-    return (
-        <Stack>
-            <HasConnectedAccount>
-                <Flex
-                    mt="lg"
-                    mr={{ base: "xs", md: "lg" }}
-                    ml={{ base: "xs", md: "lg" }}
-                    justify={"space-between"}
-                    visibleFrom="md"
-                >
-                    <Link href="/bounty/create">
-                        <Button size="lg">Create bounty</Button>
-                    </Link>
-                </Flex>
-            </HasConnectedAccount>
-            <Center>
-                <BountyList />
-            </Center>
-        </Stack>
+        </Flex>
     );
 };
 
