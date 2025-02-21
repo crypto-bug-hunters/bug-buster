@@ -47,7 +47,8 @@ const BountyFilter: React.FC<BountyFilterProps> = ({
                                 key={filterOption}
                                 label={filterOption}
                                 checked={
-                                    filterOption === selectedFilter
+                                    filterOption.toLowerCase() ===
+                                    selectedFilter.toLowerCase()
                                         ? true
                                         : false
                                 }

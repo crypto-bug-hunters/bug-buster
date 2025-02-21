@@ -76,7 +76,7 @@ const Bounty: FC<{
 };
 
 const Explore: FC = () => {
-    const [selectedFilter, setSelectedFilter] = useState<string>("");
+    const [selectedFilter, setSelectedFilter] = useState<string>("open");
     const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
 
