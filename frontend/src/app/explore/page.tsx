@@ -99,6 +99,9 @@ const Explore: FC = () => {
 
     return (
         <Flex direction="column" align={"center"}>
+            <Text>
+                Environment Variable: {process.env.NEXT_PUBLIC_GRAPHQL_URL}
+            </Text>
             <BountyFilter
                 selectedFilter={selectedFilter}
                 onFilterChange={setSelectedFilter}
