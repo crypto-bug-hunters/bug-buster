@@ -13,7 +13,6 @@ export const Shell: FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
         <AppShell
             header={{ height: { base: 212, sm: 99 } }}
-            footer={{ height: "auto" }}
             padding="md"
             withBorder={true}
         >
