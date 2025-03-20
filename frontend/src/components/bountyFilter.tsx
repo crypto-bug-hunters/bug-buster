@@ -2,7 +2,6 @@ import React from "react";
 import {
     Popover,
     Button,
-    Checkbox,
     Badge,
     Group,
     Divider,
