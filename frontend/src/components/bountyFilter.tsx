@@ -7,6 +7,7 @@ import {
     Group,
     Divider,
     Flex,
+    Radio,
 } from "@mantine/core";
 import { IoFilter } from "react-icons/io5";
 
@@ -43,7 +44,7 @@ const BountyFilter: React.FC<BountyFilterProps> = ({
                     </Popover.Target>
                     <Popover.Dropdown>
                         {FILTER_OPTIONS.map((filterOption) => (
-                            <Checkbox
+                            <Radio
                                 key={filterOption}
                                 label={filterOption}
                                 checked={
