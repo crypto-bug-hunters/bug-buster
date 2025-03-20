@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
     Box,
     Center,
@@ -10,6 +10,7 @@ import {
     Anchor,
     SimpleGrid,
     Tooltip,
+    Flex,
 } from "@mantine/core";
 import { useLatestState } from "../../model/reader";
 import { AppBounty } from "../../model/state";
@@ -21,6 +22,7 @@ import {
     getBountyDescription,
 } from "../../utils/bounty";
 import { useErc20Metadata, formatErc20Amount } from "../../utils/erc20";
+import BountyFilter from "../../components/bountyFilter";
 
 const Bounty: FC<{
     index: number;
@@ -73,7 +75,8 @@ const Bounty: FC<{
     );
 };
 
-const BountyList: FC = () => {
+const Explore: FC = () => {
+    const [selectedFilter, setSelectedFilter] = useState<string>("open");
     const stateResult = useLatestState();
     const blockTimestamp = useBlockTimestamp();
 
@@ -86,35 +89,39 @@ const BountyList: FC = () => {
 
     const state = stateResult.response;
 
-    return (
-        <SimpleGrid
-            m={{ base: "xs", md: "lg" }}
-            cols={{ base: 1, sm: 2, lg: 3 }}
-            spacing="xl"
-            verticalSpacing="lg"
-            style={{ maxWidth: 1024 }}
-        >
-            {state.bounties.map((bounty, index) => {
-                return (
-                    <Bounty
-                        key={index}
-                        index={index}
-                        bounty={bounty}
-                        blockTimestamp={blockTimestamp!}
-                    />
-                );
-            })}
-        </SimpleGrid>
-    );
-};
+    const filteredBounties = !selectedFilter.length
+        ? state.bounties
+        : state.bounties.filter(
+              (bounty) =>
+                  getBountyStatus(bounty, blockTimestamp).kind ===
+                  selectedFilter.toLowerCase(),
+          );
 
-const Explore: FC = () => {
     return (
-        <Stack>
-            <Center>
-                <BountyList />
-            </Center>
-        </Stack>
+        <Flex direction="column" align={"center"}>
+            <BountyFilter
+                selectedFilter={selectedFilter}
+                onFilterChange={setSelectedFilter}
+            />
+            <SimpleGrid
+                m={{ base: "xs", md: "lg" }}
+                cols={{ base: 1, sm: 2, lg: 3 }}
+                spacing="xl"
+                verticalSpacing="lg"
+                style={{ maxWidth: 1024 }}
+            >
+                {filteredBounties.map((bounty, index) => {
+                    return (
+                        <Bounty
+                            key={index}
+                            index={index}
+                            bounty={bounty}
+                            blockTimestamp={blockTimestamp!}
+                        />
+                    );
+                })}
+            </SimpleGrid>
+        </Flex>
     );
 };
 
